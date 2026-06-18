@@ -270,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: SafeArea(
         child: bodyWidget,
       ),
-      bottomNavigationBar: _buildBottomNav(isDark, scheme, apiService.language),
+      bottomNavigationBar: _buildBottomNav(isDark, scheme),
     );
   }
 
@@ -868,29 +868,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBottomNav(bool isDark, ColorScheme scheme, String lang) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1C1B2E) : Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
+  Widget _buildBottomNav(bool isDark, ColorScheme scheme) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1C1B2E) : Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.home_rounded, _t('bottom_nav_home', lang), 0, isDark, scheme),
-              _buildNavItem(Icons.search_rounded, _t('bottom_nav_scan', lang), 1, isDark, scheme),
-              _buildNavItem(Icons.view_in_ar_rounded, _t('bottom_nav_3d', lang), 2, isDark, scheme),
-              _buildNavItem(Icons.person_rounded, _t('bottom_nav_profile', lang), 3, isDark, scheme),
+              _buildNavItem(Icons.home_rounded, 0, isDark, scheme),
+              _buildNavItem(Icons.search_rounded, 1, isDark, scheme),
+              _buildNavItem(Icons.view_in_ar_rounded, 2, isDark, scheme),
+              _buildNavItem(Icons.person_rounded, 3, isDark, scheme),
             ],
           ),
         ),
@@ -898,27 +900,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index, bool isDark, ColorScheme scheme) {
+  Widget _buildNavItem(IconData icon, int index, bool isDark, ColorScheme scheme) {
     final isActive = _currentNav == index;
     return GestureDetector(
       onTap: () => setState(() => _currentNav = index),
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           gradient: isActive ? LinearGradient(colors: [scheme.primary, scheme.tertiary]) : null,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 22, color: isActive ? Colors.white : (isDark ? Colors.grey[500] : Colors.grey[500])),
-            if (isActive) ...[
-              const SizedBox(width: 6),
-              Text(label, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
-            ],
-          ],
+        child: Icon(
+          icon,
+          size: 22,
+          color: isActive ? Colors.white : (isDark ? Colors.grey[500] : Colors.grey[600]),
         ),
       ),
     );
