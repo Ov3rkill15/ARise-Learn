@@ -269,11 +269,272 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       extendBody: true,
-      body: SafeArea(
-        bottom: false,
-        child: bodyWidget,
+      body: Stack(
+        children: [
+          _buildBackgroundGradient(isDark),
+          SafeArea(
+            bottom: false,
+            child: bodyWidget,
+          ),
+        ],
       ),
       bottomNavigationBar: _buildBottomNav(isDark, scheme),
+    );
+  }
+
+  Widget _buildBackgroundGradient(bool isDark) {
+    if (!isDark) {
+      return Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFFF8FAFC),
+            ),
+          ),
+          Positioned(
+            top: -80,
+            left: -80,
+            width: 400,
+            height: 400,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    const Color(0xFFFBCFE8).withOpacity(0.4),
+                    const Color(0xFFFBCFE8).withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: -100,
+            right: -50,
+            width: 450,
+            height: 450,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    const Color(0xFFCFFAFE).withOpacity(0.45),
+                    const Color(0xFFCFFAFE).withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 250,
+            left: -120,
+            width: 450,
+            height: 450,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    const Color(0xFFE0F2FE).withOpacity(0.45),
+                    const Color(0xFFE0F2FE).withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 200,
+            right: -120,
+            width: 500,
+            height: 500,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    const Color(0xFFE0E7FF).withOpacity(0.4),
+                    const Color(0xFFE0E7FF).withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -100,
+            left: -80,
+            width: 400,
+            height: 400,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    const Color(0xFFFCE7F3).withOpacity(0.35),
+                    const Color(0xFFFCE7F3).withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -120,
+            right: -80,
+            width: 450,
+            height: 450,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    const Color(0xFFCCFBF1).withOpacity(0.4),
+                    const Color(0xFFCCFBF1).withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 75.0, sigmaY: 75.0),
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ],
+      );
+    }
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFF070612),
+          ),
+        ),
+        Positioned(
+          top: -80,
+          left: -80,
+          width: 400,
+          height: 400,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFFD946EF).withOpacity(0.48),
+                  const Color(0xFFD946EF).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: -100,
+          right: -50,
+          width: 450,
+          height: 450,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF06B6D4).withOpacity(0.52),
+                  const Color(0xFF06B6D4).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 250,
+          left: -120,
+          width: 450,
+          height: 450,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF00E5FF).withOpacity(0.45),
+                  const Color(0xFF00E5FF).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 200,
+          right: -120,
+          width: 500,
+          height: 500,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF6366F1).withOpacity(0.42),
+                  const Color(0xFF6366F1).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -100,
+          left: -80,
+          width: 400,
+          height: 400,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFFD946EF).withOpacity(0.42),
+                  const Color(0xFFD946EF).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -120,
+          right: -80,
+          width: 450,
+          height: 450,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF06B6D4).withOpacity(0.48),
+                  const Color(0xFF06B6D4).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 100,
+          left: 50,
+          width: 300,
+          height: 300,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFFEC4899).withOpacity(0.35),
+                  const Color(0xFFEC4899).withOpacity(0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 65.0, sigmaY: 65.0),
+            child: Container(color: Colors.transparent),
+          ),
+        ),
+      ],
     );
   }
 
