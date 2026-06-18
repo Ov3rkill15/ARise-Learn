@@ -144,7 +144,7 @@ class _WebcamPreviewWidgetState extends State<WebcamPreviewWidget> {
                                 color: Colors.blueAccent,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.blueAccent.withOpacity(0.8),
+                                    color: Colors.blueAccent.withValues(alpha: 0.8),
                                     blurRadius: 6,
                                     spreadRadius: 1,
                                   ),

@@ -565,7 +565,7 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                   decoration: BoxDecoration(
                     color: Colors.black54,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white24),
+                    border: Border.all(color: Colors.indigoAccent.withOpacity(0.3)),
                   ),
                   child: Row(
                     children: [
@@ -648,7 +648,7 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.white24),
+                    border: Border.all(color: Colors.indigoAccent.withOpacity(0.3)),
                   ),
                   child: Text(
                     '${(_scale * 100).toStringAsFixed(0)}%',
@@ -744,7 +744,7 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                           decoration: BoxDecoration(
                             color: Colors.black87,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white12),
+                            border: Border.all(color: Colors.indigoAccent.withOpacity(0.3)),
                           ),
                           child: Row(
                             children: [
@@ -865,8 +865,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF0F172A),
-                    Color(0xFF020617),
+                    Color(0xFF0F0E1A),
+                    Color(0xFF0A0918),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -1057,7 +1057,7 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
   }) {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: active ? Theme.of(context).colorScheme.primary : Colors.black54,
+        backgroundColor: active ? Theme.of(context).colorScheme.primary : Colors.black.withOpacity(0.7),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -1080,10 +1080,10 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
       height: size,
       decoration: BoxDecoration(
         border: Border(
-          top: top ? const BorderSide(color: Colors.white54, width: thickness) : BorderSide.none,
-          bottom: !top ? const BorderSide(color: Colors.white54, width: thickness) : BorderSide.none,
-          left: left ? const BorderSide(color: Colors.white54, width: thickness) : BorderSide.none,
-          right: !left ? const BorderSide(color: Colors.white54, width: thickness) : BorderSide.none,
+          top: top ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
+          bottom: !top ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
+          left: left ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
+          right: !left ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
         ),
       ),
     );
@@ -1095,7 +1095,7 @@ class GridBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.blue.withOpacity(0.08)
+      ..color = Colors.indigoAccent.withOpacity(0.08)
       ..strokeWidth = 1.0;
 
     const spacing = 40.0;

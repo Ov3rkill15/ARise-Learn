@@ -213,7 +213,7 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                           children: [
                             // Outer dim overlay
                             Container(
-                              color: Colors.black.withOpacity(0.3),
+                              color: Colors.black.withValues(alpha: 0.3),
                             ),
                             // Scanning Frame
                             Center(
@@ -243,7 +243,7 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                                       color: Colors.blueAccent,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.blueAccent.withOpacity(0.8),
+                                          color: Colors.blueAccent.withValues(alpha: 0.8),
                                           blurRadius: 8,
                                           spreadRadius: 2,
                                         ),

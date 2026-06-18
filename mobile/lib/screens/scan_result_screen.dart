@@ -182,7 +182,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
       width: 24,
       height: 24,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         shape: BoxShape.circle,
         border: Border.all(color: color, width: 1.5),
       ),
@@ -528,7 +528,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.black.withValues(alpha: 0.25),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -674,7 +674,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                                   width: 12,
                                   height: 12,
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.9),
+                                    color: Colors.black.withValues(alpha: 0.9),
                                     border: Border(
                                       bottom: BorderSide(color: _getPartColor(_selectedPart!), width: 1.5),
                                       right: BorderSide(color: _getPartColor(_selectedPart!), width: 1.5),
@@ -704,7 +704,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                                 width: bubbleWidth,
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.95),
+                                  color: Colors.black.withValues(alpha: 0.95),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
                                     color: _getPartColor(_selectedPart!),
@@ -712,7 +712,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: _getPartColor(_selectedPart!).withOpacity(0.3),
+                                      color: _getPartColor(_selectedPart!).withValues(alpha: 0.3),
                                       blurRadius: 10,
                                       spreadRadius: 1,
                                     ),
@@ -774,15 +774,15 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                             child: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.85),
+                                color: Colors.black.withValues(alpha: 0.85),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: _getPartColor(_selectedPart!).withOpacity(0.5),
+                                  color: _getPartColor(_selectedPart!).withValues(alpha: 0.5),
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: _getPartColor(_selectedPart!).withOpacity(0.15),
+                                    color: _getPartColor(_selectedPart!).withValues(alpha: 0.15),
                                     blurRadius: 8,
                                     spreadRadius: 1,
                                   ),
@@ -968,7 +968,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
+                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -1052,7 +1052,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -1119,7 +1119,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -1138,7 +1138,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.15),
+                  color: Colors.green.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -1255,7 +1255,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -1398,7 +1398,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
                         blurRadius: 10,
                         spreadRadius: 1,
                       ),
@@ -1516,7 +1516,7 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),

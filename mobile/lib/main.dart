@@ -20,19 +20,18 @@ class EdutechApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF6366F1); // Indigo
-    const secondaryColor = Color(0xFF8B5CF6); // Violet
-    const accentColor = Color(0xFF06B6D4); // Cyan
-    const darkBg = Color(0xFF0B0F1A); // Very deep navy
-    const darkSurface = Color(0xFF141927); // Deep navy surface
-    const darkCard = Color(0xFF1A1F35); // Card surface
+    const primaryColor = Color(0xFF6366F1);
+    const secondaryColor = Color(0xFF8B5CF6);
+    const accentColor = Color(0xFF14B8A6);
+    const darkBg = Color(0xFF0F0E1A);
+    const darkSurface = Color(0xFF1C1B2E);
+    const darkCard = Color(0xFF252340);
 
     return MaterialApp(
       title: 'ARise Learn',
       debugShowCheckedModeBanner: false,
       themeMode: context.watch<ApiService>().themeMode,
 
-      // ─── Light Theme ───
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
@@ -46,10 +45,9 @@ class EdutechApp extends StatelessWidget {
         textTheme: GoogleFonts.plusJakartaSansTextTheme(
           ThemeData.light().textTheme,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           color: Colors.white,
         ),
         appBarTheme: AppBarTheme(
@@ -63,41 +61,36 @@ class EdutechApp extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+        scaffoldBackgroundColor: const Color(0xFFF5F5FA),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.grey[50],
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: primaryColor, width: 2),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           ),
         ),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       ),
 
-      // ─── Dark Theme (Premium Deep Navy) ───
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
@@ -113,10 +106,9 @@ class EdutechApp extends StatelessWidget {
         textTheme: GoogleFonts.plusJakartaSansTextTheme(
           ThemeData.dark().textTheme,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           color: darkCard,
         ),
         appBarTheme: AppBarTheme(
@@ -132,29 +124,25 @@ class EdutechApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFF1E2540),
+          fillColor: const Color(0xFF252340),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(
-                color: Colors.white.withOpacity(0.06)),
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.06)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: primaryColor, width: 2),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           ),
         ),
         dividerTheme: DividerThemeData(
@@ -162,8 +150,7 @@ class EdutechApp extends StatelessWidget {
         ),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       ),
 
