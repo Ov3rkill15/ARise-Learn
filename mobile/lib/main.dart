@@ -22,15 +22,17 @@ class EdutechApp extends StatelessWidget {
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFF6366F1); // Indigo
     const secondaryColor = Color(0xFF8B5CF6); // Violet
-    const darkBackgroundColor = Color(0xFF0F172A); // Slate 900
-    const darkSurfaceColor = Color(0xFF1E293B); // Slate 800
+    const accentColor = Color(0xFF06B6D4); // Cyan
+    const darkBg = Color(0xFF0B0F1A); // Very deep navy
+    const darkSurface = Color(0xFF141927); // Deep navy surface
+    const darkCard = Color(0xFF1A1F35); // Card surface
 
     return MaterialApp(
       title: 'ARise Learn',
       debugShowCheckedModeBanner: false,
       themeMode: context.watch<ApiService>().themeMode,
-      
-      // Light Theme Design
+
+      // ─── Light Theme ───
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
@@ -38,89 +40,133 @@ class EdutechApp extends StatelessWidget {
           seedColor: primaryColor,
           primary: primaryColor,
           secondary: secondaryColor,
+          tertiary: accentColor,
           brightness: Brightness.light,
         ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.light().textTheme),
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+          ThemeData.light().textTheme,
+        ),
         cardTheme: CardTheme(
-          elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           color: Colors.white,
         ),
         appBarTheme: AppBarTheme(
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
+          surfaceTintColor: Colors.transparent,
           titleTextStyle: GoogleFonts.plusJakartaSans(
             fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w800,
             color: Colors.black87,
           ),
         ),
+        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.grey[100],
+          fillColor: Colors.grey[50],
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: const BorderSide(color: primaryColor, width: 2),
           ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          ),
+        ),
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
 
-      // Dark Theme Design (Premium Sci-Fi Glow)
+      // ─── Dark Theme (Premium Deep Navy) ───
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: darkBackgroundColor,
+        scaffoldBackgroundColor: darkBg,
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
           primary: primaryColor,
           secondary: secondaryColor,
-          surface: darkSurfaceColor,
+          tertiary: accentColor,
+          surface: darkSurface,
           brightness: Brightness.dark,
         ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.dark().textTheme),
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+          ThemeData.dark().textTheme,
+        ),
         cardTheme: CardTheme(
-          elevation: 8,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: darkSurfaceColor,
-          shadowColor: Colors.black.withOpacity(0.4),
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          color: darkCard,
         ),
         appBarTheme: AppBarTheme(
           centerTitle: true,
-          backgroundColor: darkBackgroundColor,
+          backgroundColor: Colors.transparent,
           elevation: 0,
+          surfaceTintColor: Colors.transparent,
           titleTextStyle: GoogleFonts.plusJakartaSans(
             fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w800,
             color: Colors.white,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFF334155), // Slate 700
+          fillColor: const Color(0xFF1E2540),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(
+                color: Colors.white.withOpacity(0.06)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             borderSide: const BorderSide(color: primaryColor, width: 2),
           ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          ),
+        ),
+        dividerTheme: DividerThemeData(
+          color: Colors.white.withOpacity(0.06),
+        ),
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
-      
+
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
