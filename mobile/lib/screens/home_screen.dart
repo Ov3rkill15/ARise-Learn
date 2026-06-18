@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/api_service.dart';
 import 'scan_result_screen.dart';
 import 'ar_viewer_screen.dart';
@@ -52,6 +53,99 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
+  }
+
+  Future<void> _handleCameraScan() async {
+    final apiService = context.read<ApiService>();
+    final picker = ImagePicker();
+    
+    try {
+      final XFile? photo = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+      
+      if (photo != null) {
+        // Save captured image to show preview
+        apiService.setCapturedImage(photo);
+        
+        if (!mounted) return;
+        
+        // Show dialog to let user choose which textbook page they scanned
+        final selectedPresetUrl = await showDialog<String>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+              title: Row(
+                children: [
+                  Icon(Icons.psychology, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(width: 10),
+                  const Text('AI Analisis Gambar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              content: const Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Gambar berhasil diambil!',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Pilih halaman materi yang Anda foto untuk mensimulasikan analisis AI RAG:',
+                    style: TextStyle(fontSize: 12, height: 1.4),
+                  ),
+                ],
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                _buildDialogActionBtn(context, '❤️ Jantung', 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
+                _buildDialogActionBtn(context, '🧬 DNA Helix', 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
+                _buildDialogActionBtn(context, '💧 Molekul H2O', 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
+                _buildDialogActionBtn(context, '⚛️ Atom Bohr', 'https://images.unsplash.com/photo-1544383835-atom'),
+              ],
+            );
+          },
+        );
+        
+        if (selectedPresetUrl != null) {
+          _handleScan(selectedPresetUrl);
+        } else {
+          apiService.setCapturedImage(null);
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengakses kamera: $e'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Widget _buildDialogActionBtn(BuildContext context, String label, String url) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          onPressed: () {
+            Navigator.pop(context, url);
+          },
+          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
+      ),
+    );
   }
 
   @override
@@ -200,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      'Masukkan URL gambar halaman buku Anda untuk mendapatkan penjelasan AI dan objek AR.',
+                      'Masukkan URL gambar halaman buku Anda atau ketuk ikon kamera untuk mengambil foto.',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 13,
@@ -222,16 +316,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderSide: BorderSide.none,
                         ),
                         prefixIcon: const Icon(Icons.link, color: Colors.white70),
-                        suffixIcon: _urlController.text.isNotEmpty
-                            ? IconButton(
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.camera_alt, color: Colors.white70),
+                              tooltip: 'Ambil Foto Buku',
+                              onPressed: _handleCameraScan,
+                            ),
+                            if (_urlController.text.isNotEmpty)
+                              IconButton(
                                 icon: const Icon(Icons.clear, color: Colors.white70),
                                 onPressed: () {
                                   setState(() {
                                     _urlController.clear();
                                   });
                                 },
-                              )
-                            : null,
+                              ),
+                          ],
+                        ),
                       ),
                       onChanged: (text) {
                         setState(() {});
@@ -249,9 +352,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        _buildPresetChip('❤️ Jantung', 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
-                        _buildPresetChip('🧬 DNA Helix', 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
-                        _buildPresetChip('💧 Molekul H2O', 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
+                        _buildPresetChip(context, '❤️ Jantung', 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
+                        _buildPresetChip(context, '🧬 DNA Helix', 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
+                        _buildPresetChip(context, '💧 Molekul H2O', 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -269,7 +372,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: apiService.isLoading ? null : () => _handleScan(),
+                        onPressed: apiService.isLoading ? null : () {
+                          apiService.setCapturedImage(null);
+                          _handleScan();
+                        },
                         icon: apiService.isLoading
                             ? const SizedBox(
                                 width: 20,
@@ -315,6 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final item = apiService.history[index];
                       return GestureDetector(
                         onTap: () {
+                          apiService.setCapturedImage(null);
                           apiService.selectResult(item);
                           Navigator.pushNamed(context, '/result');
                         },
@@ -487,9 +594,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPresetChip(String label, String url) {
+  Widget _buildPresetChip(BuildContext context, String label, String url) {
     return GestureDetector(
-      onTap: () => _handleScan(url),
+      onTap: () {
+        context.read<ApiService>().setCapturedImage(null);
+        _handleScan(url);
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
@@ -554,6 +664,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
+            context.read<ApiService>().setCapturedImage(null);
             Navigator.pushNamed(context, '/ar', arguments: assetId);
           },
           child: Padding(

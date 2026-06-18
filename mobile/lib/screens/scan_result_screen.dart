@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
@@ -111,12 +113,26 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
               Container(
                 height: 180,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(thumbnailUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                child: apiService.capturedImage != null
+                    ? (kIsWeb
+                        ? Image.network(
+                            apiService.capturedImage!.path,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 180,
+                          )
+                        : Image.file(
+                            io.File(apiService.capturedImage!.path),
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 180,
+                          ))
+                    : Image.network(
+                        thumbnailUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 180,
+                      ),
               ),
               Container(
                 height: 180,

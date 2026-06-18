@@ -1,9 +1,17 @@
 import 'package:flutter/foundation.dart' show ChangeNotifier, kIsWeb;
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart' show XFile;
 import '../models/scan_result.dart';
 
 class ApiService extends ChangeNotifier {
+  XFile? _capturedImage;
+  XFile? get capturedImage => _capturedImage;
+
+  void setCapturedImage(XFile? image) {
+    _capturedImage = image;
+    notifyListeners();
+  }
   // Auto-detect platform: web uses localhost, Android emulator uses 10.0.2.2
   static String get _baseUrl {
     if (kIsWeb) return 'http://localhost:8080';
