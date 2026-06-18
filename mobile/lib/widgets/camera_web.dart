@@ -43,6 +43,7 @@ class _WebcamPreviewWidgetState extends State<WebcamPreviewWidget> {
     _videoElement = html.VideoElement()
       ..autoplay = true
       ..muted = true
+      ..setAttribute('playsinline', 'true')
       ..style.width = '100%'
       ..style.height = '100%'
       ..style.objectFit = 'cover';
@@ -57,6 +58,12 @@ class _WebcamPreviewWidgetState extends State<WebcamPreviewWidget> {
       }
       _localStream = stream;
       _videoElement!.srcObject = stream;
+      
+      // Explicitly trigger video element playback
+      _videoElement!.play().catchError((err) {
+        print("Webcam play error: $err");
+      });
+
       if (!mounted) return;
       setState(() {
         _isInitialized = true;
@@ -81,87 +88,94 @@ class _WebcamPreviewWidgetState extends State<WebcamPreviewWidget> {
       return const Center(child: CircularProgressIndicator(color: Colors.blueAccent));
     }
     
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: HtmlElementView(viewType: _viewId),
-        ),
-        
-        // Target Reticle Box overlay
-        IgnorePointer(
-          child: Stack(
-            children: [
-              Center(
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blueAccent, width: 2),
-                    borderRadius: BorderRadius.circular(12),
+    return SizedBox.expand(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: HtmlElementView(
+                key: ValueKey(_viewId),
+                viewType: _viewId,
+              ),
+            ),
+          ),
+          
+          // Target Reticle Box overlay
+          IgnorePointer(
+            child: Stack(
+              children: [
+                Center(
+                  child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueAccent, width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
-              ),
-              // Scan line effect
-              TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 0.0, end: 1.0),
-                duration: const Duration(seconds: 2),
-                curve: Curves.easeInOut,
-                builder: (context, value, child) {
-                  return Center(
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: value * 198),
-                        child: Container(
-                          width: 200,
-                          height: 2,
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blueAccent.withOpacity(0.8),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ],
+                // Scan line effect
+                TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                  duration: const Duration(seconds: 2),
+                  curve: Curves.easeInOut,
+                  builder: (context, value, child) {
+                    return Center(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: value * 198),
+                          child: Container(
+                            width: 200,
+                            height: 2,
+                            decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blueAccent.withOpacity(0.8),
+                                  blurRadius: 6,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-
-        // Shutter Button Panel
-        Positioned(
-          bottom: 20,
-          child: GestureDetector(
-            onTap: _takePicture,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 4),
-              ),
+  
+          // Shutter Button Panel
+          Positioned(
+            bottom: 20,
+            child: GestureDetector(
+              onTap: _takePicture,
               child: Container(
-                width: 48,
-                height: 48,
-                decoration: const BoxDecoration(
-                  color: Colors.redAccent,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 4),
+                ),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: const BoxDecoration(
+                    color: Colors.redAccent,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
