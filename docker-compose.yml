@@ -1,0 +1,76 @@
+services:
+  # Go Backend API
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - DATABASE_URL=postgres://edutech:edutech@postgres:5432/edutech?sslmode=disable
+      - AI_SERVICE_URL=http://ai-service:8000
+      - CORS_ORIGIN=*
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - edutech-net
+    restart: unless-stopped
+
+  # FastAPI AI/RAG Service
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-mock}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-pro}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o}
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - QDRANT_COLLECTION=edutech_textbooks
+    depends_on:
+      - qdrant
+    networks:
+      - edutech-net
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: edutech
+      POSTGRES_PASSWORD: edutech
+      POSTGRES_DB: edutech
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edutech"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - edutech-net
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - edutech-net
+
+volumes:
+  postgres_data:
+  qdrant_data:
+
+networks:
+  edutech-net:
+    driver: bridge

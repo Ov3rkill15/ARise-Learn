@@ -1,0 +1,23 @@
+# Root level ignores
+.env
+.env.local
+.env.*.local
+*.log
+.idea/
+.vscode/
+
+# Python virtual environment
+ai-service/venv/
+__pycache__/
+**/__pycache__/
+
+# Backend binaries and environment
+backend/server
+backend/server.exe
+backend/.env
+
+# Flutter files
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
