@@ -211,6 +211,47 @@ class OpenAIClient(BaseLLMClient):
         )
         return response.choices[0].message.content
 
+class GroqClient(BaseLLMClient):
+    """Groq API client (OpenAI-compatible)."""
+
+    def __init__(self):
+        from openai import AsyncOpenAI
+        settings = get_settings()
+        self.client = AsyncOpenAI(
+            api_key=settings.groq_api_key,
+            base_url="https://api.groq.com/openai/v1",
+        )
+        self.model = settings.groq_model or "llama-3.2-11b-vision-preview"
+
+    async def generate(self, prompt: str, image_url: str | None = None) -> str:
+        messages = []
+        content = [{"type": "text", "text": prompt}]
+        if image_url:
+            try:
+                import httpx
+                import base64
+                async with httpx.AsyncClient() as client:
+                    resp = await client.get(image_url, timeout=12.0)
+                    if resp.status_code == 200:
+                        mime_type = resp.headers.get("content-type", "image/jpeg")
+                        b64_data = base64.b64encode(resp.content).decode("utf-8")
+                        image_data_url = f"data:{mime_type};base64,{b64_data}"
+                        content.append({"type": "image_url", "image_url": {"url": image_data_url}})
+                    else:
+                        content.append({"type": "text", "text": f"[Image reference failed: {image_url}]"})
+            except Exception as e:
+                print(f"Error loading image for Groq: {e}")
+                content.append({"type": "text", "text": f"[Image reference: {image_url}]"})
+        
+        messages.append({"role": "user", "content": content})
+
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            max_tokens=1024,
+        )
+        return response.choices[0].message.content
+
 
 def create_llm_client() -> BaseLLMClient:
     """Factory: creates the appropriate LLM client based on config."""
@@ -221,5 +262,7 @@ def create_llm_client() -> BaseLLMClient:
         return GeminiClient()
     elif provider == "openai":
         return OpenAIClient()
+    elif provider == "groq":
+        return GroqClient()
     else:
         return MockLLMClient()

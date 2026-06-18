@@ -7,12 +7,14 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8000
 
-    # LLM Provider: "gemini" or "openai"
-    llm_provider: str = "mock"  # "mock" | "gemini" | "openai"
+    # LLM Provider: "gemini", "openai", or "groq"
+    llm_provider: str = "mock"  # "mock" | "gemini" | "openai" | "groq"
     gemini_api_key: str = ""
     openai_api_key: str = ""
+    groq_api_key: str = ""
     gemini_model: str = "gemini-1.5-pro"
     openai_model: str = "gpt-4o"
+    groq_model: str = "llama-3.2-11b-vision-preview"
 
     # Qdrant
     qdrant_host: str = "localhost"
