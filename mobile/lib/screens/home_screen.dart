@@ -730,9 +730,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.55),
+                  color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.white.withOpacity(0.6)),
+                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04)),
                   boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
                 ),
                 child: Column(
@@ -829,9 +829,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               const SizedBox(height: 24),
               Container(
                 decoration: BoxDecoration(
-                  color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.55),
+                  color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.white.withOpacity(0.6)),
+                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04)),
                 ),
                 child: Column(
                   children: [
@@ -925,9 +925,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
       decoration: BoxDecoration(
-        color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.55),
+        color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.white.withOpacity(0.6)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
       ),
       child: Column(
         children: [
@@ -948,13 +948,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: unlocked
-            ? (isDark ? const Color(0xFF2D2A1E) : const Color(0xFFFFFDF5).withOpacity(0.6))
-            : (isDark ? Colors.white.withOpacity(0.04) : Colors.white.withOpacity(0.55)),
+            ? (isDark ? const Color(0xFF2D2A1E) : const Color(0xFFFFFDF5).withOpacity(0.35))
+            : (isDark ? Colors.white.withOpacity(0.04) : Colors.white.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: unlocked
               ? const Color(0xFFFBBF24).withOpacity(0.4)
-              : (isDark ? Colors.white.withOpacity(0.06) : Colors.white.withOpacity(0.6)),
+              : (isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
           width: unlocked ? 1.5 : 1.0,
         ),
         boxShadow: unlocked
@@ -1474,9 +1474,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.55),
+        color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.white.withOpacity(0.6)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
         boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(
@@ -1544,8 +1544,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               margin: const EdgeInsets.only(right: 12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
-                color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.55),
-                border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.white.withOpacity(0.6)),
+                color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
+                border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
                 boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 12, offset: const Offset(0, 4))],
               ),
               child: ClipRRect(
@@ -1647,11 +1647,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 colors: isDark
                     ? [Colors.white.withOpacity(0.06), item.color1.withOpacity(0.08)]
-                    : [Colors.white.withOpacity(0.55), item.color1.withOpacity(0.12)],
+                    : [Colors.white.withOpacity(0.3), item.color1.withOpacity(0.12)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              border: Border.all(color: isDark ? item.color1.withOpacity(0.15) : Colors.white.withOpacity(0.6), width: 1.2),
+              border: Border.all(color: isDark ? item.color1.withOpacity(0.15) : item.color1.withOpacity(0.1), width: 1.2),
               boxShadow: [BoxShadow(color: item.color1.withOpacity(isDark ? 0.1 : 0.03), blurRadius: 20, offset: const Offset(0, 8))],
             ),
             child: Material(
