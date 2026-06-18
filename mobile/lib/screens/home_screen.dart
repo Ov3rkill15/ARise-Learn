@@ -271,6 +271,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: Stack(
         children: [
           SafeArea(
+            bottom: false,
             child: bodyWidget,
           ),
           Positioned(
