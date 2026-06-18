@@ -276,9 +276,11 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                               },
                               onScaleUpdate: (details) {
                                 setState(() {
-                                  if (details.pointerCount >= 2) {
+                                  if (details.scale != 1.0) {
                                     _scale = (_baseScale * details.scale).clamp(0.4, 2.5);
-                                  } else if (details.pointerCount == 1) {
+                                  }
+                                  
+                                  if (details.pointerCount == 1 && details.scale == 1.0) {
                                     _ry += details.focalPointDelta.dx * 0.007;
                                     _rx -= details.focalPointDelta.dy * 0.007;
                                   }
