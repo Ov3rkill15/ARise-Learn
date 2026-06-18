@@ -221,7 +221,7 @@ class GroqClient(BaseLLMClient):
             api_key=settings.groq_api_key,
             base_url="https://api.groq.com/openai/v1",
         )
-        self.model = settings.groq_model or "llama-3.2-11b-vision-preview"
+        self.model = settings.groq_model or "meta-llama/llama-4-scout-17b-16e-instruct"
 
     async def generate(self, prompt: str, image_url: str | None = None) -> str:
         messages = []

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -50,7 +51,8 @@ func (s *ScanService) ProcessScan(ctx context.Context, req *model.ScanRequest) (
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("AI service returned status %d", resp.StatusCode)
+		respBody, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("AI service returned status %d: %s", resp.StatusCode, string(respBody))
 	}
 
 	var analyzeResp model.AnalyzeResponse
@@ -99,7 +101,8 @@ func (s *ScanService) ChatScoped(ctx context.Context, req *model.ChatRequest) (*
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("AI service returned status %d", resp.StatusCode)
+		respBody, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("AI service returned status %d: %s", resp.StatusCode, string(respBody))
 	}
 
 	var chatResp model.ChatResponse

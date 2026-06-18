@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     gemini_model: str = "gemini-1.5-pro"
     openai_model: str = "gpt-4o"
-    groq_model: str = "llama-3.2-11b-vision-preview"
+    groq_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
 
     # Qdrant
     qdrant_host: str = "localhost"
