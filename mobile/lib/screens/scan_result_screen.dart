@@ -26,6 +26,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
   double _pulse = 1.0;
   Timer? _pulseTimer;
   String? _selectedPart;
+  bool _isHovering3D = false;
 
   Offset projectPoint(double x, double y, double z, Size canvasSize) {
     final center = Offset(canvasSize.width / 2, canvasSize.height / 2 - 20);
@@ -223,11 +224,15 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
         ],
       ),
       body: SingleChildScrollView(
+        physics: _isHovering3D ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 1. Interactive 3D AR Model Viewport (Always Bohr Atom model for mockup, but interactive)
-            Container(
+            MouseRegion(
+              onEnter: (_) => setState(() => _isHovering3D = true),
+              onExit: (_) => setState(() => _isHovering3D = false),
+              child: Container(
               height: 380,
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
@@ -494,6 +499,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                   },
                 ),
               ),
+            ),
             ),
 
             // 2. Control buttons below it
