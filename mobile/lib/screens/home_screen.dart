@@ -20,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _shimmerController;
   late AnimationController _floatController;
   int _currentNav = 0;
+  String _selectedCategory = 'Semua';
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -246,41 +248,593 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final scheme = Theme.of(context).colorScheme;
 
+    Widget bodyWidget;
+    switch (_currentNav) {
+      case 1:
+        bodyWidget = _buildPindaiTab(context, apiService, isDark, scheme);
+        break;
+      case 2:
+        bodyWidget = _buildModel3DTab(context, apiService, isDark, scheme);
+        break;
+      case 3:
+        bodyWidget = _buildProfilTab(context, apiService, isDark, scheme);
+        break;
+      case 0:
+      default:
+        bodyWidget = _buildBerandaTab(context, apiService, isDark, scheme);
+        break;
+    }
+
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 900),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildHeader(context, apiService, isDark, scheme),
-                  const SizedBox(height: 24),
-                  _buildWelcomeBanner(context, apiService, isDark, scheme),
-                  const SizedBox(height: 24),
-                  _buildQuickActions(context, isDark, scheme),
-                  const SizedBox(height: 28),
-                  _buildStatsRow(context, isDark, scheme),
-                  const SizedBox(height: 28),
-                  if (apiService.history.isNotEmpty) ...[
-                    _buildSectionTitle(context, 'Riwayat Pemindaian', Icons.history_rounded, isDark),
-                    const SizedBox(height: 14),
-                    _buildHistoryList(context, apiService, isDark, scheme),
-                    const SizedBox(height: 28),
-                  ],
-                  _buildSectionTitle(context, 'Eksplorasi Model 3D', Icons.view_in_ar_rounded, isDark),
-                  const SizedBox(height: 14),
-                  _buildCatalogGrid(context, isDark, scheme),
-                  const SizedBox(height: 100),
-                ],
-              ),
-            ),
+        child: bodyWidget,
+      ),
+      bottomNavigationBar: _buildBottomNav(isDark, scheme),
+    );
+  }
+
+  Widget _buildBerandaTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(context, apiService, isDark, scheme),
+              const SizedBox(height: 24),
+              _buildDashboardCard(context, isDark, scheme),
+              const SizedBox(height: 24),
+              _buildQuickActions(context, isDark, scheme),
+              const SizedBox(height: 28),
+              _buildStatsRow(context, isDark, scheme),
+              const SizedBox(height: 28),
+              if (apiService.history.isNotEmpty) ...[
+                _buildSectionTitle(context, 'Riwayat Pemindaian', Icons.history_rounded, isDark),
+                const SizedBox(height: 14),
+                _buildHistoryList(context, apiService, isDark, scheme),
+                const SizedBox(height: 28),
+              ],
+              _buildSectionTitle(context, 'Eksplorasi Model 3D', Icons.view_in_ar_rounded, isDark),
+              const SizedBox(height: 14),
+              _buildCatalogGrid(context, isDark, scheme),
+              const SizedBox(height: 100),
+            ],
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(isDark, scheme),
+    );
+  }
+
+  Widget _buildPindaiTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(context, apiService, isDark, scheme),
+              const SizedBox(height: 24),
+              Center(
+                child: Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: scheme.primary.withOpacity(0.04),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: scheme.primary.withOpacity(0.15), width: 1.5),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(70),
+                    child: AnimatedBuilder(
+                      animation: _breathController,
+                      builder: (context, child) {
+                        return CustomPaint(
+                          painter: RadarScannerPainter(_breathController.value, scheme.primary),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              _buildWelcomeBanner(context, apiService, isDark, scheme),
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModel3DTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    final searchController = TextEditingController(text: _searchQuery);
+    searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+
+    final items = [
+      _CatalogItem('Jantung Manusia', 'Kardiologi & Aliran Darah', Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), 'Biologi'),
+      _CatalogItem('Heliks DNA', 'Genetika & Kromosom', Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), 'Biologi'),
+      _CatalogItem('Molekul H₂O', 'Kepolaran & Ikatan Kovalen', Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), 'Kimia'),
+      _CatalogItem('Model Bohr', 'Fisika Kuantum & Orbit', Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), 'Fisika'),
+    ];
+
+    final filteredItems = items.where((item) {
+      final matchesCategory = _selectedCategory == 'Semua' || item.category == _selectedCategory;
+      final matchesSearch = item.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          item.subtitle.toLowerCase().contains(_searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    }).toList();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(context, apiService, isDark, scheme),
+              const SizedBox(height: 24),
+              Container(
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.15)),
+                  boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))],
+                ),
+                child: TextField(
+                  controller: searchController,
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13),
+                  decoration: InputDecoration(
+                    hintText: 'Cari model 3D (jantung, dna, dll)...',
+                    hintStyle: TextStyle(color: Colors.grey[500], fontSize: 13),
+                    prefixIcon: Icon(Icons.search_rounded, color: scheme.primary, size: 20),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      _searchQuery = val;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 38,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: ['Semua', 'Biologi', 'Kimia', 'Fisika'].map((cat) {
+                    final isCatSelected = _selectedCategory == cat;
+                    return GestureDetector(
+                      onTap: () => setState(() => _selectedCategory = cat),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                        decoration: BoxDecoration(
+                          gradient: isCatSelected ? LinearGradient(colors: [scheme.primary, scheme.tertiary]) : null,
+                          color: isCatSelected ? null : (isDark ? Colors.white.withOpacity(0.04) : Colors.grey[100]),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isCatSelected ? Colors.transparent : (isDark ? Colors.white12 : Colors.grey[300]!),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            cat,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: isCatSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 24),
+              if (filteredItems.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 60),
+                    child: Column(
+                      children: [
+                        Icon(Icons.search_off_rounded, size: 48, color: Colors.grey[500]),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Model tidak ditemukan',
+                          style: TextStyle(color: Colors.grey[500], fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 14,
+                    crossAxisSpacing: 14,
+                    childAspectRatio: 1.05,
+                  ),
+                  itemCount: filteredItems.length,
+                  itemBuilder: (context, index) {
+                    final item = filteredItems[index];
+                    return _buildCatalogCard(context, item, isDark, index);
+                  },
+                ),
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfilTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(context, apiService, isDark, scheme),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.15)),
+                  boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))],
+                ),
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      radius: 42,
+                      backgroundImage: NetworkImage(
+                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      'ARise Explorer',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: scheme.primary.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Pangkat: Penjelajah Sains',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: scheme.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Level 4 (Orde Atom)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('1.450 / 2.000 XP', style: TextStyle(fontSize: 11, color: scheme.primary, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: LinearProgressIndicator(
+                        value: 0.725,
+                        minHeight: 6,
+                        color: scheme.primary,
+                        backgroundColor: isDark ? Colors.white10 : Colors.black12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildProfileStatCard('14', 'Scan Sukses', Icons.qr_code_scanner_rounded, const Color(0xFF60A5FA), isDark),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildProfileStatCard('8', 'Pencapaian', Icons.emoji_events_rounded, const Color(0xFFFBBF24), isDark),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildProfileStatCard('94%', 'Akurasi RAG', Icons.verified_user_rounded, const Color(0xFF34D399), isDark),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Icon(Icons.emoji_events_outlined, size: 20, color: scheme.primary),
+                  const SizedBox(width: 8),
+                  const Text('Pencapaian Unlocked', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 100,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    _buildBadgeCard('Pakar Atom', '⚛️', 'Pindai model Atom Bohr', true, isDark),
+                    _buildBadgeCard('Peneliti DNA', '🧬', 'Pindai model Helix DNA', true, isDark),
+                    _buildBadgeCard('Pencari Air', '💧', 'Pindai model Molekul H2O', true, isDark),
+                    _buildBadgeCard('Ahli Jantung', '❤️', 'Pindai model Jantung', false, isDark),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.15)),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: scheme.primary),
+                      title: const Text('Mode Gelap / Terang', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      trailing: Switch(
+                        value: isDark,
+                        onChanged: (_) => apiService.toggleTheme(),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: Icon(Icons.cloud_done_rounded, color: Colors.green[400]),
+                      title: const Text('Grounding Kurikulum Resmi', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      subtitle: const Text('Validasi RAG aktif & tersertifikasi', style: TextStyle(fontSize: 10)),
+                      trailing: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
+                      title: const Text('Hapus Riwayat Belajar', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.redAccent)),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Hapus Riwayat'),
+                            content: const Text('Apakah Anda yakin ingin menghapus semua riwayat pemindaian?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Batal'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  apiService.clearHistory();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Hapus', style: TextStyle(color: Colors.redAccent)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileStatCard(String value, String label, IconData icon, Color color, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 8),
+          Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: isDark ? Colors.white : Colors.black87)),
+          const SizedBox(height: 2),
+          Text(label, style: TextStyle(color: Colors.grey[500], fontSize: 10, fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgeCard(String title, String emoji, String desc, bool unlocked, bool isDark) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: unlocked
+              ? const Color(0xFFFBBF24).withOpacity(0.2)
+              : (isDark ? Colors.white.withOpacity(0.06) : Colors.grey.withOpacity(0.1)),
+        ),
+      ),
+      child: Opacity(
+        opacity: unlocked ? 1.0 : 0.4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 24)),
+            const SizedBox(height: 6),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              desc,
+              style: TextStyle(fontSize: 8, color: Colors.grey[500]),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardCard(BuildContext context, bool isDark, ColorScheme scheme) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          colors: isDark
+              ? [const Color(0xFF1E1E38), const Color(0xFF131224)]
+              : [scheme.primary.withOpacity(0.06), scheme.tertiary.withOpacity(0.03)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          color: scheme.primary.withOpacity(isDark ? 0.2 : 0.15),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: scheme.primary.withOpacity(isDark ? 0.1 : 0.03),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: scheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(Icons.insights_rounded, color: scheme.primary, size: 24),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Progres Pembelajaran',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Tingkat pemahaman materi sains',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Topik Terkuasai',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '3 / 4 Topik (75%)',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: scheme.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: 0.75,
+              minHeight: 8,
+              backgroundColor: isDark ? Colors.white10 : Colors.black12,
+              color: scheme.primary,
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: scheme.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () => setState(() => _currentNav = 1),
+              icon: const Icon(Icons.document_scanner_rounded, size: 18),
+              label: const Text(
+                'MULAI SCAN BUKU CETAK',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -539,57 +1093,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final action = actions[index];
-          return Container(
-            width: 150,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: isDark
-                    ? [action.color1.withOpacity(0.15), action.color2.withOpacity(0.08)]
-                    : [action.color1.withOpacity(0.08), action.color2.withOpacity(0.04)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+          return GestureDetector(
+            onTap: () {
+              if (index == 0) {
+                setState(() => _currentNav = 1);
+              } else if (index == 1) {
+                setState(() => _currentNav = 2);
+              } else if (index == 2) {
+                Navigator.pushNamed(context, '/ar', arguments: 'atom');
+              }
+            },
+            child: Container(
+              width: 150,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isDark
+                      ? [action.color1.withOpacity(0.15), action.color2.withOpacity(0.08)]
+                      : [action.color1.withOpacity(0.08), action.color2.withOpacity(0.04)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: action.color1.withOpacity(isDark ? 0.2 : 0.15)),
               ),
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: action.color1.withOpacity(isDark ? 0.2 : 0.15)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [action.color1, action.color2]),
-                    borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [action.color1, action.color2]),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(action.icon, color: Colors.white, size: 18),
                   ),
-                  child: Icon(action.icon, color: Colors.white, size: 18),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      action.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 13,
-                        color: isDark ? Colors.white : Colors.black87,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        action.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
                       ),
-                    ),
-                    Text(
-                      action.subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: isDark ? Colors.grey[500] : Colors.grey[500],
+                      Text(
+                        action.subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isDark ? Colors.grey[500] : Colors.grey[500],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -650,7 +1215,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
         const Spacer(),
         TextButton(
-          onPressed: () {},
+          onPressed: () => setState(() => _currentNav = 2),
           child: Text('Lihat Semua', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary)),
         ),
       ],
@@ -752,10 +1317,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildCatalogGrid(BuildContext context, bool isDark, ColorScheme scheme) {
     final items = [
-      _CatalogItem('Jantung Manusia', 'Kardiologi & Aliran Darah', Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316)),
-      _CatalogItem('Heliks DNA', 'Genetika & Kromosom', Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6)),
-      _CatalogItem('Molekul H₂O', 'Kepolaran & Ikatan Kovalen', Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4)),
-      _CatalogItem('Model Bohr', 'Fisika Kuantum & Orbit', Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316)),
+      _CatalogItem('Jantung Manusia', 'Kardiologi & Aliran Darah', Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), 'Biologi'),
+      _CatalogItem('Heliks DNA', 'Genetika & Kromosom', Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), 'Biologi'),
+      _CatalogItem('Molekul H₂O', 'Kepolaran & Ikatan Kovalen', Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), 'Kimia'),
+      _CatalogItem('Model Bohr', 'Fisika Kuantum & Orbit', Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), 'Fisika'),
     ];
     return GridView.builder(
       shrinkWrap: true,
@@ -868,6 +1433,60 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 }
 
+class RadarScannerPainter extends CustomPainter {
+  final double animationValue;
+  final Color color;
+  RadarScannerPainter(this.animationValue, this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final maxRadius = math.min(size.width, size.height) / 2;
+
+    // Draw grid rings
+    final paintRing = Paint()
+      ..color = color.withOpacity(0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    
+    for (int i = 1; i <= 3; i++) {
+      canvas.drawCircle(center, maxRadius * (i / 3), paintRing);
+    }
+
+    // Draw sweep lines
+    final paintSweep = Paint()
+      ..style = PaintingStyle.fill
+      ..shader = SweepGradient(
+        colors: [color.withOpacity(0.0), color.withOpacity(0.2), color.withOpacity(0.0)],
+        stops: const [0.0, 0.5, 1.0],
+        transform: GradientRotation(animationValue * 2 * math.pi),
+      ).createShader(Rect.fromCircle(center: center, radius: maxRadius));
+    
+    canvas.drawCircle(center, maxRadius, paintSweep);
+
+    // Draw active scanning ray
+    final rayPaint = Paint()
+      ..color = color.withOpacity(0.5)
+      ..strokeWidth = 2.0;
+    final angle = animationValue * 2 * math.pi;
+    canvas.drawLine(
+      center,
+      Offset(center.dx + maxRadius * math.cos(angle), center.dy + maxRadius * math.sin(angle)),
+      rayPaint,
+    );
+
+    // Draw center dot
+    final dotPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(center, 4, dotPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant RadarScannerPainter oldDelegate) =>
+      oldDelegate.animationValue != animationValue || oldDelegate.color != color;
+}
+
 class _QuickAction {
   final String title;
   final String subtitle;
@@ -884,5 +1503,6 @@ class _CatalogItem {
   final String assetId;
   final Color color1;
   final Color color2;
-  _CatalogItem(this.title, this.subtitle, this.icon, this.assetId, this.color1, this.color2);
+  final String category;
+  _CatalogItem(this.title, this.subtitle, this.icon, this.assetId, this.color1, this.color2, this.category);
 }

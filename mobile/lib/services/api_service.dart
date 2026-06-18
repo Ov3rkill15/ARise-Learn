@@ -187,4 +187,9 @@ class ApiService extends ChangeNotifier {
       return null;
     }
   }
+
+  void clearHistory() {
+    _history.clear();
+    notifyListeners();
+  }
 }
