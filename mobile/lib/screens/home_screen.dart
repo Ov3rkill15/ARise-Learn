@@ -51,10 +51,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<void> _handleScan([String? explicitUrl]) async {
     final url = explicitUrl ?? _urlController.text.trim();
+    final apiService = context.read<ApiService>();
     if (url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Masukkan URL gambar atau gunakan contoh preset'),
+          content: Text(_t('input_error_url', apiService.language)),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
@@ -64,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (explicitUrl != null) {
       _urlController.text = explicitUrl;
     }
-    final apiService = context.read<ApiService>();
     final result = await apiService.submitScan(url);
     if (!mounted) return;
     if (result != null) {
@@ -83,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<void> _handleCameraScan() async {
     final apiService = context.read<ApiService>();
+    final lang = apiService.language;
     try {
       final XFile? photo = await showDialog<XFile>(
         context: context,
@@ -118,9 +119,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
-                      child: Text('Analisis AI Multimodal',
-                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                    Expanded(
+                      child: Text(_t('multimodal_title', lang),
+                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
                     ),
                   ],
                 ),
@@ -140,36 +141,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           children: [
                             Icon(Icons.check_circle_rounded, color: Colors.green[400], size: 18),
                             const SizedBox(width: 10),
-                            Text('Gambar berhasil diambil!',
+                            Text(_t('image_success_taken', lang),
                                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.green[400])),
                           ],
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text('Masukkan petunjuk materi atau pilih topik:',
+                      Text(_t('input_context_label', lang),
                           style: TextStyle(fontSize: 13, color: isDark ? Colors.grey[300] : Colors.grey[600], height: 1.5)),
                       const SizedBox(height: 14),
                       TextField(
                         controller: textController,
                         decoration: InputDecoration(
-                          labelText: 'Konteks Materi (Opsional)',
-                          hintText: 'jantung, dna, h2o, atom...',
+                          labelText: _t('context_label_optional', lang),
+                          hintText: _t('hint_text_context', lang),
                           prefixIcon: const Icon(Icons.search_rounded),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
                         ),
                         onChanged: (val) => setDialogState(() {}),
                       ),
                       const SizedBox(height: 16),
-                      Text('TOPIK CEPAT', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: isDark ? Colors.grey[500] : Colors.grey[400])),
+                      Text(_t('quick_topic_title', lang), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: isDark ? Colors.grey[500] : Colors.grey[400])),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children: [
-                          _buildDialogChip(context, '❤️ Jantung', () { textController.text = 'jantung'; setDialogState(() {}); }, textController.text == 'jantung'),
-                          _buildDialogChip(context, '🧬 DNA Helix', () { textController.text = 'dna helix'; setDialogState(() {}); }, textController.text == 'dna helix'),
-                          _buildDialogChip(context, '💧 Molekul H2O', () { textController.text = 'molekul h2o'; setDialogState(() {}); }, textController.text == 'molekul h2o'),
-                          _buildDialogChip(context, '⚛️ Atom Bohr', () { textController.text = 'atom bohr'; setDialogState(() {}); }, textController.text == 'atom bohr'),
+                          _buildDialogChip(context, _t('jantung_chip', lang), () { textController.text = 'jantung'; setDialogState(() {}); }, textController.text == 'jantung'),
+                          _buildDialogChip(context, _t('dna_helix_chip', lang), () { textController.text = 'dna helix'; setDialogState(() {}); }, textController.text == 'dna helix'),
+                          _buildDialogChip(context, _t('water_molecule_chip', lang), () { textController.text = 'molekul h2o'; setDialogState(() {}); }, textController.text == 'molekul h2o'),
+                          _buildDialogChip(context, _t('atom_bohr_chip', lang), () { textController.text = 'atom bohr'; setDialogState(() {}); }, textController.text == 'atom bohr'),
                         ],
                       ),
                     ],
@@ -178,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, null),
-                    child: Text('Batal', style: TextStyle(color: Colors.grey[500])),
+                    child: Text(_t('cancel', lang), style: TextStyle(color: Colors.grey[500])),
                   ),
                   FilledButton.icon(
                     style: FilledButton.styleFrom(
@@ -187,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     onPressed: () => Navigator.pop(context, textController.text.trim()),
                     icon: const Icon(Icons.auto_awesome, size: 18),
-                    label: const Text('Mulai Analisis', style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: Text(_t('start_analysis_btn', lang), style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ],
               );
@@ -210,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal mengakses kamera: $e'), behavior: SnackBarBehavior.floating),
+        SnackBar(content: Text('${_t('camera_error_access', lang)} $e'), behavior: SnackBarBehavior.floating),
       );
     }
   }
@@ -269,11 +270,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: SafeArea(
         child: bodyWidget,
       ),
-      bottomNavigationBar: _buildBottomNav(isDark, scheme),
+      bottomNavigationBar: _buildBottomNav(isDark, scheme, apiService.language),
     );
   }
 
   Widget _buildBerandaTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    final lang = apiService.language;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Center(
@@ -284,21 +286,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               _buildHeader(context, apiService, isDark, scheme),
               const SizedBox(height: 24),
-              _buildDashboardCard(context, isDark, scheme),
+              _buildDashboardCard(context, isDark, scheme, lang),
               const SizedBox(height: 24),
-              _buildQuickActions(context, isDark, scheme),
+              _buildQuickActions(context, isDark, scheme, lang),
               const SizedBox(height: 28),
-              _buildStatsRow(context, isDark, scheme),
+              _buildStatsRow(context, isDark, scheme, lang),
               const SizedBox(height: 28),
               if (apiService.history.isNotEmpty) ...[
-                _buildSectionTitle(context, 'Riwayat Pemindaian', Icons.history_rounded, isDark),
+                _buildSectionTitle(context, _t('history_title', lang), Icons.history_rounded, isDark, lang),
                 const SizedBox(height: 14),
                 _buildHistoryList(context, apiService, isDark, scheme),
                 const SizedBox(height: 28),
               ],
-              _buildSectionTitle(context, 'Eksplorasi Model 3D', Icons.view_in_ar_rounded, isDark),
+              _buildSectionTitle(context, _t('explore_3d_title', lang), Icons.view_in_ar_rounded, isDark, lang),
               const SizedBox(height: 14),
-              _buildCatalogGrid(context, isDark, scheme),
+              _buildCatalogGrid(context, isDark, scheme, lang),
               const SizedBox(height: 100),
             ],
           ),
@@ -351,18 +353,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildModel3DTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    final lang = apiService.language;
     final searchController = TextEditingController(text: _searchQuery);
     searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
 
     final items = [
-      _CatalogItem('Jantung Manusia', 'Kardiologi & Aliran Darah', Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), 'Biologi'),
-      _CatalogItem('Heliks DNA', 'Genetika & Kromosom', Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), 'Biologi'),
-      _CatalogItem('Molekul H₂O', 'Kepolaran & Ikatan Kovalen', Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), 'Kimia'),
-      _CatalogItem('Model Bohr', 'Fisika Kuantum & Orbit', Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), 'Fisika'),
+      _CatalogItem(_t('catalog_heart', lang), _t('catalog_heart_sub', lang), Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), _t('biologi', lang)),
+      _CatalogItem(_t('catalog_dna', lang), _t('catalog_dna_sub', lang), Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), _t('biologi', lang)),
+      _CatalogItem(_t('catalog_water', lang), _t('catalog_water_sub', lang), Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), _t('kimia', lang)),
+      _CatalogItem(_t('catalog_bohr', lang), _t('catalog_bohr_sub', lang), Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), _t('fisika', lang)),
     ];
 
     final filteredItems = items.where((item) {
-      final matchesCategory = _selectedCategory == 'Semua' || item.category == _selectedCategory;
+      final matchesCategory = _selectedCategory == 'Semua' || item.category == _t(_selectedCategory.toLowerCase(), lang);
       final matchesSearch = item.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           item.subtitle.toLowerCase().contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
@@ -389,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   controller: searchController,
                   style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13),
                   decoration: InputDecoration(
-                    hintText: 'Cari model 3D (jantung, dna, dll)...',
+                    hintText: _t('search_hint', lang),
                     hintStyle: TextStyle(color: Colors.grey[500], fontSize: 13),
                     prefixIcon: Icon(Icons.search_rounded, color: scheme.primary, size: 20),
                     border: InputBorder.none,
@@ -424,7 +427,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ),
                         child: Center(
                           child: Text(
-                            cat,
+                            _t(cat.toLowerCase(), lang),
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -447,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Icon(Icons.search_off_rounded, size: 48, color: Colors.grey[500]),
                         const SizedBox(height: 12),
                         Text(
-                          'Model tidak ditemukan',
+                          _t('not_found', lang),
                           style: TextStyle(color: Colors.grey[500], fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -479,6 +482,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildProfilTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    final lang = apiService.language;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Center(
@@ -522,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        'Pangkat: Penjelajah Sains',
+                        _t('pangkat', lang),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -534,7 +538,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Level 4 (Orde Atom)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text(_t('level_rank', lang), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                         Text('1.450 / 2.000 XP', style: TextStyle(fontSize: 11, color: scheme.primary, fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -555,15 +559,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Row(
                 children: [
                   Expanded(
-                    child: _buildProfileStatCard('14', 'Scan Sukses', Icons.qr_code_scanner_rounded, const Color(0xFF60A5FA), isDark),
+                    child: _buildProfileStatCard('14', _t('scan_success', lang), Icons.qr_code_scanner_rounded, const Color(0xFF60A5FA), isDark),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildProfileStatCard('8', 'Pencapaian', Icons.emoji_events_rounded, const Color(0xFFFBBF24), isDark),
+                    child: _buildProfileStatCard('8', _t('achievements', lang), Icons.emoji_events_rounded, const Color(0xFFFBBF24), isDark),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildProfileStatCard('94%', 'Akurasi RAG', Icons.verified_user_rounded, const Color(0xFF34D399), isDark),
+                    child: _buildProfileStatCard('94%', _t('rag_accuracy', lang), Icons.verified_user_rounded, const Color(0xFF34D399), isDark),
                   ),
                 ],
               ),
@@ -572,7 +576,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 children: [
                   Icon(Icons.emoji_events_outlined, size: 20, color: scheme.primary),
                   const SizedBox(width: 8),
-                  const Text('Pencapaian Unlocked', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
+                  Text(_t('unlocked_achievements', lang), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
                 ],
               ),
               const SizedBox(height: 12),
@@ -581,10 +585,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildBadgeCard('Pakar Atom', '⚛️', 'Pindai model Atom Bohr', true, isDark),
-                    _buildBadgeCard('Peneliti DNA', '🧬', 'Pindai model Helix DNA', true, isDark),
-                    _buildBadgeCard('Pencari Air', '💧', 'Pindai model Molekul H2O', true, isDark),
-                    _buildBadgeCard('Ahli Jantung', '❤️', 'Pindai model Jantung', false, isDark),
+                    _buildBadgeCard(_t('badge_atom_title', lang), '⚛️', _t('badge_atom_desc', lang), true, isDark),
+                    _buildBadgeCard(_t('badge_dna_title', lang), '🧬', _t('badge_dna_desc', lang), true, isDark),
+                    _buildBadgeCard(_t('badge_water_title', lang), '💧', _t('badge_water_desc', lang), true, isDark),
+                    _buildBadgeCard(_t('badge_heart_title', lang), '❤️', _t('badge_heart_desc', lang), false, isDark),
                   ],
                 ),
               ),
@@ -599,7 +603,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   children: [
                     ListTile(
                       leading: Icon(isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: scheme.primary),
-                      title: const Text('Mode Gelap / Terang', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      title: Text(_t('dark_light', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                       trailing: Switch(
                         value: isDark,
                         onChanged: (_) => apiService.toggleTheme(),
@@ -607,9 +611,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     const Divider(height: 1),
                     ListTile(
+                      leading: Icon(Icons.language_rounded, color: scheme.primary),
+                      title: Text(_t('pilih_bahasa', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      trailing: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: lang,
+                          items: [
+                            DropdownMenuItem(
+                              value: 'id',
+                              child: Text(_t('bahasa_indonesia', lang), style: TextStyle(fontSize: 13, color: isDark ? Colors.white : Colors.black87)),
+                            ),
+                            DropdownMenuItem(
+                              value: 'en',
+                              child: Text(_t('bahasa_inggris', lang), style: TextStyle(fontSize: 13, color: isDark ? Colors.white : Colors.black87)),
+                            ),
+                          ],
+                          onChanged: (String? newLang) {
+                            if (newLang != null) {
+                              apiService.setLanguage(newLang);
+                            }
+                          },
+                          dropdownColor: isDark ? const Color(0xFF1C1B2E) : Colors.white,
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
                       leading: Icon(Icons.cloud_done_rounded, color: Colors.green[400]),
-                      title: const Text('Grounding Kurikulum Resmi', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-                      subtitle: const Text('Validasi RAG aktif & tersertifikasi', style: TextStyle(fontSize: 10)),
+                      title: Text(_t('curriculum', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      subtitle: Text(_t('validation', lang), style: const TextStyle(fontSize: 10)),
                       trailing: Container(
                         width: 8,
                         height: 8,
@@ -622,24 +652,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     const Divider(height: 1),
                     ListTile(
                       leading: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
-                      title: const Text('Hapus Riwayat Belajar', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.redAccent)),
+                      title: Text(_t('delete_history', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.redAccent)),
                       onTap: () {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text('Hapus Riwayat'),
-                            content: const Text('Apakah Anda yakin ingin menghapus semua riwayat pemindaian?'),
+                            title: Text(_t('delete_history', lang)),
+                            content: Text(_t('delete_history_confirm', lang)),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text('Batal'),
+                                child: Text(_t('cancel', lang)),
                               ),
                               TextButton(
                                 onPressed: () {
                                   apiService.clearHistory();
                                   Navigator.pop(context);
                                 },
-                                child: const Text('Hapus', style: TextStyle(color: Colors.redAccent)),
+                                child: Text(_t('delete', lang), style: const TextStyle(color: Colors.redAccent)),
                               ),
                             ],
                           ),
@@ -718,7 +748,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildDashboardCard(BuildContext context, bool isDark, ColorScheme scheme) {
+  Widget _buildDashboardCard(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -761,7 +791,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Progres Pembelajaran',
+                      _t('progress', lang),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
@@ -770,7 +800,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Tingkat pemahaman materi sains',
+                      _t('understanding_level', lang),
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.grey[500],
@@ -785,12 +815,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Topik Terkuasai',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              Text(
+                _t('topics_mastered_label', lang),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
               Text(
-                '3 / 4 Topik (75%)',
+                _t('topics_mastered_value', lang),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -823,9 +853,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               onPressed: () => setState(() => _currentNav = 1),
               icon: const Icon(Icons.document_scanner_rounded, size: 18),
-              label: const Text(
-                'MULAI SCAN BUKU CETAK',
-                style: TextStyle(
+              label: Text(
+                _t('start_scan_book', lang),
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                   letterSpacing: 0.5,
@@ -838,7 +868,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBottomNav(bool isDark, ColorScheme scheme) {
+  Widget _buildBottomNav(bool isDark, ColorScheme scheme, String lang) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1C1B2E) : Colors.white,
@@ -857,10 +887,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.home_rounded, 'Beranda', 0, isDark, scheme),
-              _buildNavItem(Icons.search_rounded, 'Pindai', 1, isDark, scheme),
-              _buildNavItem(Icons.view_in_ar_rounded, 'Model 3D', 2, isDark, scheme),
-              _buildNavItem(Icons.person_rounded, 'Profil', 3, isDark, scheme),
+              _buildNavItem(Icons.home_rounded, _t('bottom_nav_home', lang), 0, isDark, scheme),
+              _buildNavItem(Icons.search_rounded, _t('bottom_nav_scan', lang), 1, isDark, scheme),
+              _buildNavItem(Icons.view_in_ar_rounded, _t('bottom_nav_3d', lang), 2, isDark, scheme),
+              _buildNavItem(Icons.person_rounded, _t('bottom_nav_profile', lang), 3, isDark, scheme),
             ],
           ),
         ),
@@ -895,6 +925,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildHeader(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    final lang = apiService.language;
     return Row(
       children: [
         Container(
@@ -915,7 +946,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Selamat Datang 👋', style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[500] : Colors.grey[500], fontWeight: FontWeight.w500)),
+              Text(_t('welcome', lang), style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[500] : Colors.grey[500], fontWeight: FontWeight.w500)),
               const SizedBox(height: 2),
               Text('ARise Learn', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: isDark ? Colors.white : Colors.black87, letterSpacing: -0.5)),
             ],
@@ -938,6 +969,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildWelcomeBanner(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+    final lang = apiService.language;
     return AnimatedBuilder(
       animation: _breathController,
       builder: (_, __) {
@@ -979,9 +1011,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Pindai Buku Cetak', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
+                        Text(_t('pindai_buku_cetak', lang), style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
                         const SizedBox(height: 4),
-                        Text('AI menganalisis & membuat model 3D interaktif', style: TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 13)),
+                        Text(_t('ai_analyze_desc', lang), style: TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 13)),
                       ],
                     ),
                   ),
@@ -1000,7 +1032,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                   onPressed: apiService.isLoading ? null : _handleCameraScan,
                   icon: const Icon(Icons.camera_alt_rounded, size: 20),
-                  label: const Text('BUKA KAMERA SCANNER', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13, letterSpacing: 0.5)),
+                  label: Text(_t('open_camera_scanner', lang), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, letterSpacing: 0.5)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -1009,7 +1041,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Expanded(child: Divider(color: Colors.white.withOpacity(0.2), height: 1)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Text('ATAU TEMPEL URL', style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
+                    child: Text(_t('or_paste_url', lang), style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
                   ),
                   Expanded(child: Divider(color: Colors.white.withOpacity(0.2), height: 1)),
                 ],
@@ -1052,7 +1084,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           onPressed: apiService.isLoading ? null : () { apiService.setCapturedImage(null); _handleScan(); },
                           child: apiService.isLoading
                               ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-                              : const Row(children: [Icon(Icons.send_rounded, size: 18), SizedBox(width: 6), Text('Kirim', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13))]),
+                              : Row(children: [const Icon(Icons.send_rounded, size: 18), const SizedBox(width: 6), Text(_t('send', lang), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13))]),
                         ),
                       ),
                     ),
@@ -1060,16 +1092,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 16),
-              Text('COBA CONTOH CEPAT', style: TextStyle(color: Colors.white.withOpacity(0.45), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
+              Text(_t('try_fast_preset', lang), style: TextStyle(color: Colors.white.withOpacity(0.45), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _buildPresetChip(context, '❤️ Jantung', 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
-                  _buildPresetChip(context, '🧬 DNA', 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
-                  _buildPresetChip(context, '💧 H2O', 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
-                  _buildPresetChip(context, '⚛️ Atom', 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb'),
+                  _buildPresetChip(context, _t('jantung', lang), 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
+                  _buildPresetChip(context, _t('dna', lang), 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
+                  _buildPresetChip(context, _t('water', lang), 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
+                  _buildPresetChip(context, _t('atom_bohr', lang), 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb'),
                 ],
               ),
             ],
@@ -1079,11 +1111,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, bool isDark, ColorScheme scheme) {
+  Widget _buildQuickActions(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     final actions = [
-      _QuickAction('Scan Buku', 'Analisis AI', Icons.auto_stories_rounded, const Color(0xFF6366F1), const Color(0xFF8B5CF6)),
-      _QuickAction('Model 3D', 'Lihat Katalog', Icons.view_in_ar_rounded, const Color(0xFF06B6D4), const Color(0xFF14B8A6)),
-      _QuickAction('AR Mode', 'Augmented Reality', Icons.camera_rounded, const Color(0xFFF59E0B), const Color(0xFFF97316)),
+      _QuickAction(_t('quick_action_scan', lang), _t('quick_action_scan_sub', lang), Icons.auto_stories_rounded, const Color(0xFF6366F1), const Color(0xFF8B5CF6)),
+      _QuickAction(_t('quick_action_3d', lang), _t('quick_action_3d_sub', lang), Icons.view_in_ar_rounded, const Color(0xFF06B6D4), const Color(0xFF14B8A6)),
+      _QuickAction(_t('quick_action_ar', lang), _t('quick_action_ar_sub', lang), Icons.camera_rounded, const Color(0xFFF59E0B), const Color(0xFFF97316)),
     ];
     return SizedBox(
       height: 125,
@@ -1162,14 +1194,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, bool isDark, ColorScheme scheme) {
+  Widget _buildStatsRow(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     return Row(
       children: [
-        Expanded(child: _buildStatCard('4', 'Kelas Aktif', Icons.school_rounded, const Color(0xFF60A5FA), isDark)),
+        Expanded(child: _buildStatCard('4', _t('active_classes', lang), Icons.school_rounded, const Color(0xFF60A5FA), isDark)),
         const SizedBox(width: 12),
-        Expanded(child: _buildStatCard('12', 'Model 3D', Icons.view_in_ar_rounded, const Color(0xFFA78BFA), isDark)),
+        Expanded(child: _buildStatCard('12', _t('models_count', lang), Icons.view_in_ar_rounded, const Color(0xFFA78BFA), isDark)),
         const SizedBox(width: 12),
-        Expanded(child: _buildStatCard('94%', 'RAG Score', Icons.verified_rounded, const Color(0xFF34D399), isDark)),
+        Expanded(child: _buildStatCard('94%', _t('rag_score', lang), Icons.verified_rounded, const Color(0xFF34D399), isDark)),
       ],
     );
   }
@@ -1200,7 +1232,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, IconData icon, bool isDark) {
+  Widget _buildSectionTitle(BuildContext context, String title, IconData icon, bool isDark, String lang) {
     return Row(
       children: [
         Container(
@@ -1216,7 +1248,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         const Spacer(),
         TextButton(
           onPressed: () => setState(() => _currentNav = 2),
-          child: Text('Lihat Semua', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary)),
+          child: Text(_t('view_all', lang), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary)),
         ),
       ],
     );
@@ -1315,12 +1347,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildCatalogGrid(BuildContext context, bool isDark, ColorScheme scheme) {
+  Widget _buildCatalogGrid(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     final items = [
-      _CatalogItem('Jantung Manusia', 'Kardiologi & Aliran Darah', Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), 'Biologi'),
-      _CatalogItem('Heliks DNA', 'Genetika & Kromosom', Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), 'Biologi'),
-      _CatalogItem('Molekul H₂O', 'Kepolaran & Ikatan Kovalen', Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), 'Kimia'),
-      _CatalogItem('Model Bohr', 'Fisika Kuantum & Orbit', Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), 'Fisika'),
+      _CatalogItem(_t('catalog_heart', lang), _t('catalog_heart_sub', lang), Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), _t('biologi', lang)),
+      _CatalogItem(_t('catalog_dna', lang), _t('catalog_dna_sub', lang), Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), _t('biologi', lang)),
+      _CatalogItem(_t('catalog_water', lang), _t('catalog_water_sub', lang), Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), _t('kimia', lang)),
+      _CatalogItem(_t('catalog_bohr', lang), _t('catalog_bohr_sub', lang), Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), _t('fisika', lang)),
     ];
     return GridView.builder(
       shrinkWrap: true,
@@ -1430,6 +1462,182 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
       ),
     );
+  }
+
+  String _t(String key, String lang) {
+    const translations = {
+      'id': {
+        'welcome': 'Selamat Datang 👋',
+        'search_hint': 'Cari model 3D (jantung, dna, dll)...',
+        'not_found': 'Model tidak ditemukan',
+        'dark_light': 'Mode Gelap / Terang',
+        'curriculum': 'Grounding Kurikulum Resmi',
+        'validation': 'Validasi RAG aktif & tersertifikasi',
+        'delete_history': 'Hapus Riwayat Belajar',
+        'delete_history_confirm': 'Apakah Anda yakin ingin menghapus semua riwayat pemindaian?',
+        'cancel': 'Batal',
+        'delete': 'Hapus',
+        'progress': 'Progres Pembelajaran',
+        'understanding_level': 'Tingkat pemahaman materi sains',
+        'topics_mastered_label': 'Topik Terkuasai',
+        'topics_mastered_value': '3 / 4 Topik (75%)',
+        'start_scan_book': 'MULAI SCAN BUKU CETAK',
+        'pangkat': 'Pangkat: Penjelajah Sains',
+        'level_rank': 'Level 4 (Orde Atom)',
+        'scan_success': 'Scan Sukses',
+        'achievements': 'Pencapaian',
+        'rag_accuracy': 'Akurasi RAG',
+        'unlocked_achievements': 'Pencapaian Unlocked',
+        'badge_atom_title': 'Pakar Atom',
+        'badge_atom_desc': 'Pindai model Atom Bohr',
+        'badge_dna_title': 'Peneliti DNA',
+        'badge_dna_desc': 'Pindai model Helix DNA',
+        'badge_water_title': 'Pencari Air',
+        'badge_water_desc': 'Pindai model Molekul H2O',
+        'badge_heart_title': 'Ahli Jantung',
+        'badge_heart_desc': 'Pindai model Jantung',
+        'active_classes': 'Kelas Aktif',
+        'models_count': 'Model 3D',
+        'rag_score': 'RAG Score',
+        'history_title': 'Riwayat Pemindaian',
+        'explore_3d_title': 'Eksplorasi Model 3D',
+        'view_all': 'Lihat Semua',
+        'pindai_buku_cetak': 'Pindai Buku Cetak',
+        'ai_analyze_desc': 'AI menganalisis & membuat model 3D interaktif',
+        'open_camera_scanner': 'BUKA KAMERA SCANNER',
+        'or_paste_url': 'ATAU TEMPEL URL',
+        'try_fast_preset': 'COBA CONTOH CEPAT',
+        'jantung': '❤️ Jantung',
+        'dna': '🧬 DNA',
+        'water': '💧 H2O',
+        'atom_bohr': '⚛️ Atom',
+        'jantung_chip': '❤️ Jantung',
+        'dna_helix_chip': '🧬 DNA Helix',
+        'water_molecule_chip': '💧 Molekul H2O',
+        'atom_bohr_chip': '⚛️ Atom Bohr',
+        'biologi': 'Biologi',
+        'kimia': 'Kimia',
+        'fisika': 'Fisika',
+        'semua': 'Semua',
+        'input_error_url': 'Masukkan URL gambar atau gunakan contoh preset',
+        'camera_error_access': 'Gagal mengakses kamera: ',
+        'multimodal_title': 'Analisis AI Multimodal',
+        'image_success_taken': 'Gambar berhasil diambil!',
+        'input_context_label': 'Masukkan petunjuk materi atau pilih topik:',
+        'context_label_optional': 'Konteks Materi (Opsional)',
+        'hint_text_context': 'jantung, dna, h2o, atom...',
+        'quick_topic_title': 'TOPIK CEPAT',
+        'start_analysis_btn': 'Mulai Analisis',
+        'bottom_nav_home': 'Beranda',
+        'bottom_nav_scan': 'Pindai',
+        'bottom_nav_3d': 'Model 3D',
+        'bottom_nav_profile': 'Profil',
+        'quick_action_scan': 'Scan Buku',
+        'quick_action_scan_sub': 'Analisis AI',
+        'quick_action_3d': 'Model 3D',
+        'quick_action_3d_sub': 'Lihat Katalog',
+        'quick_action_ar': 'AR Mode',
+        'quick_action_ar_sub': 'Augmented Reality',
+        'catalog_heart': 'Jantung Manusia',
+        'catalog_heart_sub': 'Kardiologi & Aliran Darah',
+        'catalog_dna': 'Heliks DNA',
+        'catalog_dna_sub': 'Genetika & Kromosom',
+        'catalog_water': 'Molekul H₂O',
+        'catalog_water_sub': 'Kepolaran & Ikatan Kovalen',
+        'catalog_bohr': 'Model Bohr',
+        'catalog_bohr_sub': 'Fisika Kuantum & Orbit',
+        'pilih_bahasa': 'Pilih Bahasa',
+        'bahasa_indonesia': 'Bahasa Indonesia',
+        'bahasa_inggris': 'Bahasa Inggris',
+        'send': 'Kirim',
+      },
+      'en': {
+        'welcome': 'Welcome 👋',
+        'search_hint': 'Search 3D models (heart, dna, etc)...',
+        'not_found': 'Model not found',
+        'dark_light': 'Dark / Light Mode',
+        'curriculum': 'Official Curriculum Grounding',
+        'validation': 'RAG validation active & certified',
+        'delete_history': 'Clear Study History',
+        'delete_history_confirm': 'Are you sure you want to delete all scan history?',
+        'cancel': 'Cancel',
+        'delete': 'Delete',
+        'progress': 'Learning Progress',
+        'understanding_level': 'Science material comprehension level',
+        'topics_mastered_label': 'Topics Mastered',
+        'topics_mastered_value': '3 / 4 Topics (75%)',
+        'start_scan_book': 'START SCANNING TEXTBOOK',
+        'pangkat': 'Rank: Science Explorer',
+        'level_rank': 'Level 4 (Atomic Order)',
+        'scan_success': 'Success Scans',
+        'achievements': 'Achievements',
+        'rag_accuracy': 'RAG Accuracy',
+        'unlocked_achievements': 'Unlocked Achievements',
+        'badge_atom_title': 'Atom Expert',
+        'badge_atom_desc': 'Scan Bohr Atom model',
+        'badge_dna_title': 'DNA Researcher',
+        'badge_dna_desc': 'Scan DNA Helix model',
+        'badge_water_title': 'Water Seeker',
+        'badge_water_desc': 'Scan H2O Molecule model',
+        'badge_heart_title': 'Cardiologist',
+        'badge_heart_desc': 'Scan Heart model',
+        'active_classes': 'Active Classes',
+        'models_count': '3D Models',
+        'rag_score': 'RAG Score',
+        'history_title': 'Scan History',
+        'explore_3d_title': 'Explore 3D Models',
+        'view_all': 'View All',
+        'pindai_buku_cetak': 'Scan Textbook',
+        'ai_analyze_desc': 'AI analyzes & creates interactive 3D models',
+        'open_camera_scanner': 'OPEN CAMERA SCANNER',
+        'or_paste_url': 'OR PASTE URL',
+        'try_fast_preset': 'TRY FAST PRESET',
+        'jantung': '❤️ Heart',
+        'dna': '🧬 DNA',
+        'water': '💧 H2O',
+        'atom_bohr': '⚛️ Atom',
+        'jantung_chip': '❤️ Heart',
+        'dna_helix_chip': '🧬 DNA Helix',
+        'water_molecule_chip': '💧 H2O Molecule',
+        'atom_bohr_chip': '⚛️ Bohr Atom',
+        'biologi': 'Biology',
+        'kimia': 'Chemistry',
+        'fisika': 'Physics',
+        'semua': 'All',
+        'input_error_url': 'Please enter image URL or use a preset',
+        'camera_error_access': 'Failed to access camera: ',
+        'multimodal_title': 'Multimodal AI Analysis',
+        'image_success_taken': 'Image successfully captured!',
+        'input_context_label': 'Enter material hint or select topic:',
+        'context_label_optional': 'Material Context (Optional)',
+        'hint_text_context': 'heart, dna, h2o, atom...',
+        'quick_topic_title': 'QUICK TOPICS',
+        'start_analysis_btn': 'Start Analysis',
+        'bottom_nav_home': 'Home',
+        'bottom_nav_scan': 'Scan',
+        'bottom_nav_3d': '3D Model',
+        'bottom_nav_profile': 'Profile',
+        'quick_action_scan': 'Scan Book',
+        'quick_action_scan_sub': 'AI Analysis',
+        'quick_action_3d': '3D Models',
+        'quick_action_3d_sub': 'View Catalog',
+        'quick_action_ar': 'AR Mode',
+        'quick_action_ar_sub': 'Augmented Reality',
+        'catalog_heart': 'Human Heart',
+        'catalog_heart_sub': 'Cardiology & Blood Flow',
+        'catalog_dna': 'DNA Helix',
+        'catalog_dna_sub': 'Genetics & Chromosome',
+        'catalog_water': 'H₂O Molecule',
+        'catalog_water_sub': 'Polarity & Covalent Bond',
+        'catalog_bohr': 'Bohr Model',
+        'catalog_bohr_sub': 'Quantum Physics & Orbit',
+        'pilih_bahasa': 'Select Language',
+        'bahasa_indonesia': 'Indonesian',
+        'bahasa_inggris': 'English',
+        'send': 'Send',
+      }
+    };
+    return translations[lang]?[key] ?? key;
   }
 }
 

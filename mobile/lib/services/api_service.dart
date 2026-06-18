@@ -8,6 +8,14 @@ class ApiService extends ChangeNotifier {
   XFile? _capturedImage;
   XFile? get capturedImage => _capturedImage;
 
+  String _language = 'id';
+  String get language => _language;
+
+  void setLanguage(String lang) {
+    _language = lang;
+    notifyListeners();
+  }
+
   void setCapturedImage(XFile? image) {
     _capturedImage = image;
     notifyListeners();
