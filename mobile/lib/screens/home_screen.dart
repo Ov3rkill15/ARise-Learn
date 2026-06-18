@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/api_service.dart';
+import '../widgets/live_camera_dialog.dart';
 import 'scan_result_screen.dart';
 import 'ar_viewer_screen.dart';
 
@@ -57,12 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _handleCameraScan() async {
     final apiService = context.read<ApiService>();
-    final picker = ImagePicker();
     
     try {
-      final XFile? photo = await picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 80,
+      final XFile? photo = await showDialog<XFile>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const LiveCameraDialog(),
       );
       
       if (photo != null) {
@@ -71,50 +72,134 @@ class _HomeScreenState extends State<HomeScreen> {
         
         if (!mounted) return;
         
-        // Show dialog to let user choose which textbook page they scanned
-        final selectedPresetUrl = await showDialog<String>(
+        // Show dialog to let user choose/type context of the scanned page
+        final String? contextText = await showDialog<String>(
           context: context,
-          barrierDismissible: false,
+          barrierDismissible: true,
           builder: (BuildContext context) {
+            final textController = TextEditingController();
             final isDark = Theme.of(context).brightness == Brightness.dark;
-            return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-              title: Row(
-                children: [
-                  Icon(Icons.psychology, color: Theme.of(context).colorScheme.primary),
-                  const SizedBox(width: 10),
-                  const Text('AI Analisis Gambar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              content: const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Gambar berhasil diambil!',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            
+            return StatefulBuilder(
+              builder: (context, setDialogState) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+                  backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  title: Row(
+                    children: [
+                      Icon(Icons.psychology, color: Theme.of(context).colorScheme.primary, size: 28),
+                      const SizedBox(width: 10),
+                      const Text(
+                        'Analisis AI Multimodal',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Pilih halaman materi yang Anda foto untuk mensimulasikan analisis AI RAG:',
-                    style: TextStyle(fontSize: 12, height: 1.4),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Gambar berhasil diambil!',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.green),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Masukkan petunjuk materi halaman yang Anda foto atau pilih topik di bawah ini untuk RAG:',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? Colors.grey[300] : Colors.grey[600],
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: textController,
+                          decoration: const InputDecoration(
+                            labelText: 'Konteks/Kata Kunci Materi (Opsional)',
+                            hintText: 'Misal: jantung, dna, h2o, atom...',
+                            prefixIcon: Icon(Icons.search),
+                          ),
+                          onChanged: (val) {
+                            setDialogState(() {});
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Rekomendasi Topik:',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.grey[400] : Colors.grey[500],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            _buildDialogChip(context, '❤️ Jantung', () {
+                              textController.text = 'jantung';
+                              setDialogState(() {});
+                            }, textController.text == 'jantung'),
+                            _buildDialogChip(context, '🧬 DNA Helix', () {
+                              textController.text = 'dna helix';
+                              setDialogState(() {});
+                            }, textController.text == 'dna helix'),
+                            _buildDialogChip(context, '💧 Molekul H2O', () {
+                              textController.text = 'molekul h2o';
+                              setDialogState(() {});
+                            }, textController.text == 'molekul h2o'),
+                            _buildDialogChip(context, '⚛️ Atom Bohr', () {
+                              textController.text = 'atom bohr';
+                              setDialogState(() {});
+                            }, textController.text == 'atom bohr'),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-              actionsAlignment: MainAxisAlignment.center,
-              actions: [
-                _buildDialogActionBtn(context, '❤️ Jantung', 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
-                _buildDialogActionBtn(context, '🧬 DNA Helix', 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
-                _buildDialogActionBtn(context, '💧 Molekul H2O', 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
-                _buildDialogActionBtn(context, '⚛️ Atom Bohr', 'https://images.unsplash.com/photo-1544383835-atom'),
-              ],
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, null);
+                      },
+                      child: const Text('Batal'),
+                    ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, textController.text.trim());
+                      },
+                      child: const Text('Mulai Analisis', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                );
+              }
             );
           },
         );
         
-        if (selectedPresetUrl != null) {
-          _handleScan(selectedPresetUrl);
+        if (contextText != null) {
+          // Trigger file upload and analysis
+          final result = await apiService.uploadScan(photo, context: contextText);
+          
+          if (!mounted) return;
+          
+          if (result != null) {
+            Navigator.pushNamed(context, '/result');
+          } else if (apiService.error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(apiService.error!),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
         } else {
           apiService.setCapturedImage(null);
         }
@@ -122,27 +207,40 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal mengakses kamera: $e'),
+          content: Text('Gagal mengakses kamera atau mengunggah: $e'),
           behavior: SnackBarBehavior.floating,
         ),
       );
     }
   }
 
-  Widget _buildDialogActionBtn(BuildContext context, String label, String url) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  Widget _buildDialogChip(BuildContext context, String label, VoidCallback onTap, bool isSelected) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
+              : (isDark ? Colors.white.withOpacity(0.08) : Colors.grey[200]),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Colors.transparent,
+            width: 1.2,
           ),
-          onPressed: () {
-            Navigator.pop(context, url);
-          },
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : (isDark ? Colors.white70 : Colors.black87),
+          ),
         ),
       ),
     );
@@ -302,6 +400,53 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    
+                    // Large, Prominent Camera Scanner Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.white.withOpacity(0.25),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: const BorderSide(color: Colors.white30, width: 1.5),
+                          ),
+                        ),
+                        onPressed: _handleCameraScan,
+                        icon: const Icon(Icons.camera_alt, size: 24),
+                        label: const Text(
+                          'BUKA KAMERA SCANNER (AMBIL FOTO)',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 18),
+                    
+                    // Visual separator
+                    const Row(
+                      children: [
+                        Expanded(child: Divider(color: Colors.white24, height: 1)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'ATAU GUNAKAN TAUTAN GAMBAR',
+                            style: TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(child: Divider(color: Colors.white24, height: 1)),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 18),
+
                     TextField(
                       controller: _urlController,
                       style: const TextStyle(color: Colors.white),

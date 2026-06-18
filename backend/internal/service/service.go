@@ -80,3 +80,32 @@ func (s *ScanService) ProcessScan(ctx context.Context, req *model.ScanRequest) (
 func (s *ScanService) GetScan(ctx context.Context, id string) (*model.ScanResult, error) {
 	return s.repo.GetScanByID(ctx, id)
 }
+
+// ChatScoped forwards the Q&A request to the Python AI service
+func (s *ScanService) ChatScoped(ctx context.Context, req *model.ChatRequest) (*model.ChatResponse, error) {
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request: %w", err)
+	}
+
+	resp, err := s.httpClient.Post(
+		s.aiServiceURL+"/api/v1/chat",
+		"application/json",
+		bytes.NewReader(body),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("AI chat request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("AI service returned status %d", resp.StatusCode)
+	}
+
+	var chatResp model.ChatResponse
+	if err := json.NewDecoder(resp.Body).Decode(&chatResp); err != nil {
+		return nil, fmt.Errorf("failed to decode AI chat response: %w", err)
+	}
+
+	return &chatResp, nil
+}

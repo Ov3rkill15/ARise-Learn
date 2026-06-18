@@ -90,6 +90,78 @@ class ApiService extends ChangeNotifier {
     }
   }
 
+  /// Uploads an image file to the backend for AI analysis
+  Future<ScanResult?> uploadScan(XFile file, {String? context}) async {
+    _isLoading = true;
+    _error = null;
+    _lastResult = null;
+    notifyListeners();
+
+    try {
+      final MultipartFile multipartFile;
+      if (kIsWeb) {
+        final bytes = await file.readAsBytes();
+        multipartFile = MultipartFile.fromBytes(
+          bytes,
+          filename: file.name,
+        );
+      } else {
+        multipartFile = await MultipartFile.fromFile(
+          file.path,
+          filename: file.name,
+        );
+      }
+
+      final formData = FormData.fromMap({
+        'image': multipartFile,
+        'user_id': 'demo-user',
+        if (context != null) 'context': context,
+      });
+
+      final response = await _dio.post('/api/v1/scan/upload', data: formData);
+
+      _lastResult = ScanResult.fromJson(response.data);
+      
+      if (_lastResult != null) {
+        _history.removeWhere((item) => item.subjectTopic == _lastResult!.subjectTopic);
+        _history.insert(0, _lastResult!);
+        if (_history.length > 10) _history.removeLast();
+      }
+      
+      _isLoading = false;
+      notifyListeners();
+      return _lastResult;
+    } on DioException catch (e) {
+      _error = 'Network error: ${e.message}';
+      _isLoading = false;
+      notifyListeners();
+      return null;
+    } catch (e) {
+      _error = 'Unexpected error: $e';
+      _isLoading = false;
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<String?> askQuestion(String topic, String message, List<Map<String, String>> history) async {
+    try {
+      final response = await _dio.post('/api/v1/scan/chat', data: {
+        'topic': topic,
+        'message': message,
+        'history': history,
+      });
+      if (response.data['success'] == true) {
+        return response.data['data']['reply'] as String;
+      }
+      return null;
+    } catch (e) {
+      _error = 'Failed to ask AI: $e';
+      notifyListeners();
+      return null;
+    }
+  }
+
   ThemeMode _themeMode = ThemeMode.dark;
   ThemeMode get themeMode => _themeMode;
 

@@ -19,19 +19,19 @@ class MockLLMClient(BaseLLMClient):
         
         # 1. First Call: Vision analysis requests TOPIC, CONTENT, 3D_HINT
         if "analyze this textbook image" in prompt_lower:
-            if "heart" in text or "anatomy" in text or "jantung" in text:
+            if "heart" in text or "anatomy" in text or "jantung" in text or "jantung" in prompt_lower or "heart" in prompt_lower:
                 return (
                     "TOPIC: Anatomi Jantung Manusia\n"
                     "CONTENT: Struktur internal jantung manusia termasuk atrium kiri/kanan, ventrikel kiri/kanan, katup jantung, dan pembuluh darah utama seperti aorta.\n"
                     "3D_HINT: heart"
                 )
-            elif "dna" in text or "biology" in text or "genetika" in text:
+            elif "dna" in text or "biology" in text or "genetika" in text or "dna" in prompt_lower or "genetika" in prompt_lower:
                 return (
                     "TOPIC: Genetika - Helix Ganda DNA\n"
                     "CONTENT: Struktur heliks ganda DNA yang terdiri dari gugus fosfat, gula deoksiribosa, dan pasangan basa nitrogen (A-T, C-G).\n"
                     "3D_HINT: dna_helix"
                 )
-            elif "h2o" in text or "chemistry" in text or "water" in text:
+            elif "h2o" in text or "chemistry" in text or "water" in text or "h2o" in prompt_lower or "kimia" in prompt_lower or "water" in prompt_lower:
                 return (
                     "TOPIC: Kimia Molekul - H2O (Air)\n"
                     "CONTENT: Ikatan kovalen polar antara satu atom oksigen dan dua atom hidrogen, membentuk geometri molekul bengkok.\n"
@@ -46,7 +46,7 @@ class MockLLMClient(BaseLLMClient):
 
         # 2. Second Call: Text explanation generation
         if "explain the following academic topic" in prompt_lower or "jantung" in prompt_lower or "heart" in prompt_lower:
-            if "jantung" in prompt_lower or "heart" in prompt_lower:
+            if "jantung" in prompt_lower or "heart" in prompt_lower or "anatomy" in prompt_lower:
                 return (
                     "### Anatomi Jantung Manusia\n\n"
                     "Jantung adalah organ berongga yang tersusun atas otot jantung (miokardium) khusus, "
@@ -70,7 +70,7 @@ class MockLLMClient(BaseLLMClient):
                     "3. **Arah Antiparalel:** Kedua rantai DNA berorientasi berlawanan arah (dari ujung 5' ke 3' dan ujung 3' ke 5').\n\n"
                     "*Aktifkan visualisasi AR untuk memutar model heliks DNA, mengamati pasangan basa nitrogen secara mendalam, dan memvisualisasikan replikasi genetik.*"
                 )
-            elif "h2o" in prompt_lower or "molekul" in prompt_lower or "air" in prompt_lower:
+            elif "h2o" in prompt_lower or "molekul" in prompt_lower or "air" in prompt_lower or "chemistry" in prompt_lower:
                 return (
                     "### Struktur & Geometri Molekul Air (H2O)\n\n"
                     "Molekul air terdiri dari satu atom Oksigen (O) dan dua atom Hidrogen (H). "
@@ -92,6 +92,48 @@ class MockLLMClient(BaseLLMClient):
                     "*Gunakan penampil AR untuk memproyeksikan visualisasi interaktif perputaran elektron pada lintasan kulit atom Bohr ini.*"
                 )
 
+        # 3. Third Call: Scoped Chat Q&A
+        if "strict academic tutor" in prompt_lower:
+            topic = "Struktur Dasar Atom"
+            if "jantung" in prompt_lower or "heart" in prompt_lower:
+                topic = "Anatomi Jantung Manusia"
+            elif "dna" in prompt_lower:
+                topic = "Genetika - Helix Ganda DNA"
+            elif "h2o" in prompt_lower or "air" in prompt_lower:
+                topic = "Kimia Molekul - H2O (Air)"
+            
+            # Check if user message is off-topic
+            off_topic_indicators = ["presiden", "politik", "masak", "nasi goreng", "cuaca", "game", "main", "sejarah indonesia", "wisata", "liburan", "offtopic", "outside", "makan", "film", "lagu", "siapa", "dimana"]
+            
+            user_msg = ""
+            if "user:" in prompt_lower:
+                user_msg = prompt_lower.split("user:")[-1].split("assistant:")[0].strip()
+            
+            is_off_topic = any(keyword in user_msg for keyword in off_topic_indicators)
+            
+            if is_off_topic:
+                return (
+                    f"Maaf, saya diprogram sebagai asisten akademik khusus untuk topik '{topic}'. "
+                    f"Saya tidak dapat menjawab pertanyaan di luar topik tersebut untuk menjaga fokus pembelajaran Anda."
+                )
+            
+            # On-topic mock replies
+            if "inti" in user_msg or "nucleus" in user_msg or "nukleus" in user_msg or "proton" in user_msg or "neutron" in user_msg:
+                if topic == "Anatomi Jantung Manusia":
+                    return "Inti jantung dilindungi oleh perikardium dan tersusun atas otot jantung (miokardium) khusus."
+                elif topic == "Genetika - Helix Ganda DNA":
+                    return "DNA terletak di dalam nukleus (inti sel) eukariotik dan terikat erat pada protein histon."
+                else:
+                    return "Inti atom terletak di pusat atom, bermuatan positif, dan berisi proton (+) serta neutron (netral) yang sangat rapat."
+            elif "elektron" in user_msg or "orbit" in user_msg or "lintasan" in user_msg:
+                return "Elektron bergerak mengelilingi inti atom dalam lintasan stasioner (orbit Bohr) dengan tingkat energi diskret tertentu."
+            elif "darah" in user_msg or "katup" in user_msg or "serambi" in user_msg or "bilik" in user_msg:
+                return "Katup jantung berfungsi menjaga agar darah bersih dan darah kotor tidak bercampur serta mengalir searah."
+            elif "basa" in user_msg or "nitrogen" in user_msg or "pasangan" in user_msg:
+                return "Pasangan basa nitrogen pada DNA selalu spesifik: Adenin dengan Timin, dan Guanin dengan Sitosin."
+            else:
+                return f"Tentu, terkait topik '{topic}', konsep ini sangat penting dalam kurikulum. Apakah ada bagian spesifik seperti komponen, fungsi, atau struktur 3D-nya yang ingin Anda tanyakan?"
+
         return (
             "[Mock LLM Response] Berdasarkan materi buku teks yang dipindai:\n\n"
             "Topik ini mencakup konsep dasar akademik. Anda dapat mengkonfigurasi "
@@ -111,8 +153,22 @@ class GeminiClient(BaseLLMClient):
     async def generate(self, prompt: str, image_url: str | None = None) -> str:
         content = [prompt]
         if image_url:
-            # For production: download image and pass as PIL.Image or bytes
-            content.append(f"[Image reference: {image_url}]")
+            try:
+                import httpx
+                from PIL import Image
+                import io
+                async with httpx.AsyncClient() as client:
+                    resp = await client.get(image_url, timeout=12.0)
+                    if resp.status_code == 200:
+                        img = Image.open(io.BytesIO(resp.content))
+                        content.append(img)
+                    else:
+                        content.append(f"[Image reference failed: {image_url}]")
+            except Exception as e:
+                print(f"Error loading image for Gemini: {e}")
+                content.append(f"[Image reference: {image_url}]")
+        
+        # Run generate_content
         response = self.model.generate_content(content)
         return response.text
 
@@ -130,7 +186,22 @@ class OpenAIClient(BaseLLMClient):
         messages = []
         content = [{"type": "text", "text": prompt}]
         if image_url:
-            content.append({"type": "image_url", "image_url": {"url": image_url}})
+            try:
+                import httpx
+                import base64
+                async with httpx.AsyncClient() as client:
+                    resp = await client.get(image_url, timeout=12.0)
+                    if resp.status_code == 200:
+                        mime_type = resp.headers.get("content-type", "image/jpeg")
+                        b64_data = base64.b64encode(resp.content).decode("utf-8")
+                        image_data_url = f"data:{mime_type};base64,{b64_data}"
+                        content.append({"type": "image_url", "image_url": {"url": image_data_url}})
+                    else:
+                        content.append({"type": "text", "text": f"[Image reference failed: {image_url}]"})
+            except Exception as e:
+                print(f"Error loading image for OpenAI: {e}")
+                content.append({"type": "text", "text": f"[Image reference: {image_url}]"})
+        
         messages.append({"role": "user", "content": content})
 
         response = await self.client.chat.completions.create(

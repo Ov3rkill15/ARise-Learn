@@ -59,3 +59,15 @@ type APIResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 	Message string      `json:"message,omitempty"`
 }
+
+// ChatRequest is the payload sent to the chat API
+type ChatRequest struct {
+	Topic   string           `json:"topic"`
+	Message string           `json:"message"`
+	History []map[string]any `json:"history,omitempty"`
+}
+
+// ChatResponse is the response from the chat API
+type ChatResponse struct {
+	Reply string `json:"reply"`
+}

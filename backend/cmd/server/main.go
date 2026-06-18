@@ -45,6 +45,9 @@ func main() {
 	r.Use(middleware.RequestLogger())
 	r.Use(middleware.Recovery())
 
+	// Serve static files for uploaded textbook images
+	r.Static("/uploads", "./uploads")
+
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok", "service": "edutech-backend"})

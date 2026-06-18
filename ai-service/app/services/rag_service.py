@@ -149,4 +149,26 @@ class RAGService:
             "confidence": 0.85 if chunks else 0.60,
             "asset_3d_hint": asset_hint,
         }
+
+    async def chat_scoped(self, topic: str, message: str, history: list[dict] = None) -> str:
+        """Answer queries while strictly scoping the conversation to the provided topic."""
+        history_text = ""
+        if history:
+            for turn in history:
+                role = turn.get("role", "user")
+                content = turn.get("content", "")
+                history_text += f"{role.upper()}: {content}\n"
+
+        prompt = (
+            f"You are a strict academic tutor helping a student with the topic: '{topic}'.\n"
+            f"Your instructions:\n"
+            f"1. You MUST ONLY answer questions, explain concepts, or discuss matters directly related to the topic: '{topic}'.\n"
+            f"2. Under NO circumstances should you discuss, answer, or help the user with any other subject, topic, or task (even general programming, history, math, off-topic requests, or coding help) if it is not directly related to '{topic}'.\n"
+            f"3. If the question or message is NOT related to the topic '{topic}', you MUST refuse to answer politely in Bahasa Indonesia, stating that you can only explain and answer questions about '{topic}'.\n\n"
+            f"Conversation History:\n{history_text}"
+            f"User: {message}\n"
+            f"Assistant:"
+        )
+
+        return await self.llm.generate(prompt)
 """RAG pipeline using LangChain + Qdrant for academic content retrieval."""

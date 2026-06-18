@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/edutech-lidm/backend/internal/model"
 	"github.com/edutech-lidm/backend/internal/service"
@@ -21,6 +25,8 @@ func (h *ScanHandler) RegisterRoutes(r *gin.Engine) {
 	api := r.Group("/api/v1")
 	{
 		api.POST("/scan", h.CreateScan)
+		api.POST("/scan/upload", h.UploadAndScan)
+		api.POST("/scan/chat", h.ChatScoped)
 		api.GET("/scan/:id", h.GetScan)
 		api.GET("/users/me", h.GetUserProfile)
 	}
@@ -85,10 +91,108 @@ func (h *ScanHandler) GetUserProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, model.APIResponse{
 		Success: true,
 		Data: model.User{
-			ID:   "placeholder-user-id",
-			Name: "Demo Student",
+			ID:    "placeholder-user-id",
+			Name:  "Demo Student",
 			Email: "demo@edutech.id",
-			Role: "student",
+			Role:  "student",
 		},
+	})
+}
+
+// UploadAndScan handles multipart form POST /api/v1/scan/upload
+func (h *ScanHandler) UploadAndScan(c *gin.Context) {
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.APIResponse{
+			Success: false,
+			Message: "Gagal menerima berkas gambar: " + err.Error(),
+		})
+		return
+	}
+
+	userID := c.DefaultPostForm("user_id", "demo-user")
+	subjectContext := c.PostForm("context")
+
+	uploadsDir := "./uploads"
+	if err := os.MkdirAll(uploadsDir, os.ModePerm); err != nil {
+		c.JSON(http.StatusInternalServerError, model.APIResponse{
+			Success: false,
+			Message: "Gagal membuat direktori unggahan: " + err.Error(),
+		})
+		return
+	}
+
+	// Generate unique filename with timestamp
+	filename := fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
+	filepathDst := filepath.Join(uploadsDir, filename)
+	
+	if err := c.SaveUploadedFile(file, filepathDst); err != nil {
+		c.JSON(http.StatusInternalServerError, model.APIResponse{
+			Success: false,
+			Message: "Gagal menyimpan berkas gambar: " + err.Error(),
+		})
+		return
+	}
+
+	// Build public url
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	host := c.Request.Host
+	imageURL := fmt.Sprintf("%s://%s/uploads/%s", scheme, host, filename)
+
+	req := model.ScanRequest{
+		UserID:   userID,
+		ImageURL: imageURL,
+		Context:  subjectContext,
+	}
+
+	result, err := h.scanService.ProcessScan(c.Request.Context(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.APIResponse{
+			Success: false,
+			Message: "Gagal memproses pemindaian gambar: " + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.APIResponse{
+		Success: true,
+		Data:    result,
+	})
+}
+
+// ChatScoped handles POST /api/v1/scan/chat
+func (h *ScanHandler) ChatScoped(c *gin.Context) {
+	var req model.ChatRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, model.APIResponse{
+			Success: false,
+			Message: "Invalid request body: " + err.Error(),
+		})
+		return
+	}
+
+	if req.Topic == "" || req.Message == "" {
+		c.JSON(http.StatusBadRequest, model.APIResponse{
+			Success: false,
+			Message: "topic and message are required",
+		})
+		return
+	}
+
+	result, err := h.scanService.ChatScoped(c.Request.Context(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.APIResponse{
+			Success: false,
+			Message: "Gagal memproses obrolan AI: " + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.APIResponse{
+		Success: true,
+		Data:    result,
 	})
 }

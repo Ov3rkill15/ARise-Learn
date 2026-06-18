@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.models.schemas import AnalyzeRequest, AnalyzeResponse
+from app.models.schemas import AnalyzeRequest, AnalyzeResponse, ChatRequest, ChatResponse
 from app.services.rag_service import RAGService
 
 router = APIRouter()
@@ -27,3 +27,20 @@ async def analyze_image(request: AnalyzeRequest):
         return AnalyzeResponse(**result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.post("/chat", response_model=ChatResponse)
+async def chat_scoped(request: ChatRequest):
+    """Answer questions while strictly scoping the conversation to the scanned topic."""
+    if rag_service is None:
+        raise HTTPException(status_code=503, detail="AI service not initialized")
+
+    try:
+        reply = await rag_service.chat_scoped(
+            topic=request.topic,
+            message=request.message,
+            history=request.history,
+        )
+        return ChatResponse(reply=reply)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")

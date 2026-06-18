@@ -30,3 +30,13 @@ class HealthResponse(BaseModel):
     service: str = "edutech-ai-service"
     llm_provider: str
     qdrant_connected: bool
+
+
+class ChatRequest(BaseModel):
+    topic: str
+    message: str
+    history: Optional[list[dict]] = None
+
+
+class ChatResponse(BaseModel):
+    reply: str
