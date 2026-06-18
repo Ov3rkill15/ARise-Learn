@@ -15,6 +15,7 @@ __pycache__/
 backend/server
 backend/server.exe
 backend/.env
+backend/uploads/
 
 # Flutter files
 mobile/.dart_tool/
