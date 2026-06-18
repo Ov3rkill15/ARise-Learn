@@ -226,31 +226,57 @@ class GroqClient(BaseLLMClient):
     async def generate(self, prompt: str, image_url: str | None = None) -> str:
         messages = []
         content = [{"type": "text", "text": prompt}]
+        has_image = False
         if image_url:
             try:
                 import httpx
                 import base64
-                async with httpx.AsyncClient() as client:
-                    resp = await client.get(image_url, timeout=12.0)
+                async with httpx.AsyncClient(follow_redirects=True) as client:
+                    resp = await client.get(image_url, timeout=15.0)
                     if resp.status_code == 200:
                         mime_type = resp.headers.get("content-type", "image/jpeg")
                         b64_data = base64.b64encode(resp.content).decode("utf-8")
                         image_data_url = f"data:{mime_type};base64,{b64_data}"
                         content.append({"type": "image_url", "image_url": {"url": image_data_url}})
+                        has_image = True
                     else:
-                        content.append({"type": "text", "text": f"[Image reference failed: {image_url}]"})
+                        print(f"Groq: image fetch returned {resp.status_code} for {image_url}")
+                        content.append({"type": "text", "text": f"[Image could not be loaded from: {image_url}]"})
             except Exception as e:
                 print(f"Error loading image for Groq: {e}")
-                content.append({"type": "text", "text": f"[Image reference: {image_url}]"})
-        
-        messages.append({"role": "user", "content": content})
+                content.append({"type": "text", "text": f"[Image could not be loaded: {image_url}]"})
 
-        response = await self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            max_tokens=1024,
-        )
-        return response.choices[0].message.content
+        # If no image was loaded, simplify content to plain text (avoids Groq vision errors)
+        if not has_image:
+            messages.append({"role": "user", "content": prompt})
+        else:
+            messages.append({"role": "user", "content": content})
+
+        try:
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                max_tokens=1024,
+            )
+            if response.choices and response.choices[0].message.content:
+                return response.choices[0].message.content
+            return "[Groq returned empty response]"
+        except Exception as e:
+            print(f"Groq API error: {e}")
+            # Retry once with text-only if vision call failed
+            if has_image:
+                print("Retrying Groq without image...")
+                try:
+                    response = await self.client.chat.completions.create(
+                        model=self.model,
+                        messages=[{"role": "user", "content": prompt}],
+                        max_tokens=1024,
+                    )
+                    if response.choices and response.choices[0].message.content:
+                        return response.choices[0].message.content
+                except Exception as retry_e:
+                    print(f"Groq retry also failed: {retry_e}")
+            raise
 
 
 def create_llm_client() -> BaseLLMClient:

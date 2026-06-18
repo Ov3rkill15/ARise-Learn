@@ -27,7 +27,11 @@ async def analyze_image(request: AnalyzeRequest):
         return AnalyzeResponse(**result)
     except Exception as e:
         import traceback
+        print(f"\n=== ANALYZE ERROR ===")
+        print(f"image_url: {request.image_url[:100]}..." if len(request.image_url) > 100 else f"image_url: {request.image_url}")
+        print(f"context: {request.context}")
         traceback.print_exc()
+        print(f"=== END ERROR ===\n")
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
@@ -46,5 +50,9 @@ async def chat_scoped(request: ChatRequest):
         return ChatResponse(reply=reply)
     except Exception as e:
         import traceback
+        print(f"\n=== CHAT ERROR ===")
+        print(f"topic: {request.topic}")
+        print(f"message: {request.message}")
         traceback.print_exc()
+        print(f"=== END ERROR ===\n")
         raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
