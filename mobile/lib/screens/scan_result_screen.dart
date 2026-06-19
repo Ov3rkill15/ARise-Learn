@@ -16,10 +16,11 @@ class ScanResultScreen extends StatefulWidget {
   State<ScanResultScreen> createState() => _ScanResultScreenState();
 }
 
-class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerProviderStateMixin {
+class _ScanResultScreenState extends State<ScanResultScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   double _rx = -0.5; // X rotation
-  double _ry = 0.5;  // Y rotation
+  double _ry = 0.5; // Y rotation
   double _scale = 1.0;
   double _baseScale = 1.0;
   bool _autoRotate = true;
@@ -31,7 +32,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
   Offset projectPoint(double x, double y, double z, Size canvasSize) {
     final center = Offset(canvasSize.width / 2, canvasSize.height / 2 - 20);
-    final theta = _ry + (_autoRotate ? _animationController.value * 2 * math.pi : 0.0);
+    final theta =
+        _ry + (_autoRotate ? _animationController.value * 2 * math.pi : 0.0);
     final x1 = x * math.cos(theta) - z * math.sin(theta);
     final z1 = x * math.sin(theta) + z * math.cos(theta);
     final y2 = y * math.cos(_rx) - z1 * math.sin(_rx);
@@ -90,24 +92,27 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
     super.dispose();
   }
 
-  List<TextSpan> _parseMarkdown(String text, BuildContext context, bool isDark, {bool compact = false}) {
+  List<TextSpan> _parseMarkdown(String text, BuildContext context, bool isDark,
+      {bool compact = false}) {
     final List<TextSpan> spans = [];
     final lines = text.split('\n');
-    
+
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i].trim();
       if (line.isEmpty) {
         spans.add(const TextSpan(text: '\n'));
         continue;
       }
-      
+
       if (line.startsWith('### ')) {
         spans.add(TextSpan(
           text: compact ? '${line.substring(4)}\n' : '\n${line.substring(4)}\n',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: compact
-                ? (_selectedPart != null ? _getPartColor(_selectedPart!) : Colors.white)
+                ? (_selectedPart != null
+                    ? _getPartColor(_selectedPart!)
+                    : Colors.white)
                 : Theme.of(context).colorScheme.primary,
             fontSize: compact ? 11.0 : 16.0,
           ),
@@ -118,7 +123,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: compact ? 10.5 : 13.5,
-            color: compact ? Colors.white : (isDark ? Colors.white : Colors.black),
+            color:
+                compact ? Colors.white : (isDark ? Colors.white : Colors.black),
           ),
         ));
       } else {
@@ -132,7 +138,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
               fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
               fontSize: compact ? 10.5 : 13.5,
               height: compact ? 1.3 : 1.5,
-              color: compact ? Colors.white70 : (isDark ? Colors.grey[300] : Colors.grey[800]),
+              color: compact
+                  ? Colors.white70
+                  : (isDark ? Colors.grey[300] : Colors.grey[800]),
             ),
           ));
         }
@@ -154,9 +162,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
         backgroundColor: active
             ? Theme.of(context).colorScheme.primary
             : (isDark ? const Color(0xFF1E293B) : Colors.grey[200]),
-        foregroundColor: active
-            ? Colors.white
-            : (isDark ? Colors.white70 : Colors.black87),
+        foregroundColor:
+            active ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
@@ -240,28 +247,37 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
   bool _isValidAsset(String? assetId) {
     return assetId == 'heart' ||
-           assetId == 'dna_helix' ||
-           assetId == 'water_molecule' ||
-           assetId == 'atom';
+        assetId == 'dna_helix' ||
+        assetId == 'water_molecule' ||
+        assetId == 'atom';
   }
 
   // ══════════ Dynamic Model Helpers ══════════
   String _getAssetTitle(String? assetId) {
     switch (assetId) {
-      case 'heart': return '3D HUMAN HEART MODEL';
-      case 'dna_helix': return '3D DNA DOUBLE HELIX';
-      case 'water_molecule': return '3D H2O MOLECULE';
-      case 'atom': return '3D BOHR ATOM MODEL';
-      default: return 'MODEL 3D TIDAK TERSEDIA';
+      case 'heart':
+        return '3D HUMAN HEART MODEL';
+      case 'dna_helix':
+        return '3D DNA DOUBLE HELIX';
+      case 'water_molecule':
+        return '3D H2O MOLECULE';
+      case 'atom':
+        return '3D BOHR ATOM MODEL';
+      default:
+        return 'MODEL 3D TIDAK TERSEDIA';
     }
   }
 
   String _getAssetHintText(String? assetId) {
     switch (assetId) {
-      case 'heart': return 'Ketuk pin (aorta, otot, katup) untuk detail • Seret untuk putar';
-      case 'dna_helix': return 'Ketuk pin (backbone, basepair) untuk detail • Seret untuk putar';
-      case 'water_molecule': return 'Ketuk pin (oksigen, hidrogen) untuk detail • Seret untuk putar';
-      default: return 'Ketuk pin (inti, elektron, orbit) untuk detail • Seret untuk putar';
+      case 'heart':
+        return 'Ketuk pin (aorta, otot, katup) untuk detail • Seret untuk putar';
+      case 'dna_helix':
+        return 'Ketuk pin (backbone, basepair) untuk detail • Seret untuk putar';
+      case 'water_molecule':
+        return 'Ketuk pin (oksigen, hidrogen) untuk detail • Seret untuk putar';
+      default:
+        return 'Ketuk pin (inti, elektron, orbit) untuk detail • Seret untuk putar';
     }
   }
 
@@ -269,7 +285,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
     if (assetId == 'atom' || assetId == 'general') {
       if (part == 'nucleus') return projectPoint(0, 0, 0, canvasSize);
       if (part == 'electron') {
-        final baseAngle = _autoRotate ? _animationController.value * 2 * math.pi : 0.0;
+        final baseAngle =
+            _autoRotate ? _animationController.value * 2 * math.pi : 0.0;
         final electronAngle = baseAngle * 2.0;
         const radiusX = 85.0;
         const radiusZ = 40.0;
@@ -303,33 +320,55 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
   String _getPartTitle(String part) {
     switch (part) {
-      case 'nucleus': return 'Inti Atom (Nucleus)';
-      case 'electron': return 'Elektron Bermuatan (-)';
-      case 'orbit': return 'Lintasan / Orbit Bohr';
-      case 'aorta': return 'Aorta Utama';
-      case 'myocardium': return 'Otot Jantung (Myocardium)';
-      case 'valve': return 'Katup Jantung (Valve)';
-      case 'backbone': return 'Rantai Fosfat (Backbone)';
-      case 'basepair': return 'Pasangan Basa Nitrogen';
-      case 'oxygen': return 'Atom Oksigen (O)';
-      case 'hydrogen': return 'Atom Hidrogen (H)';
-      default: return 'Detail Bagian';
+      case 'nucleus':
+        return 'Inti Atom (Nucleus)';
+      case 'electron':
+        return 'Elektron Bermuatan (-)';
+      case 'orbit':
+        return 'Lintasan / Orbit Bohr';
+      case 'aorta':
+        return 'Aorta Utama';
+      case 'myocardium':
+        return 'Otot Jantung (Myocardium)';
+      case 'valve':
+        return 'Katup Jantung (Valve)';
+      case 'backbone':
+        return 'Rantai Fosfat (Backbone)';
+      case 'basepair':
+        return 'Pasangan Basa Nitrogen';
+      case 'oxygen':
+        return 'Atom Oksigen (O)';
+      case 'hydrogen':
+        return 'Atom Hidrogen (H)';
+      default:
+        return 'Detail Bagian';
     }
   }
 
   String _getPartDescription(String part) {
     switch (part) {
-      case 'nucleus': return 'Pusat atom yang padat, terdiri atas Proton bermuatan positif (+) dan Neutron yang netral.';
-      case 'electron': return 'Partikel elementer bermuatan negatif (-) yang mengitari inti pada tingkat energi tertentu.';
-      case 'orbit': return 'Jalur stasioner melingkar tempat elektron mengitari inti tanpa memancarkan radiasi.';
-      case 'aorta': return 'Pembuluh darah arteri terbesar yang mengalirkan darah kaya oksigen dari bilik kiri ke seluruh tubuh.';
-      case 'myocardium': return 'Lapisan otot tebal di dinding jantung yang berkontraksi untuk memompa darah.';
-      case 'valve': return 'Pintu searah yang mencegah darah mengalir kembali ke ruang sebelumnya saat jantung memompa.';
-      case 'backbone': return 'Rantai samping gula fosfat yang membentuk struktur spiral penopang rantai ganda DNA.';
-      case 'basepair': return 'Pasangan basa nitrogen kovalen A-T (Adenin-Timin) dan C-G (Sitosin-Guanin) pembawa kode genetik.';
-      case 'oxygen': return 'Atom pusat elektronegatif (-) yang berikatan kovalen dengan dua atom hidrogen.';
-      case 'hydrogen': return 'Dua atom bermuatan parsial positif (+) yang berikatan dengan atom oksigen dengan sudut 104.5°.';
-      default: return '';
+      case 'nucleus':
+        return 'Pusat atom yang padat, terdiri atas Proton bermuatan positif (+) dan Neutron yang netral.';
+      case 'electron':
+        return 'Partikel elementer bermuatan negatif (-) yang mengitari inti pada tingkat energi tertentu.';
+      case 'orbit':
+        return 'Jalur stasioner melingkar tempat elektron mengitari inti tanpa memancarkan radiasi.';
+      case 'aorta':
+        return 'Pembuluh darah arteri terbesar yang mengalirkan darah kaya oksigen dari bilik kiri ke seluruh tubuh.';
+      case 'myocardium':
+        return 'Lapisan otot tebal di dinding jantung yang berkontraksi untuk memompa darah.';
+      case 'valve':
+        return 'Pintu searah yang mencegah darah mengalir kembali ke ruang sebelumnya saat jantung memompa.';
+      case 'backbone':
+        return 'Rantai samping gula fosfat yang membentuk struktur spiral penopang rantai ganda DNA.';
+      case 'basepair':
+        return 'Pasangan basa nitrogen kovalen A-T (Adenin-Timin) dan C-G (Sitosin-Guanin) pembawa kode genetik.';
+      case 'oxygen':
+        return 'Atom pusat elektronegatif (-) yang berikatan kovalen dengan dua atom hidrogen.';
+      case 'hydrogen':
+        return 'Dua atom bermuatan parsial positif (+) yang berikatan dengan atom oksigen dengan sudut 104.5°.';
+      default:
+        return '';
     }
   }
 
@@ -365,43 +404,67 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
       case 'hydrogen':
         return '### **Kutub Parsial Positif**\nDua atom hidrogen yang berikatan kovalen dengan Oksigen. Karena kerapatan elektron ditarik oleh oksigen, inti hidrogen bermuatan parsial positif (δ+) dan agak tidak terlindungi.\n\n'
             '### **Ikatan Hidrogen Antarmolekul**\nPolaritas δ+ pada hidrogen memicu daya tarik elektrostatik kuat dengan oksigen (δ-) dari molekul H2O tetangga. Fenomena ini mendasari **ikatan hidrogen**, yang memberikan air titik didih tinggi dan kohesi kuat.';
-      default: return '';
+      default:
+        return '';
     }
   }
 
   IconData _getPartIcon(String part) {
     switch (part) {
-      case 'nucleus': return Icons.adjust;
-      case 'electron': return Icons.blur_on;
-      case 'orbit': return Icons.album_outlined;
-      case 'aorta': return Icons.favorite;
-      case 'myocardium': return Icons.fitness_center;
-      case 'valve': return Icons.door_sliding;
-      case 'backbone': return Icons.linear_scale;
-      case 'basepair': return Icons.compare_arrows;
-      case 'oxygen': return Icons.circle;
-      case 'hydrogen': return Icons.circle_outlined;
-      default: return Icons.info;
+      case 'nucleus':
+        return Icons.adjust;
+      case 'electron':
+        return Icons.blur_on;
+      case 'orbit':
+        return Icons.album_outlined;
+      case 'aorta':
+        return Icons.favorite;
+      case 'myocardium':
+        return Icons.fitness_center;
+      case 'valve':
+        return Icons.door_sliding;
+      case 'backbone':
+        return Icons.linear_scale;
+      case 'basepair':
+        return Icons.compare_arrows;
+      case 'oxygen':
+        return Icons.circle;
+      case 'hydrogen':
+        return Icons.circle_outlined;
+      default:
+        return Icons.info;
     }
   }
 
   Color _getPartColor(String part) {
     switch (part) {
-      case 'nucleus': return Colors.redAccent;
-      case 'electron': return Colors.yellowAccent;
-      case 'orbit': return Colors.white70;
-      case 'aorta': return Colors.redAccent;
-      case 'myocardium': return Colors.pinkAccent;
-      case 'valve': return Colors.white70;
-      case 'backbone': return Colors.blueAccent;
-      case 'basepair': return Colors.orangeAccent;
-      case 'oxygen': return Colors.redAccent;
-      case 'hydrogen': return Colors.white;
-      default: return Colors.blueAccent;
+      case 'nucleus':
+        return Colors.redAccent;
+      case 'electron':
+        return Colors.yellowAccent;
+      case 'orbit':
+        return Colors.white70;
+      case 'aorta':
+        return Colors.redAccent;
+      case 'myocardium':
+        return Colors.pinkAccent;
+      case 'valve':
+        return Colors.white70;
+      case 'backbone':
+        return Colors.blueAccent;
+      case 'basepair':
+        return Colors.orangeAccent;
+      case 'oxygen':
+        return Colors.redAccent;
+      case 'hydrogen':
+        return Colors.white;
+      default:
+        return Colors.blueAccent;
     }
   }
 
-  List<Widget> _buildDynamicHotspots(String assetId, Size canvasSize, double electronAngle) {
+  List<Widget> _buildDynamicHotspots(
+      String assetId, Size canvasSize, double electronAngle) {
     final List<Widget> hotspots = [];
 
     if (assetId == 'atom' || assetId == 'general') {
@@ -415,21 +478,24 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
       hotspots.addAll([
         Positioned(
-          left: nucleusOffset.dx - 12, top: nucleusOffset.dy - 12,
+          left: nucleusOffset.dx - 12,
+          top: nucleusOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'nucleus'),
             child: _buildPulsingPin(color: Colors.redAccent),
           ),
         ),
         Positioned(
-          left: electronOffset.dx - 12, top: electronOffset.dy - 12,
+          left: electronOffset.dx - 12,
+          top: electronOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'electron'),
             child: _buildPulsingPin(color: Colors.yellowAccent),
           ),
         ),
         Positioned(
-          left: orbitOffset.dx - 12, top: orbitOffset.dy - 12,
+          left: orbitOffset.dx - 12,
+          top: orbitOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'orbit'),
             child: _buildPulsingPin(color: Colors.white70),
@@ -443,21 +509,24 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
       hotspots.addAll([
         Positioned(
-          left: aortaOffset.dx - 12, top: aortaOffset.dy - 12,
+          left: aortaOffset.dx - 12,
+          top: aortaOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'aorta'),
             child: _buildPulsingPin(color: Colors.redAccent),
           ),
         ),
         Positioned(
-          left: muscleOffset.dx - 12, top: muscleOffset.dy - 12,
+          left: muscleOffset.dx - 12,
+          top: muscleOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'myocardium'),
             child: _buildPulsingPin(color: Colors.pinkAccent),
           ),
         ),
         Positioned(
-          left: valveOffset.dx - 12, top: valveOffset.dy - 12,
+          left: valveOffset.dx - 12,
+          top: valveOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'valve'),
             child: _buildPulsingPin(color: Colors.white70),
@@ -470,14 +539,16 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
       hotspots.addAll([
         Positioned(
-          left: backboneOffset.dx - 12, top: backboneOffset.dy - 12,
+          left: backboneOffset.dx - 12,
+          top: backboneOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'backbone'),
             child: _buildPulsingPin(color: Colors.blueAccent),
           ),
         ),
         Positioned(
-          left: basepairOffset.dx - 12, top: basepairOffset.dy - 12,
+          left: basepairOffset.dx - 12,
+          top: basepairOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'basepair'),
             child: _buildPulsingPin(color: Colors.orangeAccent),
@@ -498,21 +569,24 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
       hotspots.addAll([
         Positioned(
-          left: oOffset.dx - 12, top: oOffset.dy - 12,
+          left: oOffset.dx - 12,
+          top: oOffset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'oxygen'),
             child: _buildPulsingPin(color: Colors.redAccent),
           ),
         ),
         Positioned(
-          left: h1Offset.dx - 12, top: h1Offset.dy - 12,
+          left: h1Offset.dx - 12,
+          top: h1Offset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'hydrogen'),
             child: _buildPulsingPin(color: Colors.white),
           ),
         ),
         Positioned(
-          left: h2Offset.dx - 12, top: h2Offset.dy - 12,
+          left: h2Offset.dx - 12,
+          top: h2Offset.dy - 12,
           child: GestureDetector(
             onTap: () => setState(() => _selectedPart = 'hydrogen'),
             child: _buildPulsingPin(color: Colors.white),
@@ -532,7 +606,10 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
     if (result == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(apiService.language == 'en' ? 'Analysis Detail' : 'Detail Analisis')),
+        appBar: AppBar(
+            title: Text(apiService.language == 'en'
+                ? 'Analysis Detail'
+                : 'Detail Analisis')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -540,7 +617,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
               const CircularProgressIndicator(color: Colors.blueAccent),
               const SizedBox(height: 16),
               Text(
-                apiService.language == 'en' ? 'Translating / Analyzing...' : 'Menerjemahkan / Menganalisis...',
+                apiService.language == 'en'
+                    ? 'Translating / Analyzing...'
+                    : 'Menerjemahkan / Menganalisis...',
                 style: TextStyle(
                   color: isDark ? Colors.white70 : Colors.black87,
                   fontWeight: FontWeight.bold,
@@ -555,7 +634,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(apiService.language == 'en' ? 'Analysis Detail' : 'Detail Analisis'),
+        title: Text(apiService.language == 'en'
+            ? 'Analysis Detail'
+            : 'Detail Analisis'),
         actions: [
           IconButton(
             icon: const Icon(Icons.share_outlined),
@@ -564,7 +645,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
         ],
       ),
       body: SingleChildScrollView(
-        physics: _isHovering3D ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+        physics: _isHovering3D
+            ? const NeverScrollableScrollPhysics()
+            : const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -573,433 +656,488 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
               onEnter: (_) => setState(() => _isHovering3D = true),
               onExit: (_) => setState(() => _isHovering3D = false),
               child: Container(
-              height: 380,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.black, // Dark space for AR immersion
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: isDark ? const Color(0xFF334155) : Colors.grey[300]!,
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+                height: 380,
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.black, // Dark space for AR immersion
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF334155) : Colors.grey[300]!,
+                    width: 1.5,
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(22),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final canvasSize = Size(constraints.maxWidth, 380);
-                    
-                    if (!_isValidAsset(result.asset3dUrl)) {
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.25),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(22),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final canvasSize = Size(constraints.maxWidth, 380);
+
+                      if (!_isValidAsset(result.asset3dUrl)) {
+                        return Stack(
+                          children: [
+                            Positioned.fill(
+                              child: CustomPaint(
+                                painter: GridBackgroundPainter(),
+                              ),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withValues(alpha: 0.1),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.view_in_ar,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withValues(alpha: 0.5),
+                                        size: 40,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    const Text(
+                                      'Visualisasi 3D AR Tidak Tersedia',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Model 3D interaktif belum tersedia untuk topik "${result.subjectTopic}".\nPlatform ini mendukung visualisasi 3D untuk: Jantung, DNA, Molekul Air, dan Atom.',
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 12,
+                                        height: 1.5,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
                       return Stack(
                         children: [
+                          // 1a. Grid Background
                           Positioned.fill(
                             child: CustomPaint(
                               painter: GridBackgroundPainter(),
                             ),
                           ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+
+                          // 1b. Interactive 3D Render Area & Hotspots
+                          Positioned.fill(
+                            child: Listener(
+                              onPointerSignal: (pointerSignal) {
+                                if (pointerSignal is PointerScrollEvent) {
+                                  setState(() {
+                                    _scale = (_scale -
+                                            pointerSignal.scrollDelta.dy *
+                                                0.0015)
+                                        .clamp(0.4, 2.5);
+                                  });
+                                }
+                              },
+                              child: GestureDetector(
+                                onScaleStart: (details) {
+                                  _baseScale = _scale;
+                                },
+                                onScaleUpdate: (details) {
+                                  setState(() {
+                                    if (details.scale != 1.0) {
+                                      _scale = (_baseScale * details.scale)
+                                          .clamp(0.4, 2.5);
+                                    }
+
+                                    if (details.pointerCount == 1 &&
+                                        details.scale == 1.0) {
+                                      _ry += details.focalPointDelta.dx * 0.007;
+                                      _rx -= details.focalPointDelta.dy * 0.007;
+                                    }
+                                  });
+                                },
+                                child: AnimatedBuilder(
+                                  animation: _animationController,
+                                  builder: (context, child) {
+                                    final currentAssetId =
+                                        result.asset3dUrl ?? 'atom';
+                                    final baseAngle = _autoRotate
+                                        ? _animationController.value *
+                                            2 *
+                                            math.pi
+                                        : 0.0;
+                                    final electronAngle = baseAngle * 2.0;
+
+                                    return Stack(
+                                      children: [
+                                        Positioned.fill(
+                                          child: CustomPaint(
+                                            painter: Model3DPainter(
+                                              rx: _rx,
+                                              ry: _ry,
+                                              baseAngle: baseAngle,
+                                              scale: _scale * 2.3,
+                                              pulse: _pulse,
+                                              assetId: currentAssetId,
+                                              showGrid: _showGrid,
+                                              primaryColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              secondaryColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                            ),
+                                          ),
+                                        ),
+
+                                        // Dynamic hotspot pins based on model type
+                                        ..._buildDynamicHotspots(currentAssetId,
+                                            canvasSize, electronAngle),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // 1c. Mini HUD Overlay
+                          Positioned(
+                            top: 12,
+                            left: 16,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.black54,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.white12),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.view_in_ar_off_rounded,
-                                      color: Theme.of(context).colorScheme.primary,
-                                      size: 40,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  const Text(
-                                    'Visualisasi 3D AR Tidak Tersedia',
-                                    style: TextStyle(
+                                  const Icon(Icons.circle,
+                                      color: Colors.greenAccent, size: 6),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'PROYEKSI 3D: ${_getAssetTitle(result.asset3dUrl)}',
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                      fontSize: 9,
+                                      letterSpacing: 0.5,
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Model 3D interaktif belum tersedia untuk topik "${result.subjectTopic}".\nPlatform ini mendukung visualisasi 3D untuk: Jantung, DNA, Molekul Air, dan Atom.',
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
-                                      height: 1.5,
-                                    ),
-                                    textAlign: TextAlign.center,
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        ],
-                      );
-                    }
 
-                    return Stack(
-                      children: [
-                        // 1a. Grid Background
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: GridBackgroundPainter(),
+                          // Interaction hint
+                          Positioned(
+                            bottom: 12,
+                            left: 16,
+                            child: Text(
+                              _getAssetHintText(result.asset3dUrl),
+                              style: const TextStyle(
+                                  color: Colors.white54, fontSize: 9),
+                            ),
                           ),
-                        ),
 
-                        // 1b. Interactive 3D Render Area & Hotspots
-                        Positioned.fill(
-                          child: Listener(
-                            onPointerSignal: (pointerSignal) {
-                              if (pointerSignal is PointerScrollEvent) {
-                                setState(() {
-                                  _scale = (_scale - pointerSignal.scrollDelta.dy * 0.0015).clamp(0.4, 2.5);
-                                });
-                              }
-                            },
-                            child: GestureDetector(
-                              onScaleStart: (details) {
-                                _baseScale = _scale;
-                              },
-                              onScaleUpdate: (details) {
-                                setState(() {
-                                  if (details.scale != 1.0) {
-                                    _scale = (_baseScale * details.scale).clamp(0.4, 2.5);
-                                  }
-                                  
-                                  if (details.pointerCount == 1 && details.scale == 1.0) {
-                                    _ry += details.focalPointDelta.dx * 0.007;
-                                    _rx -= details.focalPointDelta.dy * 0.007;
-                                  }
-                                });
-                              },
-                              child: AnimatedBuilder(
-                                animation: _animationController,
-                                builder: (context, child) {
-                                  final currentAssetId = result.asset3dUrl ?? 'atom';
-                                  final baseAngle = _autoRotate ? _animationController.value * 2 * math.pi : 0.0;
-                                  final electronAngle = baseAngle * 2.0;
+                          // Sci-fi HUD Interactive explanation card overlay (floating speech bubbles & bottom panel)
+                          if (_selectedPart != null) ...[
+                            (() {
+                              final currentAssetId =
+                                  result.asset3dUrl ?? 'atom';
+                              final partOffset = _getSelectedPartOffset(
+                                  _selectedPart!, currentAssetId, canvasSize);
+                              if (partOffset == null)
+                                return const SizedBox.shrink();
 
-                                  return Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: CustomPaint(
-                                          painter: Model3DPainter(
-                                            rx: _rx,
-                                            ry: _ry,
-                                            baseAngle: baseAngle,
-                                            scale: _scale * 2.3,
-                                            pulse: _pulse,
-                                            assetId: currentAssetId,
-                                            showGrid: _showGrid,
-                                            primaryColor: Theme.of(context).colorScheme.primary,
-                                            secondaryColor: Theme.of(context).colorScheme.secondary,
-                                          ),
-                                        ),
+                              const double bubbleWidth = 200;
+                              const double bubbleHeight = 85;
+                              double leftPos =
+                                  partOffset.dx - (bubbleWidth / 2);
+                              double topPos = partOffset.dy - bubbleHeight - 20;
+
+                              leftPos = leftPos.clamp(
+                                  12.0, canvasSize.width - bubbleWidth - 12.0);
+                              topPos = topPos.clamp(12.0,
+                                  canvasSize.height - bubbleHeight - 110.0);
+
+                              return Positioned(
+                                left: partOffset.dx - 6,
+                                top: partOffset.dy - 18,
+                                child: Transform.rotate(
+                                  angle: math.pi / 4,
+                                  child: Container(
+                                    width: 12,
+                                    height: 12,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.9),
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            color:
+                                                _getPartColor(_selectedPart!),
+                                            width: 1.5),
+                                        right: BorderSide(
+                                            color:
+                                                _getPartColor(_selectedPart!),
+                                            width: 1.5),
                                       ),
-
-                                      // Dynamic hotspot pins based on model type
-                                      ..._buildDynamicHotspots(currentAssetId, canvasSize, electronAngle),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // 1c. Mini HUD Overlay
-                        Positioned(
-                          top: 12,
-                          left: 16,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white12),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.circle, color: Colors.greenAccent, size: 6),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'PROYEKSI 3D: ${_getAssetTitle(result.asset3dUrl)}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 9,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        
-                        // Interaction hint
-                        Positioned(
-                          bottom: 12,
-                          left: 16,
-                          child: Text(
-                            _getAssetHintText(result.asset3dUrl),
-                            style: const TextStyle(color: Colors.white54, fontSize: 9),
-                          ),
-                        ),
-
-                        // Sci-fi HUD Interactive explanation card overlay (floating speech bubbles & bottom panel)
-                        if (_selectedPart != null) ...[
-                          (() {
-                            final currentAssetId = result.asset3dUrl ?? 'atom';
-                            final partOffset = _getSelectedPartOffset(_selectedPart!, currentAssetId, canvasSize);
-                            if (partOffset == null) return const SizedBox.shrink();
-                            
-                            const double bubbleWidth = 200;
-                            const double bubbleHeight = 85;
-                            double leftPos = partOffset.dx - (bubbleWidth / 2);
-                            double topPos = partOffset.dy - bubbleHeight - 20;
-
-                            leftPos = leftPos.clamp(12.0, canvasSize.width - bubbleWidth - 12.0);
-                            topPos = topPos.clamp(12.0, canvasSize.height - bubbleHeight - 110.0);
-
-                            return Positioned(
-                              left: partOffset.dx - 6,
-                              top: partOffset.dy - 18,
-                              child: Transform.rotate(
-                                angle: math.pi / 4,
-                                child: Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.9),
-                                    border: Border(
-                                      bottom: BorderSide(color: _getPartColor(_selectedPart!), width: 1.5),
-                                      right: BorderSide(color: _getPartColor(_selectedPart!), width: 1.5),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          })(),
-                          (() {
-                            final currentAssetId = result.asset3dUrl ?? 'atom';
-                            final partOffset = _getSelectedPartOffset(_selectedPart!, currentAssetId, canvasSize);
-                            if (partOffset == null) return const SizedBox.shrink();
+                              );
+                            })(),
+                            (() {
+                              final currentAssetId =
+                                  result.asset3dUrl ?? 'atom';
+                              final partOffset = _getSelectedPartOffset(
+                                  _selectedPart!, currentAssetId, canvasSize);
+                              if (partOffset == null)
+                                return const SizedBox.shrink();
 
-                            const double bubbleWidth = 200;
-                            const double bubbleHeight = 85;
-                            double leftPos = partOffset.dx - (bubbleWidth / 2);
-                            double topPos = partOffset.dy - bubbleHeight - 20;
+                              const double bubbleWidth = 200;
+                              const double bubbleHeight = 85;
+                              double leftPos =
+                                  partOffset.dx - (bubbleWidth / 2);
+                              double topPos = partOffset.dy - bubbleHeight - 20;
 
-                            leftPos = leftPos.clamp(12.0, canvasSize.width - bubbleWidth - 12.0);
-                            topPos = topPos.clamp(12.0, canvasSize.height - bubbleHeight - 110.0);
+                              leftPos = leftPos.clamp(
+                                  12.0, canvasSize.width - bubbleWidth - 12.0);
+                              topPos = topPos.clamp(12.0,
+                                  canvasSize.height - bubbleHeight - 110.0);
 
-                            return Positioned(
-                              left: leftPos,
-                              top: topPos,
+                              return Positioned(
+                                left: leftPos,
+                                top: topPos,
+                                child: Container(
+                                  width: bubbleWidth,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.95),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: _getPartColor(_selectedPart!),
+                                      width: 1.5,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: _getPartColor(_selectedPart!)
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 10,
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            _getPartIcon(_selectedPart!),
+                                            color:
+                                                _getPartColor(_selectedPart!),
+                                            size: 14,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Expanded(
+                                            child: Text(
+                                              _getPartTitle(_selectedPart!),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 10.5,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () => setState(
+                                                () => _selectedPart = null),
+                                            child: const Icon(
+                                              Icons.close,
+                                              color: Colors.white54,
+                                              size: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        _getPartDescription(_selectedPart!),
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 9.0,
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            })(),
+                            // Bottom fixed horizontal HUD details card
+                            Positioned(
+                              left: 16,
+                              right: 16,
+                              bottom: 16,
                               child: Container(
-                                width: bubbleWidth,
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.95),
+                                  color: Colors.black.withValues(alpha: 0.85),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: _getPartColor(_selectedPart!),
+                                    color: _getPartColor(_selectedPart!)
+                                        .withValues(alpha: 0.5),
                                     width: 1.5,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: _getPartColor(_selectedPart!).withValues(alpha: 0.3),
-                                      blurRadius: 10,
+                                      color: _getPartColor(_selectedPart!)
+                                          .withValues(alpha: 0.15),
+                                      blurRadius: 8,
                                       spreadRadius: 1,
                                     ),
                                   ],
                                 ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
+                                child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          _getPartIcon(_selectedPart!),
-                                          color: _getPartColor(_selectedPart!),
-                                          size: 14,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Expanded(
-                                          child: Text(
+                                    Icon(
+                                      _getPartIcon(_selectedPart!),
+                                      color: _getPartColor(_selectedPart!),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
                                             _getPartTitle(_selectedPart!),
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 10.5,
+                                              fontSize: 12,
                                             ),
-                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () => setState(() => _selectedPart = null),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white54,
-                                            size: 12,
+                                          const SizedBox(height: 4),
+                                          SizedBox(
+                                            height: 75,
+                                            child: SingleChildScrollView(
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  children: _parseMarkdown(
+                                                    _getPartDetailedDescription(
+                                                        _selectedPart!),
+                                                    context,
+                                                    true,
+                                                    compact: true,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      _getPartDescription(_selectedPart!),
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 9.0,
-                                        height: 1.3,
+                                    const SizedBox(width: 4),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedPart = null;
+                                        });
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white54,
+                                        size: 16,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          })(),
-                          // Bottom fixed horizontal HUD details card
-                          Positioned(
-                            left: 16,
-                            right: 16,
-                            bottom: 16,
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.85),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: _getPartColor(_selectedPart!).withValues(alpha: 0.5),
-                                  width: 1.5,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: _getPartColor(_selectedPart!).withValues(alpha: 0.15),
-                                    blurRadius: 8,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    _getPartIcon(_selectedPart!),
-                                    color: _getPartColor(_selectedPart!),
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          _getPartTitle(_selectedPart!),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        SizedBox(
-                                          height: 75,
-                                          child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
-                                            child: RichText(
-                                              text: TextSpan(
-                                                children: _parseMarkdown(
-                                                  _getPartDetailedDescription(_selectedPart!),
-                                                  context,
-                                                  true,
-                                                  compact: true,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _selectedPart = null;
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.white54,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
             ),
 
             // 2. Control buttons below it
             if (_isValidAsset(result.asset3dUrl))
               Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildMiniControlBtn(
-                    label: 'Grid Kisi',
-                    active: _showGrid,
-                    icon: Icons.grid_on,
-                    onPressed: () => setState(() => _showGrid = !_showGrid),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildMiniControlBtn(
-                    label: _autoRotate ? 'Auto Putar' : 'Mati Putar',
-                    active: _autoRotate,
-                    icon: Icons.sync,
-                    onPressed: () => setState(() => _autoRotate = !_autoRotate),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildMiniControlBtn(
-                    label: 'Reset',
-                    active: false,
-                    icon: Icons.refresh,
-                    onPressed: () => setState(() {
-                      _rx = -0.5;
-                      _ry = 0.5;
-                      _scale = 1.0;
-                    }),
-                  ),
-                ],
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildMiniControlBtn(
+                      label: 'Grid Kisi',
+                      active: _showGrid,
+                      icon: Icons.grid_on,
+                      onPressed: () => setState(() => _showGrid = !_showGrid),
+                    ),
+                    const SizedBox(width: 8),
+                    _buildMiniControlBtn(
+                      label: _autoRotate ? 'Auto Putar' : 'Mati Putar',
+                      active: _autoRotate,
+                      icon: Icons.sync,
+                      onPressed: () =>
+                          setState(() => _autoRotate = !_autoRotate),
+                    ),
+                    const SizedBox(width: 8),
+                    _buildMiniControlBtn(
+                      label: 'Reset',
+                      active: false,
+                      icon: Icons.refresh,
+                      onPressed: () => setState(() {
+                        _rx = -0.5;
+                        _ry = 0.5;
+                        _scale = 1.0;
+                      }),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
             // 3. Topic Badge and Match percentage
             Padding(
@@ -1009,7 +1147,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                 children: [
                   // Topic Badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(20),
@@ -1029,12 +1168,14 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                       ],
                     ),
                   ),
-                  
+
                   // Match rate indicator
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E293B) : Colors.grey[100],
+                      color:
+                          isDark ? const Color(0xFF1E293B) : Colors.grey[100],
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: Colors.greenAccent, width: 1.2),
                     ),
@@ -1047,7 +1188,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                             value: result.confidence,
                             strokeWidth: 2,
                             color: Colors.greenAccent,
-                            backgroundColor: isDark ? Colors.white10 : Colors.black12,
+                            backgroundColor:
+                                isDark ? Colors.white10 : Colors.black12,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -1079,7 +1221,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                      color:
+                          Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -1092,7 +1235,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          apiService.language == 'en' ? 'AI Explanation' : 'Penjelasan AI',
+                          apiService.language == 'en'
+                              ? 'AI Explanation'
+                              : 'Penjelasan AI',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -1102,10 +1247,14 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                         Container(
                           padding: const EdgeInsets.all(2),
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF0F172A) : Colors.grey[200],
+                            color: isDark
+                                ? const Color(0xFF0F172A)
+                                : Colors.grey[200],
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: isDark ? const Color(0xFF334155) : Colors.grey[300]!,
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : Colors.grey[300]!,
                               width: 1.0,
                             ),
                           ),
@@ -1120,7 +1269,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                                   if (apiService.language != 'id') {
                                     apiService.setLanguage('id');
                                     if (result.imageUrl != null) {
-                                      apiService.submitScan(result.imageUrl!, context: result.subjectTopic);
+                                      apiService.submitScan(result.imageUrl!,
+                                          context: result.subjectTopic);
                                     }
                                   }
                                 },
@@ -1134,7 +1284,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                                   if (apiService.language != 'en') {
                                     apiService.setLanguage('en');
                                     if (result.imageUrl != null) {
-                                      apiService.submitScan(result.imageUrl!, context: result.subjectTopic);
+                                      apiService.submitScan(result.imageUrl!,
+                                          context: result.subjectTopic);
                                     }
                                   }
                                 },
@@ -1147,7 +1298,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                     const Divider(height: 20, thickness: 1),
                     SelectableText.rich(
                       TextSpan(
-                        children: _parseMarkdown(result.explanation, context, isDark),
+                        children:
+                            _parseMarkdown(result.explanation, context, isDark),
                       ),
                     ),
                   ],
@@ -1176,7 +1328,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    apiService.language == 'en' ? 'Official Curriculum Grounding' : 'Grounding Kurikulum Resmi',
+                    apiService.language == 'en'
+                        ? 'Official Curriculum Grounding'
+                        : 'Grounding Kurikulum Resmi',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -1208,7 +1362,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
             // 7. Rekomendasi Materi Selanjutnya
             if (result.recommendations.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1218,11 +1373,15 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.tertiary],
+                              colors: [
+                                Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.tertiary
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.auto_awesome, size: 16, color: Colors.white),
+                          child: const Icon(Icons.auto_awesome,
+                              size: 16, color: Colors.white),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -1230,19 +1389,27 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                apiService.language == 'en' ? 'Recommended Next Topics' : 'Rekomendasi Materi Selanjutnya',
+                                apiService.language == 'en'
+                                    ? 'Recommended Next Topics'
+                                    : 'Rekomendasi Materi Selanjutnya',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 14,
-                                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A),
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                apiService.language == 'en' ? 'Most effective topics to study next' : 'Topik paling efektif untuk dipelajari berikutnya',
+                                apiService.language == 'en'
+                                    ? 'Most effective topics to study next'
+                                    : 'Topik paling efektif untuk dipelajari berikutnya',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                  color: isDark
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
                                 ),
                               ),
                             ],
@@ -1256,7 +1423,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                       final rec = entry.value;
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
-                        child: _buildRecommendationCard(context, rec, index, isDark),
+                        child: _buildRecommendationCard(
+                            context, rec, index, isDark),
                       );
                     }),
                   ],
@@ -1266,34 +1434,44 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
             // 8. Fullscreen AR Camera mode trigger
             if (_isValidAsset(result.asset3dUrl))
               Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: FilledButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/ar', arguments: result.asset3dUrl ?? 'atom');
-                  },
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  icon: const Icon(Icons.fullscreen, size: 22),
-                  label: Text(
-                    apiService.language == 'en' ? 'ENTER FULLSCREEN AR CAMERA MODE' : 'MASUK MODE AR KAMERA PENUH',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, letterSpacing: 0.5),
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/ar',
+                          arguments: result.asset3dUrl ?? 'atom');
+                    },
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                    ),
+                    icon: const Icon(Icons.fullscreen, size: 22),
+                    label: Text(
+                      apiService.language == 'en'
+                          ? 'ENTER FULLSCREEN AR CAMERA MODE'
+                          : 'MASUK MODE AR KAMERA PENUH',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          letterSpacing: 0.5),
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -1302,21 +1480,33 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
 
   IconData _getRecommendationIcon(String hint) {
     switch (hint) {
-      case 'science': return Icons.science_rounded;
-      case 'biotech': return Icons.biotech_rounded;
-      case 'chemistry': return Icons.science_outlined;
-      case 'psychology': return Icons.psychology_rounded;
-      case 'calculate': return Icons.calculate_rounded;
-      case 'biology': return Icons.eco_rounded;
-      case 'medical': return Icons.medical_services_rounded;
-      case 'atom': return Icons.blur_circular_rounded;
-      case 'water': return Icons.water_drop_rounded;
-      case 'dna': return Icons.gesture_rounded;
-      default: return Icons.menu_book_rounded;
+      case 'science':
+        return Icons.science_rounded;
+      case 'biotech':
+        return Icons.biotech_rounded;
+      case 'chemistry':
+        return Icons.science_outlined;
+      case 'psychology':
+        return Icons.psychology_rounded;
+      case 'calculate':
+        return Icons.calculate_rounded;
+      case 'biology':
+        return Icons.eco_rounded;
+      case 'medical':
+        return Icons.medical_services_rounded;
+      case 'atom':
+        return Icons.blur_circular_rounded;
+      case 'water':
+        return Icons.water_drop_rounded;
+      case 'dna':
+        return Icons.gesture_rounded;
+      default:
+        return Icons.menu_book_rounded;
     }
   }
 
-  Widget _buildRecommendationCard(BuildContext context, Recommendation rec, int index, bool isDark) {
+  Widget _buildRecommendationCard(
+      BuildContext context, Recommendation rec, int index, bool isDark) {
     final scheme = Theme.of(context).colorScheme;
     final gradientColors = [
       [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
@@ -1329,12 +1519,16 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.04) : Colors.white.withOpacity(0.5),
+        color: isDark
+            ? Colors.white.withOpacity(0.04)
+            : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: isSangatRelevan
               ? colors[0].withOpacity(0.4)
-              : (isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06)),
+              : (isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : Colors.black.withOpacity(0.06)),
           width: isSangatRelevan ? 1.5 : 1.0,
         ),
         boxShadow: isSangatRelevan
@@ -1381,7 +1575,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
-                          color: isDark ? Colors.white : const Color(0xFF0F172A),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF0F172A),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -1389,14 +1584,17 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         gradient: isSangatRelevan
                             ? LinearGradient(colors: colors)
                             : null,
                         color: isSangatRelevan
                             ? null
-                            : (isDark ? Colors.white.withOpacity(0.08) : Colors.grey[200]),
+                            : (isDark
+                                ? Colors.white.withOpacity(0.08)
+                                : Colors.grey[200]),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
@@ -1484,7 +1682,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
             children: [
               Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -1515,7 +1714,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> with SingleTickerPr
           const Divider(height: 24, thickness: 1),
           Row(
             children: [
-              Icon(Icons.library_books_outlined, size: 14, color: Colors.grey[500]),
+              Icon(Icons.library_books_outlined,
+                  size: 14, color: Colors.grey[500]),
               const SizedBox(width: 6),
               Text(
                 sourceName,
@@ -1538,11 +1738,12 @@ class SpotifyVoicePlayer extends StatefulWidget {
   State<SpotifyVoicePlayer> createState() => _SpotifyVoicePlayerState();
 }
 
-class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTickerProviderStateMixin {
+class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   bool _isPlaying = false;
   double _progress = 0.0;
-  
+
   @override
   void initState() {
     super.initState();
@@ -1588,7 +1789,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1638,7 +1839,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                 ),
               ),
               const SizedBox(width: 14),
-              
+
               // Text Titles
               Expanded(
                 child: Column(
@@ -1654,7 +1855,9 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      _isPlaying ? 'Memutar audio penjelasan...' : 'Ketuk untuk mendengarkan',
+                      _isPlaying
+                          ? 'Memutar audio penjelasan...'
+                          : 'Ketuk untuk mendengarkan',
                       style: TextStyle(
                         color: isDark ? Colors.grey[400] : Colors.grey[600],
                         fontSize: 11,
@@ -1665,7 +1868,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                   ],
                 ),
               ),
-              
+
               // Equalizer visualizer
               if (_isPlaying)
                 AnimatedBuilder(
@@ -1693,7 +1896,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
             ],
           ),
           const SizedBox(height: 14),
-          
+
           // Slider Progress
           Row(
             children: [
@@ -1705,10 +1908,13 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 3.5,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
+                    thumbShape:
+                        const RoundSliderThumbShape(enabledThumbRadius: 6),
+                    overlayShape:
+                        const RoundSliderOverlayShape(overlayRadius: 10),
                     activeTrackColor: Theme.of(context).colorScheme.primary,
-                    inactiveTrackColor: isDark ? Colors.white12 : Colors.grey[300],
+                    inactiveTrackColor:
+                        isDark ? Colors.white12 : Colors.grey[300],
                     thumbColor: Theme.of(context).colorScheme.primary,
                   ),
                   child: Slider(
@@ -1727,7 +1933,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
               ),
             ],
           ),
-          
+
           // Play controls center
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1738,7 +1944,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                 onPressed: () {},
               ),
               const SizedBox(width: 16),
-              
+
               // Glowing circular play button
               GestureDetector(
                 onTap: _togglePlay,
@@ -1749,7 +1955,10 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.4),
                         blurRadius: 10,
                         spreadRadius: 1,
                       ),
@@ -1762,7 +1971,7 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer> with SingleTick
                   ),
                 ),
               ),
-              
+
               const SizedBox(width: 16),
               IconButton(
                 icon: const Icon(Icons.skip_next, size: 24),
@@ -1904,7 +2113,6 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
             ),
           ),
           const Divider(height: 20, thickness: 1),
-
           if (_messages.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
@@ -1932,14 +2140,18 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
                   final isUser = msg['role'] == 'user';
 
                   return Align(
-                    alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment:
+                        isUser ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
                         color: isUser
                             ? Theme.of(context).colorScheme.primary
-                            : (isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9)),
+                            : (isDark
+                                ? const Color(0xFF0F172A)
+                                : const Color(0xFFF1F5F9)),
                         borderRadius: BorderRadius.only(
                           topLeft: const Radius.circular(16),
                           topRight: const Radius.circular(16),
@@ -1962,7 +2174,6 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
                 },
               ),
             ),
-
           if (_isSending)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
@@ -1988,7 +2199,6 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
               ),
             ),
           const SizedBox(height: 12),
-
           Row(
             children: [
               Expanded(
@@ -2001,9 +2211,12 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
                       color: isDark ? Colors.grey[500] : Colors.grey[400],
                       fontSize: 12.5,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
                     filled: true,
-                    fillColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                    fillColor: isDark
+                        ? const Color(0xFF0F172A)
+                        : const Color(0xFFF8FAFC),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(
