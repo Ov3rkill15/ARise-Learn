@@ -1,7 +1,5 @@
-import 'dart:io' as io;
 import 'dart:async';
 import 'dart:math' as math;
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
@@ -165,11 +163,11 @@ class _ScanResultScreenState extends State<ScanResultScreen>
         foregroundColor:
             active ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           side: BorderSide(
             color: active
                 ? Colors.transparent
-                : (isDark ? Colors.white12 : Colors.grey[300]!),
+                : (isDark ? const Color(0xFF374151) : const Color(0xFFD6DBDF)),
           ),
         ),
         elevation: 0,
@@ -661,21 +659,23 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.black, // Dark space for AR immersion
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF334155) : Colors.grey[300]!,
-                    width: 1.5,
+                    color: isDark
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFEEF0F2),
+                    width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.25),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(16),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final canvasSize = Size(constraints.maxWidth, 380);
@@ -1150,10 +1150,11 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: const Color(0xFF0056D2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.tag, color: Colors.white, size: 14),
                         const SizedBox(width: 4),
@@ -1161,7 +1162,7 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                           result.subjectTopic,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                             fontSize: 12,
                           ),
                         ),
@@ -1174,12 +1175,13 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color:
-                          isDark ? const Color(0xFF1E293B) : Colors.grey[100],
+                      color: isDark ? const Color(0xFF1F2937) : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.greenAccent, width: 1.2),
+                      border:
+                          Border.all(color: const Color(0xFF1FA15F), width: 1),
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
                           width: 14,
@@ -1187,17 +1189,18 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                           child: CircularProgressIndicator(
                             value: result.confidence,
                             strokeWidth: 2,
-                            color: Colors.greenAccent,
-                            backgroundColor:
-                                isDark ? Colors.white10 : Colors.black12,
+                            color: const Color(0xFF1FA15F),
+                            backgroundColor: isDark
+                                ? Colors.white10
+                                : const Color(0xFFEEF0F2),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           '${(result.confidence * 100).toStringAsFixed(0)}% Match',
                           style: const TextStyle(
-                            color: Colors.greenAccent,
-                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1FA15F),
+                            fontWeight: FontWeight.w600,
                             fontSize: 11,
                           ),
                         ),
@@ -1214,17 +1217,19 @@ class _ScanResultScreenState extends State<ScanResultScreen>
               child: Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  color: isDark ? const Color(0xFF1F2937) : Colors.white,
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF334155) : Colors.grey[200]!,
+                    color: isDark
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFEEF0F2),
                   ),
                   boxShadow: [
                     BoxShadow(
                       color:
-                          Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                          Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
                       blurRadius: 8,
-                      offset: const Offset(0, 4),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -1372,16 +1377,11 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Theme.of(context).colorScheme.primary,
-                                Theme.of(context).colorScheme.tertiary
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFF0056D2).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(Icons.auto_awesome,
-                              size: 16, color: Colors.white),
+                              size: 16, color: Color(0xFF0056D2)),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -1393,11 +1393,11 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                                     ? 'Recommended Next Topics'
                                     : 'Rekomendasi Materi Selanjutnya',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 14,
                                   color: isDark
                                       ? Colors.white
-                                      : const Color(0xFF0F172A),
+                                      : const Color(0xFF1F1F1F),
                                 ),
                               ),
                               const SizedBox(height: 2),
@@ -1408,8 +1408,8 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: isDark
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                                      ? const Color(0xFF9CA3AF)
+                                      : const Color(0xFF5C5C5C),
                                 ),
                               ),
                             ],
@@ -1435,39 +1435,28 @@ class _ScanResultScreenState extends State<ScanResultScreen>
             if (_isValidAsset(result.asset3dUrl))
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+                child: SizedBox(
+                  width: double.infinity,
                   child: FilledButton.icon(
                     onPressed: () {
                       Navigator.pushNamed(context, '/ar',
                           arguments: result.asset3dUrl ?? 'atom');
                     },
                     style: FilledButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: const Color(0xFF0056D2),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 48),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    icon: const Icon(Icons.fullscreen, size: 22),
+                    icon: const Icon(Icons.fullscreen, size: 20),
                     label: Text(
                       apiService.language == 'en'
                           ? 'ENTER FULLSCREEN AR CAMERA MODE'
                           : 'MASUK MODE AR KAMERA PENUH',
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                          letterSpacing: 0.5),
+                          fontWeight: FontWeight.w600, fontSize: 13),
                     ),
                   ),
                 ),
@@ -1507,45 +1496,32 @@ class _ScanResultScreenState extends State<ScanResultScreen>
 
   Widget _buildRecommendationCard(
       BuildContext context, Recommendation rec, int index, bool isDark) {
-    final scheme = Theme.of(context).colorScheme;
-    final gradientColors = [
-      [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
-      [const Color(0xFF06B6D4), const Color(0xFF14B8A6)],
-      [const Color(0xFFF59E0B), const Color(0xFFF97316)],
+    final iconColors = [
+      const Color(0xFF0056D2),
+      const Color(0xFF1FA15F),
+      const Color(0xFFF5AF02),
     ];
-    final colors = gradientColors[index % gradientColors.length];
+    final iconColor = iconColors[index % iconColors.length];
     final isSangatRelevan = rec.relevance == 'Sangat Relevan';
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withOpacity(0.04)
-            : Colors.white.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(18),
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isSangatRelevan
-              ? colors[0].withOpacity(0.4)
-              : (isDark
-                  ? Colors.white.withOpacity(0.08)
-                  : Colors.black.withOpacity(0.06)),
+              ? iconColor.withOpacity(0.4)
+              : (isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2)),
           width: isSangatRelevan ? 1.5 : 1.0,
         ),
-        boxShadow: isSangatRelevan
-            ? [
-                BoxShadow(
-                  color: colors[0].withOpacity(isDark ? 0.15 : 0.08),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.15 : 0.03),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1553,12 +1529,12 @@ class _ScanResultScreenState extends State<ScanResultScreen>
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: colors),
-              borderRadius: BorderRadius.circular(12),
+              color: iconColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               _getRecommendationIcon(rec.iconHint),
-              color: Colors.white,
+              color: iconColor,
               size: 20,
             ),
           ),
@@ -1573,10 +1549,10 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                       child: Text(
                         rec.title,
                         style: TextStyle(
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           fontSize: 13,
                           color:
-                              isDark ? Colors.white : const Color(0xFF0F172A),
+                              isDark ? Colors.white : const Color(0xFF1F1F1F),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -1587,24 +1563,23 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        gradient: isSangatRelevan
-                            ? LinearGradient(colors: colors)
-                            : null,
                         color: isSangatRelevan
-                            ? null
+                            ? iconColor.withOpacity(0.1)
                             : (isDark
-                                ? Colors.white.withOpacity(0.08)
-                                : Colors.grey[200]),
-                        borderRadius: BorderRadius.circular(10),
+                                ? const Color(0xFF374151)
+                                : const Color(0xFFF5F7F9)),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         rec.relevance,
                         style: TextStyle(
                           fontSize: 9,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           color: isSangatRelevan
-                              ? Colors.white
-                              : (isDark ? Colors.grey[300] : Colors.grey[700]),
+                              ? iconColor
+                              : (isDark
+                                  ? const Color(0xFF9CA3AF)
+                                  : const Color(0xFF5C5C5C)),
                         ),
                       ),
                     ),
@@ -1616,7 +1591,9 @@ class _ScanResultScreenState extends State<ScanResultScreen>
                   style: TextStyle(
                     fontSize: 11,
                     height: 1.4,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: isDark
+                        ? const Color(0xFF9CA3AF)
+                        : const Color(0xFF5C5C5C),
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -1661,16 +1638,16 @@ class _ScanResultScreenState extends State<ScanResultScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : Colors.grey[200]!,
+          color: isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -1793,23 +1770,16 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDark
-              ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
-              : [Colors.white, const Color(0xFFF1F5F9)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.white10 : Colors.grey[200]!,
-          width: 1.2,
+          color: isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -1822,15 +1792,8 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer>
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  color: const Color(0xFF0056D2),
                 ),
                 child: const Icon(
                   Icons.headset,
@@ -1950,19 +1913,9 @@ class _SpotifyVoicePlayerState extends State<SpotifyVoicePlayer>
                 onTap: _togglePlay,
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF0056D2),
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.4),
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                      ),
-                    ],
                   ),
                   child: Icon(
                     _isPlaying ? Icons.pause : Icons.play_arrow,
@@ -2069,16 +2022,16 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : Colors.grey[200]!,
+          color: isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
             blurRadius: 8,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -2218,21 +2171,25 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
                         ? const Color(0xFF0F172A)
                         : const Color(0xFFF8FAFC),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide(
-                        color: isDark ? Colors.white10 : Colors.grey[200]!,
+                        color: isDark
+                            ? const Color(0xFF374151)
+                            : const Color(0xFFD6DBDF),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide(
-                        color: isDark ? Colors.white10 : Colors.grey[200]!,
+                        color: isDark
+                            ? const Color(0xFF374151)
+                            : const Color(0xFFD6DBDF),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF0056D2),
                       ),
                     ),
                   ),
@@ -2244,9 +2201,9 @@ class _ScopedAIChatCardState extends State<ScopedAIChatCard> {
               ),
               const SizedBox(width: 8),
               Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(16),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF0056D2),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.send, color: Colors.white, size: 18),

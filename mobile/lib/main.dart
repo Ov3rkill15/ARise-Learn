@@ -6,6 +6,18 @@ import 'screens/ar_viewer_screen.dart';
 import 'screens/scan_result_screen.dart';
 import 'services/api_service.dart';
 
+// Coursera Design System Colors
+const _kPrimary = Color(0xFF0056D2);
+const _kInk = Color(0xFF1F1F1F);
+const _kCanvas = Color(0xFFFFFFFF);
+const _kCanvasSubdued = Color(0xFFF5F7F9);
+const _kBorder = Color(0xFFD6DBDF);
+const _kBorderSubtle = Color(0xFFEEF0F2);
+const _kGold = Color(0xFFF5AF02);
+const _kDarkBg = Color(0xFF111827);
+const _kDarkSurface = Color(0xFF1F2937);
+const _kDarkCard = Color(0xFF374151);
+
 void main() {
   runApp(
     ChangeNotifierProvider(
@@ -20,140 +32,159 @@ class EdutechApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF6366F1);
-    const secondaryColor = Color(0xFF8B5CF6);
-    const accentColor = Color(0xFF14B8A6);
-    const darkBg = Color(0xFF0F0E1A);
-    const darkSurface = Color(0xFF1C1B2E);
-    const darkCard = Color(0xFF252340);
-
     return MaterialApp(
       title: 'ARise Learn',
       debugShowCheckedModeBanner: false,
       themeMode: context.watch<ApiService>().themeMode,
-
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
+        scaffoldBackgroundColor: _kCanvasSubdued,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          primary: primaryColor,
-          secondary: secondaryColor,
-          tertiary: accentColor,
+          seedColor: _kPrimary,
+          primary: _kPrimary,
+          onPrimary: Colors.white,
+          secondary: _kGold,
           brightness: Brightness.light,
+          surface: _kCanvas,
         ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+        textTheme: GoogleFonts.interTextTheme(
           ThemeData.light().textTheme,
         ),
         cardTheme: CardThemeData(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: _kBorderSubtle),
+          ),
+          color: _kCanvas,
+          shadowColor: Colors.black.withOpacity(0.08),
         ),
         appBarTheme: AppBarTheme(
           centerTitle: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: _kCanvas,
           elevation: 0,
+          scrolledUnderElevation: 1,
           surfaceTintColor: Colors.transparent,
-          titleTextStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: Colors.black87,
+          titleTextStyle: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: _kInk,
           ),
         ),
-        scaffoldBackgroundColor: const Color(0xFFF5F5FA),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: _kCanvas,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _kBorder),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _kBorder),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: primaryColor, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _kPrimary, width: 2),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            backgroundColor: _kPrimary,
+            foregroundColor: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            textStyle: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _kPrimary,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+        ),
+        dividerTheme: const DividerThemeData(color: _kBorderSubtle),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
-
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: darkBg,
+        scaffoldBackgroundColor: _kDarkBg,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          primary: primaryColor,
-          secondary: secondaryColor,
-          tertiary: accentColor,
-          surface: darkSurface,
+          seedColor: _kPrimary,
+          primary: _kPrimary,
+          onPrimary: Colors.white,
+          secondary: _kGold,
+          surface: _kDarkSurface,
           brightness: Brightness.dark,
         ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+        textTheme: GoogleFonts.interTextTheme(
           ThemeData.dark().textTheme,
         ),
         cardTheme: CardThemeData(
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          color: darkCard,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.white.withOpacity(0.08)),
+          ),
+          color: _kDarkSurface,
         ),
         appBarTheme: AppBarTheme(
           centerTitle: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: _kDarkBg,
           elevation: 0,
           surfaceTintColor: Colors.transparent,
-          titleTextStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
+          titleTextStyle: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xFF252340),
+          fillColor: _kDarkCard,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.white.withOpacity(0.06)),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: primaryColor, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: _kPrimary, width: 2),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            backgroundColor: _kPrimary,
+            foregroundColor: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           ),
         ),
         dividerTheme: DividerThemeData(
-          color: Colors.white.withOpacity(0.06),
+          color: Colors.white.withOpacity(0.08),
         ),
         snackBarTheme: SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
-
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),

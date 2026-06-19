@@ -1,12 +1,8 @@
-import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/api_service.dart';
 import '../widgets/live_camera_dialog.dart';
-import 'scan_result_screen.dart';
-import 'ar_viewer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         SnackBar(
           content: Text(_t('input_error_url', apiService.language)),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       );
       return;
@@ -76,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           content: Text(apiService.error!),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Theme.of(context).colorScheme.error,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       );
     }
@@ -102,27 +100,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             final isDark = Theme.of(context).brightness == Brightness.dark;
             return StatefulBuilder(builder: (context, setDialogState) {
               return AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-                backgroundColor: isDark ? const Color(0xFF1C1B2E) : Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                backgroundColor:
+                    isDark ? const Color(0xFF1F2937) : Colors.white,
                 title: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Theme.of(context).colorScheme.primary,
-                            Theme.of(context).colorScheme.tertiary,
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(14),
+                        color: const Color(0xFF0056D2).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                      child: const Icon(Icons.auto_awesome,
+                          color: Color(0xFF0056D2), size: 20),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(_t('multimodal_title', lang),
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                          style: const TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w800)),
                     ),
                   ],
                 ),
@@ -132,24 +129,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.green.withOpacity(0.2)),
+                          color: const Color(0xFF1FA15F).withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              color: const Color(0xFF1FA15F).withOpacity(0.2)),
                         ),
-                        child: Row(
+                        child: const Row(
                           children: [
-                            Icon(Icons.check_circle_rounded, color: Colors.green[400], size: 18),
-                            const SizedBox(width: 10),
-                            Text(_t('image_success_taken', lang),
-                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.green[400])),
+                            Icon(Icons.check_circle_rounded,
+                                color: Color(0xFF1FA15F), size: 18),
+                            SizedBox(width: 10),
+                            Text('Gambar berhasil diambil!',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    color: Color(0xFF1FA15F))),
                           ],
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(_t('input_context_label', lang),
-                          style: TextStyle(fontSize: 13, color: isDark ? Colors.grey[300] : Colors.grey[600], height: 1.5)),
+                          style: TextStyle(
+                              fontSize: 13,
+                              color:
+                                  isDark ? Colors.grey[300] : Colors.grey[600],
+                              height: 1.5)),
                       const SizedBox(height: 14),
                       TextField(
                         controller: textController,
@@ -157,21 +164,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           labelText: _t('context_label_optional', lang),
                           hintText: _t('hint_text_context', lang),
                           prefixIcon: const Icon(Icons.search_rounded),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
                         onChanged: (val) => setDialogState(() {}),
                       ),
                       const SizedBox(height: 16),
-                      Text(_t('quick_topic_title', lang), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1.2, color: isDark ? Colors.grey[500] : Colors.grey[400])),
+                      Text(_t('quick_topic_title', lang),
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.2,
+                              color: isDark
+                                  ? Colors.grey[500]
+                                  : Colors.grey[400])),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children: [
-                          _buildDialogChip(context, _t('jantung_chip', lang), () { textController.text = 'jantung'; setDialogState(() {}); }, textController.text == 'jantung'),
-                          _buildDialogChip(context, _t('dna_helix_chip', lang), () { textController.text = 'dna helix'; setDialogState(() {}); }, textController.text == 'dna helix'),
-                          _buildDialogChip(context, _t('water_molecule_chip', lang), () { textController.text = 'molekul h2o'; setDialogState(() {}); }, textController.text == 'molekul h2o'),
-                          _buildDialogChip(context, _t('atom_bohr_chip', lang), () { textController.text = 'atom bohr'; setDialogState(() {}); }, textController.text == 'atom bohr'),
+                          _buildDialogChip(context, _t('jantung_chip', lang),
+                              () {
+                            textController.text = 'jantung';
+                            setDialogState(() {});
+                          }, textController.text == 'jantung'),
+                          _buildDialogChip(context, _t('dna_helix_chip', lang),
+                              () {
+                            textController.text = 'dna helix';
+                            setDialogState(() {});
+                          }, textController.text == 'dna helix'),
+                          _buildDialogChip(
+                              context, _t('water_molecule_chip', lang), () {
+                            textController.text = 'molekul h2o';
+                            setDialogState(() {});
+                          }, textController.text == 'molekul h2o'),
+                          _buildDialogChip(context, _t('atom_bohr_chip', lang),
+                              () {
+                            textController.text = 'atom bohr';
+                            setDialogState(() {});
+                          }, textController.text == 'atom bohr'),
                         ],
                       ),
                     ],
@@ -180,16 +211,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, null),
-                    child: Text(_t('cancel', lang), style: TextStyle(color: Colors.grey[500])),
+                    child: Text(_t('cancel', lang),
+                        style: TextStyle(color: Colors.grey[500])),
                   ),
                   FilledButton.icon(
                     style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                      backgroundColor: const Color(0xFF0056D2),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 22, vertical: 12),
                     ),
-                    onPressed: () => Navigator.pop(context, textController.text.trim()),
+                    onPressed: () =>
+                        Navigator.pop(context, textController.text.trim()),
                     icon: const Icon(Icons.auto_awesome, size: 18),
-                    label: Text(_t('start_analysis_btn', lang), style: const TextStyle(fontWeight: FontWeight.bold)),
+                    label: Text(_t('start_analysis_btn', lang),
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ],
               );
@@ -197,13 +236,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           },
         );
         if (contextText != null) {
-          final result = await apiService.uploadScan(photo, context: contextText);
+          final result =
+              await apiService.uploadScan(photo, context: contextText);
           if (!mounted) return;
           if (result != null) {
             Navigator.pushNamed(context, '/result');
           } else if (apiService.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(apiService.error!), behavior: SnackBarBehavior.floating, backgroundColor: Theme.of(context).colorScheme.error),
+              SnackBar(
+                  content: Text(apiService.error!),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Theme.of(context).colorScheme.error),
             );
           }
         } else {
@@ -212,12 +255,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${_t('camera_error_access', lang)} $e'), behavior: SnackBarBehavior.floating),
+        SnackBar(
+            content: Text('${_t('camera_error_access', lang)} $e'),
+            behavior: SnackBarBehavior.floating),
       );
     }
   }
 
-  Widget _buildDialogChip(BuildContext context, String label, VoidCallback onTap, bool isSelected) {
+  Widget _buildDialogChip(
+      BuildContext context, String label, VoidCallback onTap, bool isSelected) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
@@ -228,9 +274,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           color: isSelected
               ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
               : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[100]),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Colors.transparent,
             width: 1.5,
           ),
         ),
@@ -238,7 +286,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected ? Theme.of(context).colorScheme.primary : (isDark ? Colors.white70 : Colors.black87),
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : (isDark ? Colors.white70 : Colors.black87),
             )),
       ),
     );
@@ -283,232 +333,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildBackgroundGradient(bool isDark) {
-    if (!isDark) {
-      return Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFFF1F5F9), // Very clean white-slate base
-            ),
-          ),
-          // 1. Soft sky blue blob at top center/right
-          Positioned(
-            top: -120,
-            right: -60,
-            width: 480,
-            height: 480,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFF38BDF8).withOpacity(0.32), // Sky blue
-                    const Color(0xFF38BDF8).withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // 2. Soft pastel blue blob at center/left
-          Positioned(
-            top: 220,
-            left: -120,
-            width: 450,
-            height: 450,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFF60A5FA).withOpacity(0.25), // Medium blue
-                    const Color(0xFF60A5FA).withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // 3. Soft indigo/violet blob at bottom right
-          Positioned(
-            bottom: -100,
-            right: -80,
-            width: 480,
-            height: 480,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFF818CF8).withOpacity(0.24), // Indigo
-                    const Color(0xFF818CF8).withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // 4. Soft mint/teal blob at top left
-          Positioned(
-            top: -60,
-            left: -100,
-            width: 380,
-            height: 380,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    const Color(0xFF2DD4BF).withOpacity(0.22), // Mint/teal
-                    const Color(0xFF2DD4BF).withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 70.0, sigmaY: 70.0),
-              child: Container(color: Colors.transparent),
-            ),
-          ),
-        ],
-      );
-    }
-    return Stack(
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF070612),
-          ),
-        ),
-        Positioned(
-          top: -80,
-          left: -80,
-          width: 400,
-          height: 400,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFFD946EF).withOpacity(0.48),
-                  const Color(0xFFD946EF).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: -100,
-          right: -50,
-          width: 450,
-          height: 450,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFF06B6D4).withOpacity(0.52),
-                  const Color(0xFF06B6D4).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 250,
-          left: -120,
-          width: 450,
-          height: 450,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFF00E5FF).withOpacity(0.45),
-                  const Color(0xFF00E5FF).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 200,
-          right: -120,
-          width: 500,
-          height: 500,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFF6366F1).withOpacity(0.42),
-                  const Color(0xFF6366F1).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -100,
-          left: -80,
-          width: 400,
-          height: 400,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFFD946EF).withOpacity(0.42),
-                  const Color(0xFFD946EF).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -120,
-          right: -80,
-          width: 450,
-          height: 450,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFF06B6D4).withOpacity(0.48),
-                  const Color(0xFF06B6D4).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 100,
-          left: 50,
-          width: 300,
-          height: 300,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  const Color(0xFFEC4899).withOpacity(0.35),
-                  const Color(0xFFEC4899).withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 65.0, sigmaY: 65.0),
-            child: Container(color: Colors.transparent),
-          ),
-        ),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF111827) : const Color(0xFFF5F7F9),
+      ),
     );
   }
 
-  Widget _buildBerandaTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildBerandaTab(BuildContext context, ApiService apiService,
+      bool isDark, ColorScheme scheme) {
     final lang = apiService.language;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -527,12 +360,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               _buildStatsRow(context, isDark, scheme, lang),
               const SizedBox(height: 28),
               if (apiService.history.isNotEmpty) ...[
-                _buildSectionTitle(context, _t('history_title', lang), Icons.history_rounded, isDark, lang),
+                _buildSectionTitle(context, _t('history_title', lang),
+                    Icons.history_rounded, isDark, lang),
                 const SizedBox(height: 14),
                 _buildHistoryList(context, apiService, isDark, scheme),
                 const SizedBox(height: 28),
               ],
-              _buildSectionTitle(context, _t('explore_3d_title', lang), Icons.view_in_ar_rounded, isDark, lang),
+              _buildSectionTitle(context, _t('explore_3d_title', lang),
+                  Icons.view_in_ar_rounded, isDark, lang),
               const SizedBox(height: 14),
               _buildCatalogGrid(context, isDark, scheme, lang),
               const SizedBox(height: 100),
@@ -543,7 +378,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildPindaiTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildPindaiTab(BuildContext context, ApiService apiService,
+      bool isDark, ColorScheme scheme) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Center(
@@ -569,7 +405,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: Icon(
                           Icons.menu_book_rounded,
                           size: 64,
-                          color: scheme.primary.withOpacity(isDark ? 0.35 : 0.25),
+                          color:
+                              scheme.primary.withOpacity(isDark ? 0.35 : 0.25),
                         ),
                       ),
                       AnimatedBuilder(
@@ -577,7 +414,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         builder: (context, child) {
                           return CustomPaint(
                             size: Size.infinite,
-                            painter: BookScannerPainter(_breathController.value, scheme.primary),
+                            painter: BookScannerPainter(
+                                _breathController.value, scheme.primary),
                           );
                         },
                       ),
@@ -595,22 +433,54 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildModel3DTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildModel3DTab(BuildContext context, ApiService apiService,
+      bool isDark, ColorScheme scheme) {
     final lang = apiService.language;
     final searchController = TextEditingController(text: _searchQuery);
-    searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+    searchController.selection = TextSelection.fromPosition(
+        TextPosition(offset: searchController.text.length));
 
     final items = [
-      _CatalogItem(_t('catalog_heart', lang), _t('catalog_heart_sub', lang), Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), _t('biologi', lang)),
-      _CatalogItem(_t('catalog_dna', lang), _t('catalog_dna_sub', lang), Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), _t('biologi', lang)),
-      _CatalogItem(_t('catalog_water', lang), _t('catalog_water_sub', lang), Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), _t('kimia', lang)),
-      _CatalogItem(_t('catalog_bohr', lang), _t('catalog_bohr_sub', lang), Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), _t('fisika', lang)),
+      _CatalogItem(
+          _t('catalog_heart', lang),
+          _t('catalog_heart_sub', lang),
+          Icons.favorite_rounded,
+          'heart',
+          const Color(0xFFEF4444),
+          const Color(0xFFF97316),
+          _t('biologi', lang)),
+      _CatalogItem(
+          _t('catalog_dna', lang),
+          _t('catalog_dna_sub', lang),
+          Icons.bubble_chart_rounded,
+          'dna_helix',
+          const Color(0xFF3B82F6),
+          const Color(0xFF8B5CF6),
+          _t('biologi', lang)),
+      _CatalogItem(
+          _t('catalog_water', lang),
+          _t('catalog_water_sub', lang),
+          Icons.water_drop_rounded,
+          'water_molecule',
+          const Color(0xFF14B8A6),
+          const Color(0xFF06B6D4),
+          _t('kimia', lang)),
+      _CatalogItem(
+          _t('catalog_bohr', lang),
+          _t('catalog_bohr_sub', lang),
+          Icons.wb_sunny_rounded,
+          'atom',
+          const Color(0xFFF59E0B),
+          const Color(0xFFF97316),
+          _t('fisika', lang)),
     ];
 
     final filteredItems = items.where((item) {
-      final matchesCategory = _selectedCategory == 'Semua' || item.category == _t(_selectedCategory.toLowerCase(), lang);
-      final matchesSearch = item.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          item.subtitle.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesCategory = _selectedCategory == 'Semua' ||
+          item.category == _t(_selectedCategory.toLowerCase(), lang);
+      final matchesSearch =
+          item.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              item.subtitle.toLowerCase().contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
 
@@ -628,16 +498,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.grey.withOpacity(0.15)),
-                  boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))],
+                  border: Border.all(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.08)
+                          : Colors.grey.withOpacity(0.15)),
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4))
+                        ],
                 ),
                 child: TextField(
                   controller: searchController,
-                  style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13),
+                  style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                      fontSize: 13),
                   decoration: InputDecoration(
                     hintText: _t('search_hint', lang),
                     hintStyle: TextStyle(color: Colors.grey[500], fontSize: 13),
-                    prefixIcon: Icon(Icons.search_rounded, color: scheme.primary, size: 20),
+                    prefixIcon: Icon(Icons.search_rounded,
+                        color: scheme.primary, size: 20),
                     filled: false,
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -662,13 +545,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       onTap: () => setState(() => _selectedCategory = cat),
                       child: Container(
                         margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 8),
                         decoration: BoxDecoration(
-                          gradient: isCatSelected ? LinearGradient(colors: [scheme.primary, scheme.tertiary]) : null,
-                          color: isCatSelected ? null : (isDark ? Colors.white.withOpacity(0.04) : Colors.grey[100]),
+                          gradient: isCatSelected
+                              ? LinearGradient(
+                                  colors: [scheme.primary, scheme.tertiary])
+                              : null,
+                          color: isCatSelected
+                              ? null
+                              : (isDark
+                                  ? Colors.white.withOpacity(0.04)
+                                  : Colors.grey[100]),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: isCatSelected ? Colors.transparent : (isDark ? Colors.white12 : Colors.grey[300]!),
+                            color: isCatSelected
+                                ? Colors.transparent
+                                : (isDark ? Colors.white12 : Colors.grey[300]!),
                           ),
                         ),
                         child: Center(
@@ -677,7 +570,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: isCatSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
+                              color: isCatSelected
+                                  ? Colors.white
+                                  : (isDark ? Colors.white70 : Colors.black87),
                             ),
                           ),
                         ),
@@ -693,11 +588,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     padding: const EdgeInsets.symmetric(vertical: 60),
                     child: Column(
                       children: [
-                        Icon(Icons.search_off_rounded, size: 48, color: Colors.grey[500]),
+                        Icon(Icons.search_off_rounded,
+                            size: 48, color: Colors.grey[500]),
                         const SizedBox(height: 12),
                         Text(
                           _t('not_found', lang),
-                          style: TextStyle(color: Colors.grey[500], fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -727,7 +626,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildProfilTab(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildProfilTab(BuildContext context, ApiService apiService,
+      bool isDark, ColorScheme scheme) {
     final lang = apiService.language;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -742,10 +642,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
+                  color: (isDark ? Colors.white : Colors.white)
+                      .withOpacity(isDark ? 0.04 : 0.3),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04)),
-                  boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
+                  border: Border.all(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.08)
+                          : Colors.black.withOpacity(0.04)),
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.02),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4))
+                        ],
                 ),
                 child: Column(
                   children: [
@@ -764,7 +675,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     const SizedBox(height: 4),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: scheme.primary.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
@@ -782,8 +694,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(_t('level_rank', lang), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        Text('1.450 / 2.000 XP', style: TextStyle(fontSize: 11, color: scheme.primary, fontWeight: FontWeight.bold)),
+                        Text(_t('level_rank', lang),
+                            style: const TextStyle(
+                                fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('1.450 / 2.000 XP',
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: scheme.primary,
+                                fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -793,7 +711,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         value: 0.725,
                         minHeight: 6,
                         color: scheme.primary,
-                        backgroundColor: isDark ? Colors.white10 : Colors.black12,
+                        backgroundColor:
+                            isDark ? Colors.white10 : Colors.black12,
                       ),
                     ),
                   ],
@@ -803,27 +722,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Row(
                 children: [
                   Expanded(
-                    child: _buildProfileStatCard('14', _t('scan_success', lang), Icons.qr_code_scanner_rounded, const Color(0xFF60A5FA), isDark),
+                    child: _buildProfileStatCard(
+                        '14',
+                        _t('scan_success', lang),
+                        Icons.qr_code_scanner_rounded,
+                        const Color(0xFF60A5FA),
+                        isDark),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildProfileStatCard('8', _t('achievements', lang), Icons.emoji_events_rounded, const Color(0xFFFBBF24), isDark),
+                    child: _buildProfileStatCard(
+                        '8',
+                        _t('achievements', lang),
+                        Icons.emoji_events_rounded,
+                        const Color(0xFFFBBF24),
+                        isDark),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildProfileStatCard('94%', _t('rag_accuracy', lang), Icons.verified_user_rounded, const Color(0xFF34D399), isDark),
+                    child: _buildProfileStatCard(
+                        '94%',
+                        _t('rag_accuracy', lang),
+                        Icons.verified_user_rounded,
+                        const Color(0xFF34D399),
+                        isDark),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
               Row(
                 children: [
-                  Icon(Icons.emoji_events_outlined, size: 20, color: scheme.primary),
+                  Icon(Icons.emoji_events_outlined,
+                      size: 20, color: scheme.primary),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       _t('unlocked_achievements', lang),
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w800),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -835,25 +771,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildBadgeCard(_t('badge_atom_title', lang), '⚛️', _t('badge_atom_desc', lang), true, isDark),
-                    _buildBadgeCard(_t('badge_dna_title', lang), '🧬', _t('badge_dna_desc', lang), true, isDark),
-                    _buildBadgeCard(_t('badge_water_title', lang), '💧', _t('badge_water_desc', lang), true, isDark),
-                    _buildBadgeCard(_t('badge_heart_title', lang), '❤️', _t('badge_heart_desc', lang), false, isDark),
+                    _buildBadgeCard(_t('badge_atom_title', lang), '⚛️',
+                        _t('badge_atom_desc', lang), true, isDark),
+                    _buildBadgeCard(_t('badge_dna_title', lang), '🧬',
+                        _t('badge_dna_desc', lang), true, isDark),
+                    _buildBadgeCard(_t('badge_water_title', lang), '💧',
+                        _t('badge_water_desc', lang), true, isDark),
+                    _buildBadgeCard(_t('badge_heart_title', lang), '❤️',
+                        _t('badge_heart_desc', lang), false, isDark),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
               Container(
                 decoration: BoxDecoration(
-                  color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
+                  color: (isDark ? Colors.white : Colors.white)
+                      .withOpacity(isDark ? 0.04 : 0.3),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04)),
+                  border: Border.all(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.08)
+                          : Colors.black.withOpacity(0.04)),
                 ),
                 child: Column(
                   children: [
                     ListTile(
-                      leading: Icon(isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded, color: scheme.primary),
-                      title: Text(_t('dark_light', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      leading: Icon(
+                          isDark
+                              ? Icons.light_mode_rounded
+                              : Icons.dark_mode_rounded,
+                          color: scheme.primary),
+                      title: Text(_t('dark_light', lang),
+                          style: const TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold)),
                       trailing: Switch(
                         value: isDark,
                         onChanged: (_) => apiService.toggleTheme(),
@@ -861,19 +811,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     const Divider(height: 1),
                     ListTile(
-                      leading: Icon(Icons.language_rounded, color: scheme.primary),
-                      title: Text(_t('pilih_bahasa', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                      leading:
+                          Icon(Icons.language_rounded, color: scheme.primary),
+                      title: Text(_t('pilih_bahasa', lang),
+                          style: const TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold)),
                       trailing: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: lang,
                           items: [
                             DropdownMenuItem(
                               value: 'id',
-                              child: Text(_t('bahasa_indonesia', lang), style: TextStyle(fontSize: 13, color: isDark ? Colors.white : Colors.black87)),
+                              child: Text(_t('bahasa_indonesia', lang),
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black87)),
                             ),
                             DropdownMenuItem(
                               value: 'en',
-                              child: Text(_t('bahasa_inggris', lang), style: TextStyle(fontSize: 13, color: isDark ? Colors.white : Colors.black87)),
+                              child: Text(_t('bahasa_inggris', lang),
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black87)),
                             ),
                           ],
                           onChanged: (String? newLang) {
@@ -881,15 +844,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               apiService.setLanguage(newLang);
                             }
                           },
-                          dropdownColor: isDark ? const Color(0xFF1C1B2E) : Colors.white,
+                          dropdownColor:
+                              isDark ? const Color(0xFF1F2937) : Colors.white,
                         ),
                       ),
                     ),
                     const Divider(height: 1),
                     ListTile(
-                      leading: Icon(Icons.cloud_done_rounded, color: Colors.green[400]),
-                      title: Text(_t('curriculum', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-                      subtitle: Text(_t('validation', lang), style: const TextStyle(fontSize: 10)),
+                      leading: Icon(Icons.cloud_done_rounded,
+                          color: Colors.green[400]),
+                      title: Text(_t('curriculum', lang),
+                          style: const TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold)),
+                      subtitle: Text(_t('validation', lang),
+                          style: const TextStyle(fontSize: 10)),
                       trailing: Container(
                         width: 8,
                         height: 8,
@@ -901,8 +869,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                     const Divider(height: 1),
                     ListTile(
-                      leading: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
-                      title: Text(_t('delete_history', lang), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.redAccent)),
+                      leading: const Icon(Icons.delete_outline_rounded,
+                          color: Colors.redAccent),
+                      title: Text(_t('delete_history', lang),
+                          style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent)),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -919,7 +892,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   apiService.clearHistory();
                                   Navigator.pop(context);
                                 },
-                                child: Text(_t('delete', lang), style: const TextStyle(color: Colors.redAccent)),
+                                child: Text(_t('delete', lang),
+                                    style: const TextStyle(
+                                        color: Colors.redAccent)),
                               ),
                             ],
                           ),
@@ -937,46 +912,67 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildProfileStatCard(String value, String label, IconData icon, Color color, bool isDark) {
+  Widget _buildProfileStatCard(
+      String value, String label, IconData icon, Color color, bool isDark) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
       decoration: BoxDecoration(
-        color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
+        color: (isDark ? Colors.white : Colors.white)
+            .withOpacity(isDark ? 0.04 : 0.3),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
+        border: Border.all(
+            color: isDark
+                ? Colors.white.withOpacity(0.06)
+                : Colors.black.withOpacity(0.04)),
       ),
       child: Column(
         children: [
           Icon(icon, color: color, size: 20),
           const SizedBox(height: 8),
-          Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: isDark ? Colors.white : const Color(0xFF0F172A))),
+          Text(value,
+              style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                  color: isDark ? Colors.white : const Color(0xFF1F1F1F))),
           const SizedBox(height: 2),
-          Text(label, style: TextStyle(color: isDark ? Colors.grey[400] : const Color(0xFF475569), fontSize: 10, fontWeight: FontWeight.w500)),
+          Text(label,
+              style: TextStyle(
+                  color: isDark ? Colors.grey[400] : const Color(0xFF475569),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500)),
         ],
       ),
     );
   }
 
-  Widget _buildBadgeCard(String title, String emoji, String desc, bool unlocked, bool isDark) {
+  Widget _buildBadgeCard(
+      String title, String emoji, String desc, bool unlocked, bool isDark) {
     return Container(
       width: 140,
       margin: const EdgeInsets.only(right: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: unlocked
-            ? (isDark ? const Color(0xFF2D2A1E) : const Color(0xFFFFFDF5).withOpacity(0.35))
-            : (isDark ? Colors.white.withOpacity(0.04) : Colors.white.withOpacity(0.3)),
+            ? (isDark
+                ? const Color(0xFF2D2A1E)
+                : const Color(0xFFFFFDF5).withOpacity(0.35))
+            : (isDark
+                ? Colors.white.withOpacity(0.04)
+                : Colors.white.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: unlocked
               ? const Color(0xFFFBBF24).withOpacity(0.4)
-              : (isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
+              : (isDark
+                  ? Colors.white.withOpacity(0.06)
+                  : Colors.black.withOpacity(0.04)),
           width: unlocked ? 1.5 : 1.0,
         ),
         boxShadow: unlocked
             ? [
                 BoxShadow(
-                  color: const Color(0xFFFBBF24).withOpacity(isDark ? 0.15 : 0.05),
+                  color:
+                      const Color(0xFFFBBF24).withOpacity(isDark ? 0.15 : 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 )
@@ -999,7 +995,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             const SizedBox(height: 2),
             Text(
               desc,
-              style: TextStyle(fontSize: 8, color: isDark ? Colors.grey[400] : const Color(0xFF475569)),
+              style: TextStyle(
+                  fontSize: 8,
+                  color: isDark ? Colors.grey[400] : const Color(0xFF475569)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -1010,27 +1008,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildDashboardCard(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
+  Widget _buildDashboardCard(
+      BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        gradient: LinearGradient(
-          colors: isDark
-              ? [const Color(0xFF1E1E38), const Color(0xFF131224)]
-              : [scheme.primary.withOpacity(0.06), scheme.tertiary.withOpacity(0.03)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: scheme.primary.withOpacity(isDark ? 0.2 : 0.15),
-          width: 1.5,
+          color: isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2),
         ),
         boxShadow: [
           BoxShadow(
-            color: scheme.primary.withOpacity(isDark ? 0.1 : 0.03),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -1042,10 +1034,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: scheme.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(14),
+                  color: const Color(0xFF0056D2).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.insights_rounded, color: scheme.primary, size: 24),
+                child: const Icon(Icons.insights_rounded,
+                    color: Color(0xFF0056D2), size: 24),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -1056,16 +1049,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       _t('progress', lang),
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: isDark ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? Colors.white : const Color(0xFF1F1F1F),
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       _t('understanding_level', lang),
                       style: TextStyle(
-                        fontSize: 11,
-                        color: isDark ? Colors.grey[400] : const Color(0xFF475569),
+                        fontSize: 12,
+                        color: isDark
+                            ? const Color(0xFF9CA3AF)
+                            : const Color(0xFF5C5C5C),
                       ),
                     ),
                   ],
@@ -1079,26 +1074,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               Text(
                 _t('topics_mastered_label', lang),
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark
+                        ? const Color(0xFF9CA3AF)
+                        : const Color(0xFF5C5C5C)),
               ),
               Text(
                 _t('topics_mastered_value', lang),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: scheme.primary,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF0056D2),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(
+            borderRadius: BorderRadius.circular(4),
+            child: const LinearProgressIndicator(
               value: 0.75,
               minHeight: 8,
-              backgroundColor: isDark ? Colors.white10 : Colors.black12,
-              color: scheme.primary,
+              backgroundColor: Color(0xFFEEF0F2),
+              color: Color(0xFF0056D2),
             ),
           ),
           const SizedBox(height: 20),
@@ -1106,10 +1106,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             width: double.infinity,
             child: FilledButton.icon(
               style: FilledButton.styleFrom(
-                backgroundColor: scheme.primary,
+                backgroundColor: const Color(0xFF0056D2),
                 foregroundColor: Colors.white,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
@@ -1118,9 +1119,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               label: Text(
                 _t('start_scan_book', lang),
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  letterSpacing: 0.5,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                 ),
               ),
             ),
@@ -1134,260 +1134,322 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return SafeArea(
       top: false,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(24, 0, 24, 16),
         decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1F2937) : Colors.white,
           boxShadow: [
             BoxShadow(
-              color: scheme.primary.withOpacity(isDark ? 0.15 : 0.05),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
-            child: Container(
-              height: 64,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              decoration: BoxDecoration(
-                color: (isDark ? const Color(0xFF1C1B2E) : Colors.white).withOpacity(0.85),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(child: _buildNavItem(Icons.home_rounded, 0, isDark, scheme)),
-                  Expanded(child: _buildNavItem(Icons.search_rounded, 1, isDark, scheme)),
-                  Expanded(child: _buildNavItem(Icons.view_in_ar_rounded, 2, isDark, scheme)),
-                  Expanded(child: _buildNavItem(Icons.person_rounded, 3, isDark, scheme)),
-                ],
-              ),
-            ),
+        child: Container(
+          height: 64,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                  child: _buildNavItem(
+                      Icons.home_rounded, 'bottom_nav_home', 0, isDark)),
+              Expanded(
+                  child: _buildNavItem(
+                      Icons.search_rounded, 'bottom_nav_scan', 1, isDark)),
+              Expanded(
+                  child: _buildNavItem(
+                      Icons.view_in_ar_rounded, 'bottom_nav_3d', 2, isDark)),
+              Expanded(
+                  child: _buildNavItem(
+                      Icons.person_rounded, 'bottom_nav_profile', 3, isDark)),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, int index, bool isDark, ColorScheme scheme) {
+  Widget _buildNavItem(IconData icon, String labelKey, int index, bool isDark) {
     final isActive = _currentNav == index;
+    final lang = context.read<ApiService>().language;
     return GestureDetector(
       onTap: () => setState(() => _currentNav = index),
       behavior: HitTestBehavior.opaque,
-      child: Center(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: isActive
-                ? scheme.primary.withOpacity(isDark ? 0.15 : 0.08)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Icon(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
             icon,
             size: 22,
-            color: isActive ? scheme.primary : (isDark ? Colors.grey[500] : Colors.grey[600]),
+            color: isActive
+                ? const Color(0xFF0056D2)
+                : (isDark ? const Color(0xFF9CA3AF) : const Color(0xFF8C8C8C)),
           ),
-        ),
+          const SizedBox(height: 4),
+          Text(
+            _t(labelKey, lang),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+              color: isActive
+                  ? const Color(0xFF0056D2)
+                  : (isDark
+                      ? const Color(0xFF9CA3AF)
+                      : const Color(0xFF8C8C8C)),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildHeader(BuildContext context, ApiService apiService, bool isDark,
+      ColorScheme scheme) {
     final lang = apiService.language;
     return Row(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: scheme.primary.withOpacity(0.3), width: 2),
-          ),
-          padding: const EdgeInsets.all(2),
-          child: CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage('assets/images/pp.jpg'),
-          ),
+        CircleAvatar(
+          radius: 22,
+          backgroundImage: AssetImage('assets/images/pp.jpg'),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(_t('welcome', lang), style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : const Color(0xFF475569), fontWeight: FontWeight.w500)),
+              Text(_t('welcome', lang),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: const Color(0xFF5C5C5C),
+                      fontWeight: FontWeight.w500)),
               const SizedBox(height: 2),
-              Text('Defender', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: isDark ? Colors.white : const Color(0xFF0F172A), letterSpacing: -0.5)),
+              Text('Defender',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : const Color(0xFF1F1F1F))),
             ],
           ),
         ),
         GestureDetector(
           onTap: () => apiService.toggleTheme(),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.all(10),
+          child: Container(
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withOpacity(0.08) : scheme.primary.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(14),
+              color: isDark
+                  ? Colors.white.withOpacity(0.06)
+                  : const Color(0xFFF5F7F9),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                  color: isDark ? Colors.white12 : const Color(0xFFD6DBDF)),
             ),
-            child: Icon(isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded, size: 20, color: isDark ? Colors.amber[300] : scheme.primary),
+            child: Icon(
+                isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                size: 18,
+                color: isDark ? Colors.amber[300] : const Color(0xFF5C5C5C)),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildWelcomeBanner(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildWelcomeBanner(BuildContext context, ApiService apiService,
+      bool isDark, ColorScheme scheme) {
     final lang = apiService.language;
-    return AnimatedBuilder(
-      animation: _breathController,
-      builder: (_, __) {
-        final t = _breathController.value;
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            gradient: LinearGradient(
-              colors: [
-                scheme.primary,
-                Color.lerp(scheme.primary, scheme.tertiary, 0.4 + t * 0.2)!,
-                scheme.tertiary,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: scheme.primary.withOpacity(0.3 + t * 0.1),
-                blurRadius: 28 + t * 12,
-                offset: const Offset(0, 12),
-                spreadRadius: -4,
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0056D2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(16)),
-                    child: const Icon(Icons.document_scanner_rounded, color: Colors.white, size: 28),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(_t('pindai_buku_cetak', lang), style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
-                        const SizedBox(height: 4),
-                        Text(_t('ai_analyze_desc', lang), style: TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 13)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 22),
-              SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: scheme.primary,
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                  ),
-                  onPressed: apiService.isLoading ? null : _handleCameraScan,
-                  icon: const Icon(Icons.camera_alt_rounded, size: 20),
-                  label: Text(_t('open_camera_scanner', lang), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, letterSpacing: 0.5)),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.white.withOpacity(0.2), height: 1)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Text(_t('or_paste_url', lang), style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
-                  ),
-                  Expanded(child: Divider(color: Colors.white.withOpacity(0.2), height: 1)),
-                ],
-              ),
-              const SizedBox(height: 16),
               Container(
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
-                ),
-                child: Row(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(8)),
+                child: const Icon(Icons.document_scanner_rounded,
+                    color: Colors.white, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _urlController,
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
-                        decoration: InputDecoration(
-                          hintText: 'https://example.com/halaman-buku.jpg',
-                          hintStyle: TextStyle(color: Colors.white.withOpacity(0.35), fontSize: 12),
-                          filled: false,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          prefixIcon: Icon(Icons.link_rounded, color: Colors.white.withOpacity(0.5), size: 20),
-                        ),
-                        onChanged: (text) => setState(() {}),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: SizedBox(
-                        height: 42,
-                        child: FilledButton(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: scheme.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                          ),
-                          onPressed: apiService.isLoading ? null : () { apiService.setCapturedImage(null); _handleScan(); },
-                          child: apiService.isLoading
-                              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-                              : Row(children: [const Icon(Icons.send_rounded, size: 18), const SizedBox(width: 6), Text(_t('send', lang), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13))]),
-                        ),
-                      ),
-                    ),
+                    Text(_t('pindai_buku_cetak', lang),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    Text(_t('ai_analyze_desc', lang),
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 13)),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(_t('try_fast_preset', lang), style: TextStyle(color: Colors.white.withOpacity(0.45), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _buildPresetChip(context, _t('jantung', lang), 'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
-                  _buildPresetChip(context, _t('dna', lang), 'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
-                  _buildPresetChip(context, _t('water', lang), 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
-                  _buildPresetChip(context, _t('atom_bohr', lang), 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb'),
-                ],
-              ),
             ],
           ),
-        );
-      },
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: const Color(0xFF0056D2),
+                backgroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: apiService.isLoading ? null : _handleCameraScan,
+              icon: const Icon(Icons.camera_alt_rounded, size: 20),
+              label: Text(_t('open_camera_scanner', lang),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 13)),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                  child:
+                      Divider(color: Colors.white.withOpacity(0.2), height: 1)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Text(_t('or_paste_url', lang),
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1)),
+              ),
+              Expanded(
+                  child:
+                      Divider(color: Colors.white.withOpacity(0.2), height: 1)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _urlController,
+                    style:
+                        const TextStyle(color: Color(0xFF1F1F1F), fontSize: 13),
+                    decoration: InputDecoration(
+                      hintText: 'https://example.com/halaman-buku.jpg',
+                      hintStyle: const TextStyle(
+                          color: Color(0xFF8C8C8C), fontSize: 12),
+                      filled: false,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      prefixIcon: const Icon(Icons.link_rounded,
+                          color: Color(0xFF8C8C8C), size: 20),
+                    ),
+                    onChanged: (text) => setState(() {}),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: SizedBox(
+                    height: 40,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF0056D2),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                      ),
+                      onPressed: apiService.isLoading
+                          ? null
+                          : () {
+                              apiService.setCapturedImage(null);
+                              _handleScan();
+                            },
+                      child: apiService.isLoading
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white))
+                          : Row(children: [
+                              const Icon(Icons.send_rounded, size: 18),
+                              const SizedBox(width: 6),
+                              Text(_t('send', lang),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13))
+                            ]),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(_t('try_fast_preset', lang),
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1)),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildPresetChip(context, _t('jantung', lang),
+                  'https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63'),
+              _buildPresetChip(context, _t('dna', lang),
+                  'https://images.unsplash.com/photo-1507679799987-c73779587ccf'),
+              _buildPresetChip(context, _t('water', lang),
+                  'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'),
+              _buildPresetChip(context, _t('atom_bohr', lang),
+                  'https://images.unsplash.com/photo-1635070041078-e363dbe005cb'),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
+  Widget _buildQuickActions(
+      BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     final actions = [
-      _QuickAction(_t('quick_action_scan', lang), _t('quick_action_scan_sub', lang), Icons.auto_stories_rounded, const Color(0xFF6366F1), const Color(0xFF8B5CF6)),
-      _QuickAction(_t('quick_action_3d', lang), _t('quick_action_3d_sub', lang), Icons.view_in_ar_rounded, const Color(0xFF06B6D4), const Color(0xFF14B8A6)),
-      _QuickAction(_t('quick_action_ar', lang), _t('quick_action_ar_sub', lang), Icons.camera_rounded, const Color(0xFFF59E0B), const Color(0xFFF97316)),
+      _QuickAction(
+          _t('quick_action_scan', lang),
+          _t('quick_action_scan_sub', lang),
+          Icons.auto_stories_rounded,
+          const Color(0xFF0056D2),
+          const Color(0xFF0056D2)),
+      _QuickAction(
+          _t('quick_action_3d', lang),
+          _t('quick_action_3d_sub', lang),
+          Icons.view_in_ar_rounded,
+          const Color(0xFF1FA15F),
+          const Color(0xFF1FA15F)),
+      _QuickAction(
+          _t('quick_action_ar', lang),
+          _t('quick_action_ar_sub', lang),
+          Icons.camera_rounded,
+          const Color(0xFFF5AF02),
+          const Color(0xFFF5AF02)),
     ];
     return SizedBox(
       height: 125,
@@ -1411,15 +1473,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               width: 150,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isDark
-                      ? [action.color1.withOpacity(0.15), action.color2.withOpacity(0.08)]
-                      : [action.color1.withOpacity(0.08), action.color2.withOpacity(0.04)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: action.color1.withOpacity(isDark ? 0.2 : 0.15)),
+                color: isDark ? const Color(0xFF1F2937) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFEEF0F2)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2))
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1428,10 +1493,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [action.color1, action.color2]),
-                      borderRadius: BorderRadius.circular(12),
+                      color: action.color1.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(action.icon, color: Colors.white, size: 18),
+                    child: Icon(action.icon, color: action.color1, size: 18),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1441,9 +1506,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                           fontSize: 13,
-                          color: isDark ? Colors.white : const Color(0xFF0F172A),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF1F1F1F),
                         ),
                       ),
                       Text(
@@ -1452,7 +1518,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 10,
-                          color: isDark ? Colors.grey[400] : const Color(0xFF475569),
+                          color: isDark
+                              ? const Color(0xFF9CA3AF)
+                              : const Color(0xFF5C5C5C),
                         ),
                       ),
                     ],
@@ -1466,73 +1534,99 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
+  Widget _buildStatsRow(
+      BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     return Row(
       children: [
-        Expanded(child: _buildStatCard('4', _t('active_classes', lang), Icons.school_rounded, const Color(0xFF60A5FA), isDark)),
+        Expanded(
+            child: _buildStatCard('4', _t('active_classes', lang),
+                Icons.school_rounded, const Color(0xFF0056D2), isDark)),
         const SizedBox(width: 12),
-        Expanded(child: _buildStatCard('12', _t('models_count', lang), Icons.view_in_ar_rounded, const Color(0xFFA78BFA), isDark)),
+        Expanded(
+            child: _buildStatCard('12', _t('models_count', lang),
+                Icons.view_in_ar_rounded, const Color(0xFF1FA15F), isDark)),
         const SizedBox(width: 12),
-        Expanded(child: _buildStatCard('94%', _t('rag_score', lang), Icons.verified_rounded, const Color(0xFF34D399), isDark)),
+        Expanded(
+            child: _buildStatCard('94%', _t('rag_score', lang),
+                Icons.verified_rounded, const Color(0xFFF5AF02), isDark)),
       ],
     );
   }
 
-  Widget _buildStatCard(String value, String label, IconData icon, Color color, bool isDark) {
+  Widget _buildStatCard(
+      String value, String label, IconData icon, Color color, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 12, offset: const Offset(0, 4))],
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+            color: isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2))
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8)),
             child: Icon(icon, color: color, size: 18),
           ),
           const SizedBox(height: 12),
-          Text(value, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20, color: isDark ? Colors.white : const Color(0xFF0F172A))),
+          Text(value,
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  color: isDark ? Colors.white : const Color(0xFF1F1F1F))),
           const SizedBox(height: 2),
-          Text(label, style: TextStyle(color: isDark ? Colors.grey[400] : const Color(0xFF475569), fontSize: 11, fontWeight: FontWeight.w500)),
+          Text(label,
+              style: TextStyle(
+                  color: isDark
+                      ? const Color(0xFF9CA3AF)
+                      : const Color(0xFF5C5C5C),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500)),
         ],
       ),
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, IconData icon, bool isDark, String lang) {
+  Widget _buildSectionTitle(BuildContext context, String title, IconData icon,
+      bool isDark, String lang) {
     return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: Text(
             title,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: -0.3, color: isDark ? Colors.white : const Color(0xFF0F172A)),
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: isDark ? Colors.white : const Color(0xFF1F1F1F)),
             overflow: TextOverflow.ellipsis,
           ),
         ),
         const SizedBox(width: 8),
         TextButton(
           onPressed: () => setState(() => _currentNav = 2),
-          child: Text(_t('view_all', lang), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.primary)),
+          child: Text(_t('view_all', lang),
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF0056D2))),
         ),
       ],
     );
   }
 
-  Widget _buildHistoryList(BuildContext context, ApiService apiService, bool isDark, ColorScheme scheme) {
+  Widget _buildHistoryList(BuildContext context, ApiService apiService,
+      bool isDark, ColorScheme scheme) {
     return SizedBox(
       height: 120,
       child: ListView.builder(
@@ -1540,13 +1634,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         itemCount: apiService.history.length,
         itemBuilder: (context, index) {
           final item = apiService.history[index];
-          final colorPairs = [
-            [const Color(0xFFEF4444), const Color(0xFFF97316)],
-            [const Color(0xFF3B82F6), const Color(0xFF8B5CF6)],
-            [const Color(0xFF14B8A6), const Color(0xFF06B6D4)],
-            [const Color(0xFFF59E0B), const Color(0xFFF97316)],
+          final iconColors = [
+            const Color(0xFFEF4444),
+            const Color(0xFF3B82F6),
+            const Color(0xFF14B8A6),
+            const Color(0xFFF59E0B),
           ];
-          final colors = colorPairs[index % colorPairs.length];
+          final iconColor = iconColors[index % iconColors.length];
           return GestureDetector(
             onTap: () {
               apiService.setCapturedImage(null);
@@ -1557,13 +1651,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               width: 220,
               margin: const EdgeInsets.only(right: 12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: (isDark ? Colors.white : Colors.white).withOpacity(isDark ? 0.04 : 0.3),
-                border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04)),
-                boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 12, offset: const Offset(0, 4))],
+                borderRadius: BorderRadius.circular(16),
+                color: isDark ? const Color(0xFF1F2937) : Colors.white,
+                border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFEEF0F2)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2))
+                ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(16),
                 child: Column(
                   children: [
                     Expanded(
@@ -1576,38 +1678,77 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(gradient: LinearGradient(colors: colors), borderRadius: BorderRadius.circular(8)),
+                                  decoration: BoxDecoration(
+                                      color: iconColor.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8)),
                                   child: Icon(
-                                    item.asset3dUrl == 'heart' ? Icons.favorite_rounded
-                                        : item.asset3dUrl == 'dna_helix' ? Icons.bubble_chart_rounded
-                                        : item.asset3dUrl == 'water_molecule' ? Icons.water_drop_rounded
-                                        : Icons.science_rounded,
-                                    color: Colors.white, size: 14,
+                                    item.asset3dUrl == 'heart'
+                                        ? Icons.favorite_rounded
+                                        : item.asset3dUrl == 'dna_helix'
+                                            ? Icons.bubble_chart_rounded
+                                            : item.asset3dUrl ==
+                                                    'water_molecule'
+                                                ? Icons.water_drop_rounded
+                                                : Icons.science_rounded,
+                                    color: iconColor,
+                                    size: 14,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                Expanded(child: Text(item.subjectTopic, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                Expanded(
+                                    child: Text(item.subjectTopic,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 13,
+                                            color: isDark
+                                                ? Colors.white
+                                                : const Color(0xFF1F1F1F)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis)),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            Text(item.explanation.replaceAll(RegExp(r'[#\*]'), ''),
-                                style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 11, height: 1.4), maxLines: 2, overflow: TextOverflow.ellipsis),
+                            Text(
+                                item.explanation
+                                    .replaceAll(RegExp(r'[#\*]'), ''),
+                                style: TextStyle(
+                                    color: isDark
+                                        ? const Color(0xFF9CA3AF)
+                                        : const Color(0xFF5C5C5C),
+                                    fontSize: 11,
+                                    height: 1.4),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis),
                             const Spacer(),
                             Row(
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(color: Colors.green.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFF1FA15F)
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8)),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.check_circle_rounded, color: Colors.green[400], size: 11),
+                                      const Icon(Icons.check_circle_rounded,
+                                          color: Color(0xFF1FA15F), size: 11),
                                       const SizedBox(width: 4),
-                                      Text('${(item.confidence * 100).toStringAsFixed(0)}%', style: TextStyle(color: Colors.green[400], fontSize: 10, fontWeight: FontWeight.w700)),
+                                      Text(
+                                          '${(item.confidence * 100).toStringAsFixed(0)}%',
+                                          style: const TextStyle(
+                                              color: Color(0xFF1FA15F),
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w600)),
                                     ],
                                   ),
                                 ),
                                 const Spacer(),
-                                Icon(Icons.arrow_forward_ios_rounded, size: 12, color: isDark ? Colors.grey[400] : const Color(0xFF475569)),
+                                Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 12,
+                                    color: isDark
+                                        ? const Color(0xFF9CA3AF)
+                                        : const Color(0xFF8C8C8C)),
                               ],
                             ),
                           ],
@@ -1624,12 +1765,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildCatalogGrid(BuildContext context, bool isDark, ColorScheme scheme, String lang) {
+  Widget _buildCatalogGrid(
+      BuildContext context, bool isDark, ColorScheme scheme, String lang) {
     final items = [
-      _CatalogItem(_t('catalog_heart', lang), _t('catalog_heart_sub', lang), Icons.favorite_rounded, 'heart', const Color(0xFFEF4444), const Color(0xFFF97316), _t('biologi', lang)),
-      _CatalogItem(_t('catalog_dna', lang), _t('catalog_dna_sub', lang), Icons.bubble_chart_rounded, 'dna_helix', const Color(0xFF3B82F6), const Color(0xFF8B5CF6), _t('biologi', lang)),
-      _CatalogItem(_t('catalog_water', lang), _t('catalog_water_sub', lang), Icons.water_drop_rounded, 'water_molecule', const Color(0xFF14B8A6), const Color(0xFF06B6D4), _t('kimia', lang)),
-      _CatalogItem(_t('catalog_bohr', lang), _t('catalog_bohr_sub', lang), Icons.wb_sunny_rounded, 'atom', const Color(0xFFF59E0B), const Color(0xFFF97316), _t('fisika', lang)),
+      _CatalogItem(
+          _t('catalog_heart', lang),
+          _t('catalog_heart_sub', lang),
+          Icons.favorite_rounded,
+          'heart',
+          const Color(0xFFEF4444),
+          const Color(0xFFF97316),
+          _t('biologi', lang)),
+      _CatalogItem(
+          _t('catalog_dna', lang),
+          _t('catalog_dna_sub', lang),
+          Icons.bubble_chart_rounded,
+          'dna_helix',
+          const Color(0xFF3B82F6),
+          const Color(0xFF8B5CF6),
+          _t('biologi', lang)),
+      _CatalogItem(
+          _t('catalog_water', lang),
+          _t('catalog_water_sub', lang),
+          Icons.water_drop_rounded,
+          'water_molecule',
+          const Color(0xFF14B8A6),
+          const Color(0xFF06B6D4),
+          _t('kimia', lang)),
+      _CatalogItem(
+          _t('catalog_bohr', lang),
+          _t('catalog_bohr_sub', lang),
+          Icons.wb_sunny_rounded,
+          'atom',
+          const Color(0xFFF59E0B),
+          const Color(0xFFF97316),
+          _t('fisika', lang)),
     ];
     return GridView.builder(
       shrinkWrap: true,
@@ -1648,78 +1818,87 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildCatalogCard(BuildContext context, _CatalogItem item, bool isDark, int index) {
-    return AnimatedBuilder(
-      animation: _floatController,
-      builder: (_, __) {
-        final offset = math.sin(_floatController.value * math.pi + index * 0.8) * 3;
-        return Transform.translate(
-          offset: Offset(0, offset),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: LinearGradient(
-                colors: isDark
-                    ? [Colors.white.withOpacity(0.06), item.color1.withOpacity(0.08)]
-                    : [Colors.white.withOpacity(0.3), item.color1.withOpacity(0.12)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              border: Border.all(color: isDark ? item.color1.withOpacity(0.15) : item.color1.withOpacity(0.1), width: 1.2),
-              boxShadow: [BoxShadow(color: item.color1.withOpacity(isDark ? 0.1 : 0.03), blurRadius: 20, offset: const Offset(0, 8))],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(24),
-                onTap: () {
-                  context.read<ApiService>().setCapturedImage(null);
-                  Navigator.pushNamed(context, '/ar', arguments: item.assetId);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [item.color1, item.color2]),
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [BoxShadow(color: item.color1.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))],
-                            ),
-                            child: Icon(item.icon, color: Colors.white, size: 24),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(Icons.arrow_outward_rounded, size: 14, color: isDark ? Colors.grey[300] : const Color(0xFF334155)),
-                          ),
-                        ],
+  Widget _buildCatalogCard(
+      BuildContext context, _CatalogItem item, bool isDark, int index) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+        border: Border.all(
+            color: isDark ? const Color(0xFF374151) : const Color(0xFFEEF0F2)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2))
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            context.read<ApiService>().setCapturedImage(null);
+            Navigator.pushNamed(context, '/ar', arguments: item.assetId);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: item.color1.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(item.title, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, letterSpacing: -0.2, color: isDark ? Colors.white : const Color(0xFF0F172A))),
-                          const SizedBox(height: 4),
-                          Text(item.subtitle, style: TextStyle(color: isDark ? Colors.grey[400] : const Color(0xFF475569), fontSize: 11, fontWeight: FontWeight.w500)),
-                        ],
+                      child: Icon(item.icon, color: item.color1, size: 24),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? Colors.white.withOpacity(0.08)
+                            : const Color(0xFFF5F7F9),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ],
-                  ),
+                      child: Icon(Icons.arrow_outward_rounded,
+                          size: 14,
+                          color: isDark
+                              ? const Color(0xFF9CA3AF)
+                              : const Color(0xFF5C5C5C)),
+                    ),
+                  ],
                 ),
-              ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF1F1F1F))),
+                    const SizedBox(height: 4),
+                    Text(item.subtitle,
+                        style: TextStyle(
+                            color: isDark
+                                ? const Color(0xFF9CA3AF)
+                                : const Color(0xFF5C5C5C),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -1733,10 +1912,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withOpacity(0.2)),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.3)),
         ),
-        child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+        child: Text(label,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600)),
       ),
     );
   }
@@ -1751,7 +1934,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'curriculum': 'Grounding Kurikulum Resmi',
         'validation': 'Validasi RAG aktif & tersertifikasi',
         'delete_history': 'Hapus Riwayat Belajar',
-        'delete_history_confirm': 'Apakah Anda yakin ingin menghapus semua riwayat pemindaian?',
+        'delete_history_confirm':
+            'Apakah Anda yakin ingin menghapus semua riwayat pemindaian?',
         'cancel': 'Batal',
         'delete': 'Hapus',
         'progress': 'Progres Pembelajaran',
@@ -1836,7 +2020,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         'curriculum': 'Official Curriculum Grounding',
         'validation': 'RAG validation active & certified',
         'delete_history': 'Clear Study History',
-        'delete_history_confirm': 'Are you sure you want to delete all scan history?',
+        'delete_history_confirm':
+            'Are you sure you want to delete all scan history?',
         'cancel': 'Cancel',
         'delete': 'Delete',
         'progress': 'Learning Progress',
@@ -1929,17 +2114,37 @@ class BookScannerPainter extends CustomPainter {
       ..color = color.withOpacity(0.6)
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke;
-    
+
     // Draw 4 corner brackets of viewfinder
     const len = 16.0;
     // Top Left
-    canvas.drawPath(Path()..moveTo(0, len)..lineTo(0, 0)..lineTo(len, 0), paintCorner);
+    canvas.drawPath(
+        Path()
+          ..moveTo(0, len)
+          ..lineTo(0, 0)
+          ..lineTo(len, 0),
+        paintCorner);
     // Top Right
-    canvas.drawPath(Path()..moveTo(size.width - len, 0)..lineTo(size.width, 0)..lineTo(size.width, len), paintCorner);
+    canvas.drawPath(
+        Path()
+          ..moveTo(size.width - len, 0)
+          ..lineTo(size.width, 0)
+          ..lineTo(size.width, len),
+        paintCorner);
     // Bottom Left
-    canvas.drawPath(Path()..moveTo(0, size.height - len)..lineTo(0, size.height)..lineTo(len, size.height), paintCorner);
+    canvas.drawPath(
+        Path()
+          ..moveTo(0, size.height - len)
+          ..lineTo(0, size.height)
+          ..lineTo(len, size.height),
+        paintCorner);
     // Bottom Right
-    canvas.drawPath(Path()..moveTo(size.width - len, size.height)..lineTo(size.width, size.height)..lineTo(size.width, size.height - len), paintCorner);
+    canvas.drawPath(
+        Path()
+          ..moveTo(size.width - len, size.height)
+          ..lineTo(size.width, size.height)
+          ..lineTo(size.width, size.height - len),
+        paintCorner);
 
     // Draw horizontal scanning laser line
     final y = size.height * animationValue;
@@ -1967,7 +2172,8 @@ class BookScannerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BookScannerPainter oldDelegate) =>
-      oldDelegate.animationValue != animationValue || oldDelegate.color != color;
+      oldDelegate.animationValue != animationValue ||
+      oldDelegate.color != color;
 }
 
 class _QuickAction {
@@ -1987,5 +2193,6 @@ class _CatalogItem {
   final Color color1;
   final Color color2;
   final String category;
-  _CatalogItem(this.title, this.subtitle, this.icon, this.assetId, this.color1, this.color2, this.category);
+  _CatalogItem(this.title, this.subtitle, this.icon, this.assetId, this.color1,
+      this.color2, this.category);
 }

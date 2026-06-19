@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:camera/camera.dart';
-import '../widgets/camera_stub.dart' if (dart.library.html) '../widgets/camera_web.dart';
+import '../widgets/camera_stub.dart'
+    if (dart.library.html) '../widgets/camera_web.dart';
 
 class ARViewerScreen extends StatefulWidget {
   const ARViewerScreen({super.key});
@@ -13,10 +14,11 @@ class ARViewerScreen extends StatefulWidget {
   State<ARViewerScreen> createState() => _ARViewerScreenState();
 }
 
-class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProviderStateMixin {
+class _ARViewerScreenState extends State<ARViewerScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   double _rx = -0.5; // X rotation
-  double _ry = 0.5;  // Y rotation
+  double _ry = 0.5; // Y rotation
   double _scale = 1.0;
   double _baseScale = 1.0;
   bool _autoRotate = true;
@@ -148,9 +150,10 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
   // Project a 3D point (x, y, z) into 2D canvas coordinates
   Offset projectPoint(double x, double y, double z, Size canvasSize) {
     final center = Offset(canvasSize.width / 2, canvasSize.height / 2 - 20);
-    
+
     // Total rotation angle around Y
-    final theta = _ry + (_autoRotate ? _animationController.value * 2 * math.pi : 0.0);
+    final theta =
+        _ry + (_autoRotate ? _animationController.value * 2 * math.pi : 0.0);
     // Rotation around Y
     final x1 = x * math.cos(theta) - z * math.sin(theta);
     final z1 = x * math.sin(theta) + z * math.cos(theta);
@@ -164,7 +167,7 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
     const cameraDist = 400.0;
     final factor = cameraDist / (cameraDist + z2);
     final scaleVal = _scale * 2.1;
-    
+
     return Offset(
       center.dx + x1 * scaleVal * factor,
       center.dy + y2 * scaleVal * factor,
@@ -175,7 +178,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
     if (assetId == 'atom' || assetId == 'general') {
       if (part == 'nucleus') return projectPoint(0, 0, 0, canvasSize);
       if (part == 'electron') {
-        final baseAngle = _autoRotate ? _animationController.value * 2 * math.pi : 0.0;
+        final baseAngle =
+            _autoRotate ? _animationController.value * 2 * math.pi : 0.0;
         final electronAngle = baseAngle * 2.0;
         const radiusX = 85.0;
         const radiusZ = 40.0;
@@ -209,7 +213,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    final assetId = (ModalRoute.of(context)?.settings.arguments as String?) ?? 'atom';
+    final assetId =
+        (ModalRoute.of(context)?.settings.arguments as String?) ?? 'atom';
 
     return Scaffold(
       backgroundColor: Colors.black, // Dark space for AR immersion
@@ -226,7 +231,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
               onPointerSignal: (pointerSignal) {
                 if (pointerSignal is PointerScrollEvent) {
                   setState(() {
-                    _scale = (_scale - pointerSignal.scrollDelta.dy * 0.0015).clamp(0.4, 2.5);
+                    _scale = (_scale - pointerSignal.scrollDelta.dy * 0.0015)
+                        .clamp(0.4, 2.5);
                   });
                 }
               },
@@ -247,55 +253,68 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                 },
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final canvasSize = Size(constraints.maxWidth, constraints.maxHeight);
+                    final canvasSize =
+                        Size(constraints.maxWidth, constraints.maxHeight);
 
                     return AnimatedBuilder(
                       animation: _animationController,
                       builder: (context, child) {
-                        final baseAngle = _autoRotate ? _animationController.value * 2 * math.pi : 0.0;
+                        final baseAngle = _autoRotate
+                            ? _animationController.value * 2 * math.pi
+                            : 0.0;
                         final electronAngle = baseAngle * 2.0;
 
                         // Calculate projected positions in real time based on active assetId
                         final List<Widget> hotspots = [];
-                        
+
                         if (assetId == 'atom' || assetId == 'general') {
                           const radiusX = 85.0;
                           const radiusZ = 40.0;
-                          final nucleusOffset = projectPoint(0, 0, 0, canvasSize);
-                          final orbitOffset = projectPoint(radiusX, 0, 0, canvasSize);
+                          final nucleusOffset =
+                              projectPoint(0, 0, 0, canvasSize);
+                          final orbitOffset =
+                              projectPoint(radiusX, 0, 0, canvasSize);
                           final e1x = radiusX * math.cos(electronAngle);
                           final e1z = radiusZ * math.sin(electronAngle);
-                          final electronOffset = projectPoint(e1x, 0, e1z, canvasSize);
+                          final electronOffset =
+                              projectPoint(e1x, 0, e1z, canvasSize);
 
                           hotspots.addAll([
                             Positioned(
                               left: nucleusOffset.dx - 12,
                               top: nucleusOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'nucleus'),
-                                child: _buildPulsingPin(color: Colors.redAccent),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'nucleus'),
+                                child:
+                                    _buildPulsingPin(color: Colors.redAccent),
                               ),
                             ),
                             Positioned(
                               left: electronOffset.dx - 12,
                               top: electronOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'electron'),
-                                child: _buildPulsingPin(color: Colors.yellowAccent),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'electron'),
+                                child: _buildPulsingPin(
+                                    color: Colors.yellowAccent),
                               ),
                             ),
                             Positioned(
                               left: orbitOffset.dx - 12,
                               top: orbitOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'orbit'),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'orbit'),
                                 child: _buildPulsingPin(color: Colors.white70),
                               ),
                             ),
                           ]);
                         } else if (assetId == 'heart') {
-                          final aortaOffset = projectPoint(-20, -70, 0, canvasSize);
-                          final muscleOffset = projectPoint(0, 70, 0, canvasSize);
+                          final aortaOffset =
+                              projectPoint(-20, -70, 0, canvasSize);
+                          final muscleOffset =
+                              projectPoint(0, 70, 0, canvasSize);
                           final valveOffset = projectPoint(0, 0, 0, canvasSize);
 
                           hotspots.addAll([
@@ -303,46 +322,57 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                               left: aortaOffset.dx - 12,
                               top: aortaOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'aorta'),
-                                child: _buildPulsingPin(color: Colors.redAccent),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'aorta'),
+                                child:
+                                    _buildPulsingPin(color: Colors.redAccent),
                               ),
                             ),
                             Positioned(
                               left: muscleOffset.dx - 12,
                               top: muscleOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'myocardium'),
-                                child: _buildPulsingPin(color: Colors.pinkAccent),
+                                onTap: () => setState(
+                                    () => _selectedPart = 'myocardium'),
+                                child:
+                                    _buildPulsingPin(color: Colors.pinkAccent),
                               ),
                             ),
                             Positioned(
                               left: valveOffset.dx - 12,
                               top: valveOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'valve'),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'valve'),
                                 child: _buildPulsingPin(color: Colors.white70),
                               ),
                             ),
                           ]);
                         } else if (assetId == 'dna_helix') {
-                          final backboneOffset = projectPoint(45.0, -40, 0, canvasSize);
-                          final basepairOffset = projectPoint(0, 20, 0, canvasSize);
+                          final backboneOffset =
+                              projectPoint(45.0, -40, 0, canvasSize);
+                          final basepairOffset =
+                              projectPoint(0, 20, 0, canvasSize);
 
                           hotspots.addAll([
                             Positioned(
                               left: backboneOffset.dx - 12,
                               top: backboneOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'backbone'),
-                                child: _buildPulsingPin(color: Colors.blueAccent),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'backbone'),
+                                child:
+                                    _buildPulsingPin(color: Colors.blueAccent),
                               ),
                             ),
                             Positioned(
                               left: basepairOffset.dx - 12,
                               top: basepairOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'basepair'),
-                                child: _buildPulsingPin(color: Colors.orangeAccent),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'basepair'),
+                                child: _buildPulsingPin(
+                                    color: Colors.orangeAccent),
                               ),
                             ),
                           ]);
@@ -355,23 +385,28 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                           final h2y = bondLen * math.sin(bondAngle / 2);
 
                           final oOffset = projectPoint(0, -20, 0, canvasSize);
-                          final h1Offset = projectPoint(h1x, h1y - 20, 0, canvasSize);
-                          final h2Offset = projectPoint(h2x, h2y - 20, 0, canvasSize);
+                          final h1Offset =
+                              projectPoint(h1x, h1y - 20, 0, canvasSize);
+                          final h2Offset =
+                              projectPoint(h2x, h2y - 20, 0, canvasSize);
 
                           hotspots.addAll([
                             Positioned(
                               left: oOffset.dx - 12,
                               top: oOffset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'oxygen'),
-                                child: _buildPulsingPin(color: Colors.redAccent),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'oxygen'),
+                                child:
+                                    _buildPulsingPin(color: Colors.redAccent),
                               ),
                             ),
                             Positioned(
                               left: h1Offset.dx - 12,
                               top: h1Offset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'hydrogen'),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'hydrogen'),
                                 child: _buildPulsingPin(color: Colors.white),
                               ),
                             ),
@@ -379,7 +414,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                               left: h2Offset.dx - 12,
                               top: h2Offset.dy - 12,
                               child: GestureDetector(
-                                onTap: () => setState(() => _selectedPart = 'hydrogen'),
+                                onTap: () =>
+                                    setState(() => _selectedPart = 'hydrogen'),
                                 child: _buildPulsingPin(color: Colors.white),
                               ),
                             ),
@@ -387,15 +423,18 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                         }
 
                         if (_selectedPart != null) {
-                          final partOffset = _getSelectedPartOffset(_selectedPart!, assetId, canvasSize);
+                          final partOffset = _getSelectedPartOffset(
+                              _selectedPart!, assetId, canvasSize);
                           if (partOffset != null) {
                             const double bubbleWidth = 220;
                             const double bubbleHeight = 90;
                             double leftPos = partOffset.dx - (bubbleWidth / 2);
                             double topPos = partOffset.dy - bubbleHeight - 20;
 
-                            leftPos = leftPos.clamp(16.0, canvasSize.width - bubbleWidth - 16.0);
-                            topPos = topPos.clamp(80.0, canvasSize.height - bubbleHeight - 180.0);
+                            leftPos = leftPos.clamp(
+                                16.0, canvasSize.width - bubbleWidth - 16.0);
+                            topPos = topPos.clamp(
+                                80.0, canvasSize.height - bubbleHeight - 180.0);
 
                             hotspots.addAll([
                               Positioned(
@@ -409,8 +448,14 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                                     decoration: BoxDecoration(
                                       color: Colors.black.withOpacity(0.9),
                                       border: Border(
-                                        bottom: BorderSide(color: _getPartColor(_selectedPart!), width: 1.5),
-                                        right: BorderSide(color: _getPartColor(_selectedPart!), width: 1.5),
+                                        bottom: BorderSide(
+                                            color:
+                                                _getPartColor(_selectedPart!),
+                                            width: 1.5),
+                                        right: BorderSide(
+                                            color:
+                                                _getPartColor(_selectedPart!),
+                                            width: 1.5),
                                       ),
                                     ),
                                   ),
@@ -431,7 +476,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: _getPartColor(_selectedPart!).withOpacity(0.3),
+                                        color: _getPartColor(_selectedPart!)
+                                            .withOpacity(0.3),
                                         blurRadius: 10,
                                         spreadRadius: 1,
                                       ),
@@ -439,14 +485,17 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                                   ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Icon(
                                             _getPartIcon(_selectedPart!),
-                                            color: _getPartColor(_selectedPart!),
+                                            color:
+                                                _getPartColor(_selectedPart!),
                                             size: 16,
                                           ),
                                           const SizedBox(width: 6),
@@ -462,7 +511,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                                             ),
                                           ),
                                           GestureDetector(
-                                            onTap: () => setState(() => _selectedPart = null),
+                                            onTap: () => setState(
+                                                () => _selectedPart = null),
                                             child: const Icon(
                                               Icons.close,
                                               color: Colors.white54,
@@ -500,8 +550,10 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                                   pulse: _pulse,
                                   assetId: assetId,
                                   showGrid: _showGrid,
-                                  primaryColor: Theme.of(context).colorScheme.primary,
-                                  secondaryColor: Theme.of(context).colorScheme.secondary,
+                                  primaryColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  secondaryColor:
+                                      Theme.of(context).colorScheme.secondary,
                                 ),
                               ),
                             ),
@@ -561,15 +613,18 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                   onPressed: () => Navigator.pop(context),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.black54,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.indigoAccent.withOpacity(0.3)),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: const Color(0xFF0056D2).withOpacity(0.4)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.circle, color: Colors.greenAccent, size: 8),
+                      const Icon(Icons.circle,
+                          color: Color(0xFF1FA15F), size: 8),
                       const SizedBox(width: 8),
                       Text(
                         'AR MODE: ${assetId.toUpperCase()}',
@@ -644,15 +699,20 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.indigoAccent.withOpacity(0.3)),
+                    border: Border.all(
+                        color: const Color(0xFF0056D2).withOpacity(0.4)),
                   ),
                   child: Text(
                     '${(_scale * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -691,7 +751,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                       _buildToggleBtn(
                         label: _enableCamera ? 'Kamera Off' : 'Kamera AR',
                         active: _enableCamera,
-                        icon: _enableCamera ? Icons.videocam_off : Icons.videocam,
+                        icon:
+                            _enableCamera ? Icons.videocam_off : Icons.videocam,
                         onPressed: _toggleCamera,
                       ),
                       const SizedBox(width: 8),
@@ -743,8 +804,10 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: Colors.black87,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.indigoAccent.withOpacity(0.3)),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color:
+                                    const Color(0xFF0056D2).withOpacity(0.4)),
                           ),
                           child: Row(
                             children: [
@@ -795,7 +858,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: _getPartColor(_selectedPart!).withOpacity(0.3),
+                                color: _getPartColor(_selectedPart!)
+                                    .withOpacity(0.3),
                                 blurRadius: 12,
                                 spreadRadius: 1,
                               ),
@@ -837,7 +901,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                               ),
                               const SizedBox(width: 8),
                               GestureDetector(
-                                onTap: () => setState(() => _selectedPart = null),
+                                onTap: () =>
+                                    setState(() => _selectedPart = null),
                                 child: const Icon(
                                   Icons.close,
                                   color: Colors.white54,
@@ -924,7 +989,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
                   },
                   scanMode: false,
                 )
-              : (_cameraController != null && _cameraController!.value.isInitialized)
+              : (_cameraController != null &&
+                      _cameraController!.value.isInitialized)
                   ? CameraPreview(_cameraController!)
                   : Container(color: Colors.black),
         ),
@@ -979,73 +1045,120 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
   }
 
   String _getAssetSub(String assetId) {
-    if (assetId == 'heart') return 'Menampilkan denyut pemompaan miokardium melintang.';
-    if (assetId == 'dna_helix') return 'Menampilkan kode ikatan basa nitrogen A-T / C-G.';
-    if (assetId == 'water_molecule') return 'Menampilkan sudut kovalen molekul air sebesar 104.5°.';
+    if (assetId == 'heart')
+      return 'Menampilkan denyut pemompaan miokardium melintang.';
+    if (assetId == 'dna_helix')
+      return 'Menampilkan kode ikatan basa nitrogen A-T / C-G.';
+    if (assetId == 'water_molecule')
+      return 'Menampilkan sudut kovalen molekul air sebesar 104.5°.';
     return 'Menampilkan orbit elektron dengan tingkat energi Bohr.';
   }
 
   String _getPartTitle(String part) {
     switch (part) {
-      case 'nucleus': return 'Inti Atom (Nucleus)';
-      case 'electron': return 'Elektron Bermuatan (-)';
-      case 'orbit': return 'Lintasan / Orbit Bohr';
-      case 'aorta': return 'Aorta Utama';
-      case 'myocardium': return 'Otot Jantung (Myocardium)';
-      case 'valve': return 'Katup Jantung (Valve)';
-      case 'backbone': return 'Rantai Fosfat (Backbone)';
-      case 'basepair': return 'Pasangan Basa Nitrogen';
-      case 'oxygen': return 'Atom Oksigen (O)';
-      case 'hydrogen': return 'Atom Hidrogen (H)';
-      default: return 'Detail Bagian';
+      case 'nucleus':
+        return 'Inti Atom (Nucleus)';
+      case 'electron':
+        return 'Elektron Bermuatan (-)';
+      case 'orbit':
+        return 'Lintasan / Orbit Bohr';
+      case 'aorta':
+        return 'Aorta Utama';
+      case 'myocardium':
+        return 'Otot Jantung (Myocardium)';
+      case 'valve':
+        return 'Katup Jantung (Valve)';
+      case 'backbone':
+        return 'Rantai Fosfat (Backbone)';
+      case 'basepair':
+        return 'Pasangan Basa Nitrogen';
+      case 'oxygen':
+        return 'Atom Oksigen (O)';
+      case 'hydrogen':
+        return 'Atom Hidrogen (H)';
+      default:
+        return 'Detail Bagian';
     }
   }
 
   String _getPartDescription(String part) {
     switch (part) {
-      case 'nucleus': return 'Pusat atom yang padat, terdiri atas Proton bermuatan positif (+) dan Neutron yang netral.';
-      case 'electron': return 'Partikel elementer bermuatan negatif (-) yang mengitari inti pada tingkat energi tertentu.';
-      case 'orbit': return 'Jalur stasioner melingkar tempat elektron mengitari inti tanpa memancarkan radiasi.';
-      case 'aorta': return 'Pembuluh darah arteri terbesar yang mengalirkan darah kaya oksigen dari bilik kiri ke seluruh tubuh.';
-      case 'myocardium': return 'Lapisan otot tebal di dinding jantung yang berkontraksi untuk memompa darah.';
-      case 'valve': return 'Pintu searah yang mencegah darah mengalir kembali ke ruang sebelumnya saat jantung memompa.';
-      case 'backbone': return 'Rantai samping gula fosfat yang membentuk struktur spiral penopang rantai ganda DNA.';
-      case 'basepair': return 'Pasangan basa nitrogen kovalen A-T (Adenin-Timin) dan C-G (Sitosin-Guanin) pembawa kode genetik.';
-      case 'oxygen': return 'Atom pusat elektronegatif (-) yang berikatan kovalen dengan dua atom hidrogen.';
-      case 'hydrogen': return 'Dua atom bermuatan parsial positif (+) yang berikatan dengan atom oksigen dengan sudut 104.5°.';
-      default: return '';
+      case 'nucleus':
+        return 'Pusat atom yang padat, terdiri atas Proton bermuatan positif (+) dan Neutron yang netral.';
+      case 'electron':
+        return 'Partikel elementer bermuatan negatif (-) yang mengitari inti pada tingkat energi tertentu.';
+      case 'orbit':
+        return 'Jalur stasioner melingkar tempat elektron mengitari inti tanpa memancarkan radiasi.';
+      case 'aorta':
+        return 'Pembuluh darah arteri terbesar yang mengalirkan darah kaya oksigen dari bilik kiri ke seluruh tubuh.';
+      case 'myocardium':
+        return 'Lapisan otot tebal di dinding jantung yang berkontraksi untuk memompa darah.';
+      case 'valve':
+        return 'Pintu searah yang mencegah darah mengalir kembali ke ruang sebelumnya saat jantung memompa.';
+      case 'backbone':
+        return 'Rantai samping gula fosfat yang membentuk struktur spiral penopang rantai ganda DNA.';
+      case 'basepair':
+        return 'Pasangan basa nitrogen kovalen A-T (Adenin-Timin) dan C-G (Sitosin-Guanin) pembawa kode genetik.';
+      case 'oxygen':
+        return 'Atom pusat elektronegatif (-) yang berikatan kovalen dengan dua atom hidrogen.';
+      case 'hydrogen':
+        return 'Dua atom bermuatan parsial positif (+) yang berikatan dengan atom oksigen dengan sudut 104.5°.';
+      default:
+        return '';
     }
   }
 
   IconData _getPartIcon(String part) {
     switch (part) {
-      case 'nucleus': return Icons.adjust;
-      case 'electron': return Icons.blur_on;
-      case 'orbit': return Icons.album_outlined;
-      case 'aorta': return Icons.favorite;
-      case 'myocardium': return Icons.fitness_center;
-      case 'valve': return Icons.door_sliding;
-      case 'backbone': return Icons.linear_scale;
-      case 'basepair': return Icons.compare_arrows;
-      case 'oxygen': return Icons.circle;
-      case 'hydrogen': return Icons.circle_outlined;
-      default: return Icons.info;
+      case 'nucleus':
+        return Icons.adjust;
+      case 'electron':
+        return Icons.blur_on;
+      case 'orbit':
+        return Icons.album_outlined;
+      case 'aorta':
+        return Icons.favorite;
+      case 'myocardium':
+        return Icons.fitness_center;
+      case 'valve':
+        return Icons.door_sliding;
+      case 'backbone':
+        return Icons.linear_scale;
+      case 'basepair':
+        return Icons.compare_arrows;
+      case 'oxygen':
+        return Icons.circle;
+      case 'hydrogen':
+        return Icons.circle_outlined;
+      default:
+        return Icons.info;
     }
   }
 
   Color _getPartColor(String part) {
     switch (part) {
-      case 'nucleus': return Colors.redAccent;
-      case 'electron': return Colors.yellowAccent;
-      case 'orbit': return Colors.white70;
-      case 'aorta': return Colors.redAccent;
-      case 'myocardium': return Colors.pinkAccent;
-      case 'valve': return Colors.white70;
-      case 'backbone': return Colors.blueAccent;
-      case 'basepair': return Colors.orangeAccent;
-      case 'oxygen': return Colors.redAccent;
-      case 'hydrogen': return Colors.white;
-      default: return Colors.blueAccent;
+      case 'nucleus':
+        return Colors.redAccent;
+      case 'electron':
+        return Colors.yellowAccent;
+      case 'orbit':
+        return Colors.white70;
+      case 'aorta':
+        return Colors.redAccent;
+      case 'myocardium':
+        return Colors.pinkAccent;
+      case 'valve':
+        return Colors.white70;
+      case 'backbone':
+        return Colors.blueAccent;
+      case 'basepair':
+        return Colors.orangeAccent;
+      case 'oxygen':
+        return Colors.redAccent;
+      case 'hydrogen':
+        return Colors.white;
+      default:
+        return Colors.blueAccent;
     }
   }
 
@@ -1057,10 +1170,12 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
   }) {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: active ? Theme.of(context).colorScheme.primary : Colors.black.withOpacity(0.7),
+        backgroundColor: active
+            ? Theme.of(context).colorScheme.primary
+            : Colors.black.withOpacity(0.7),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8),
           side: const BorderSide(color: Colors.white24),
         ),
         elevation: 0,
@@ -1068,7 +1183,8 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
       ),
       onPressed: onPressed,
       icon: Icon(icon, size: 16),
-      label: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+      label: Text(label,
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
     );
   }
 
@@ -1080,10 +1196,26 @@ class _ARViewerScreenState extends State<ARViewerScreen> with SingleTickerProvid
       height: size,
       decoration: BoxDecoration(
         border: Border(
-          top: top ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
-          bottom: !top ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
-          left: left ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
-          right: !left ? BorderSide(color: Colors.indigoAccent.withOpacity(0.5), width: thickness) : BorderSide.none,
+          top: top
+              ? BorderSide(
+                  color: const Color(0xFF0056D2).withOpacity(0.5),
+                  width: thickness)
+              : BorderSide.none,
+          bottom: !top
+              ? BorderSide(
+                  color: const Color(0xFF0056D2).withOpacity(0.5),
+                  width: thickness)
+              : BorderSide.none,
+          left: left
+              ? BorderSide(
+                  color: const Color(0xFF0056D2).withOpacity(0.5),
+                  width: thickness)
+              : BorderSide.none,
+          right: !left
+              ? BorderSide(
+                  color: const Color(0xFF0056D2).withOpacity(0.5),
+                  width: thickness)
+              : BorderSide.none,
         ),
       ),
     );
@@ -1095,7 +1227,7 @@ class GridBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.indigoAccent.withOpacity(0.08)
+      ..color = const Color(0xFF0056D2).withOpacity(0.08)
       ..strokeWidth = 1.0;
 
     const spacing = 40.0;
@@ -1146,7 +1278,7 @@ class Model3DPainter extends CustomPainter {
   // Project a 3D point (x, y, z) into 2D canvas coordinates
   Offset _project(double x, double y, double z, Size canvasSize) {
     final center = Offset(canvasSize.width / 2, canvasSize.height / 2 - 20);
-    
+
     // Total rotation angle around Y
     final theta = ry + baseAngle;
     // Rotation around Y
@@ -1161,7 +1293,7 @@ class Model3DPainter extends CustomPainter {
     // Perspective factor
     const cameraDist = 400.0;
     final factor = cameraDist / (cameraDist + z2);
-    
+
     return Offset(
       center.dx + x1 * scale * factor,
       center.dy + y2 * scale * factor,
@@ -1191,11 +1323,11 @@ class Model3DPainter extends CustomPainter {
   void _drawCoordinateGizmo(Canvas canvas, Size size) {
     final center = Offset(50.0, size.height - 180.0);
     final theta = ry + baseAngle;
-    
+
     Offset rotateVector(double x, double y, double z) {
       final x1 = x * math.cos(theta) - z * math.sin(theta);
       final z1 = x * math.sin(theta) + z * math.cos(theta);
-      
+
       final y2 = y * math.cos(rx) - z1 * math.sin(rx);
       return Offset(center.dx + x1, center.dy + y2);
     }
@@ -1206,20 +1338,49 @@ class Model3DPainter extends CustomPainter {
     final zEnd = rotateVector(0, 0, 35);
 
     // Draw Axes lines
-    canvas.drawLine(origin, xEnd, Paint()..color = Colors.redAccent..strokeWidth = 2.5);
-    canvas.drawLine(origin, yEnd, Paint()..color = Colors.greenAccent..strokeWidth = 2.5);
-    canvas.drawLine(origin, zEnd, Paint()..color = Colors.blueAccent..strokeWidth = 2.5);
+    canvas.drawLine(
+        origin,
+        xEnd,
+        Paint()
+          ..color = Colors.redAccent
+          ..strokeWidth = 2.5);
+    canvas.drawLine(
+        origin,
+        yEnd,
+        Paint()
+          ..color = Colors.greenAccent
+          ..strokeWidth = 2.5);
+    canvas.drawLine(
+        origin,
+        zEnd,
+        Paint()
+          ..color = Colors.blueAccent
+          ..strokeWidth = 2.5);
 
     // Draw Origin sphere
-    canvas.drawCircle(origin, 4, Paint()..color = Colors.white..style = PaintingStyle.fill);
+    canvas.drawCircle(
+        origin,
+        4,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill);
 
     // Draw Labels 'X', 'Y', 'Z'
-    _drawText(canvas, xEnd + const Offset(4, 0), 'X', Colors.redAccent, 10, bold: true);
-    _drawText(canvas, yEnd - const Offset(0, 6), 'Y', Colors.greenAccent, 10, bold: true);
-    _drawText(canvas, zEnd + const Offset(0, 4), 'Z', Colors.blueAccent, 10, bold: true);
+    _drawText(canvas, xEnd + const Offset(4, 0), 'X', Colors.redAccent, 10,
+        bold: true);
+    _drawText(canvas, yEnd - const Offset(0, 6), 'Y', Colors.greenAccent, 10,
+        bold: true);
+    _drawText(canvas, zEnd + const Offset(0, 4), 'Z', Colors.blueAccent, 10,
+        bold: true);
 
     // Circle boundary guide
-    canvas.drawCircle(origin, 42, Paint()..color = Colors.white10..style = PaintingStyle.stroke..strokeWidth = 1);
+    canvas.drawCircle(
+        origin,
+        42,
+        Paint()
+          ..color = Colors.white10
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1);
   }
 
   void _drawARFloorGrid(Canvas canvas, Size size) {
@@ -1255,23 +1416,23 @@ class Model3DPainter extends CustomPainter {
 
     // Generate concentric vertical cross sections of the heart
     final currentScale = pulse; // Pulse changes scale dynamically
-    
+
     const sliceCount = 8;
     for (int i = 0; i < sliceCount; i++) {
       // t ranges from -pi/2 to pi/2 representing vertical height layers
       final t = -math.pi / 2 + (math.pi * i / (sliceCount - 1));
       final h = 90 * math.sin(t); // height coordinate
-      
+
       // Horizontal radius factor based on heart outer shape
-      final rFactor = math.cos(t) * (1.2 - math.sin(t)); 
+      final rFactor = math.cos(t) * (1.2 - math.sin(t));
       final r = 60 * rFactor * currentScale;
 
       final layerPoints = <Offset>[];
       const ptCount = 16;
-      
+
       for (int j = 0; j < ptCount; j++) {
         final jAngle = 2 * math.pi * j / ptCount;
-        
+
         // Stylize horizontal cross section to have a heart indent in front/back
         final double indent = 1.0 - 0.25 * math.cos(jAngle).abs();
         final x = r * math.cos(jAngle) * indent;
@@ -1279,7 +1440,7 @@ class Model3DPainter extends CustomPainter {
 
         // Apply slight offset to make Y axis match medical heart slant
         final double xOffset = -h * 0.15;
-        
+
         layerPoints.add(_project(x + xOffset, h, z, size));
       }
 
@@ -1303,14 +1464,15 @@ class Model3DPainter extends CustomPainter {
         final h = 90 * math.sin(t);
         final rFactor = math.cos(t) * (1.2 - math.sin(t));
         final r = 60 * rFactor * currentScale;
-        
+
         final x = r * math.cos(phi) * indent;
         final z = r * math.sin(phi) * indent;
         final double xOffset = -h * 0.15;
-        
+
         final currentOffset = _project(x + xOffset, h, z, size);
         if (prevOffset != null) {
-          canvas.drawLine(prevOffset, currentOffset, linePaint..color = Colors.redAccent.withOpacity(0.35));
+          canvas.drawLine(prevOffset, currentOffset,
+              linePaint..color = Colors.redAccent.withOpacity(0.35));
         }
         prevOffset = currentOffset;
       }
@@ -1327,10 +1489,18 @@ class Model3DPainter extends CustomPainter {
     final List<Offset> strand2 = [];
 
     // Colors for base pair rungs
-    final paintA = Paint()..color = Colors.greenAccent..strokeWidth = 3.0;
-    final paintT = Paint()..color = Colors.redAccent..strokeWidth = 3.0;
-    final paintC = Paint()..color = Colors.blueAccent..strokeWidth = 3.0;
-    final paintG = Paint()..color = Colors.orangeAccent..strokeWidth = 3.0;
+    final paintA = Paint()
+      ..color = Colors.greenAccent
+      ..strokeWidth = 3.0;
+    final paintT = Paint()
+      ..color = Colors.redAccent
+      ..strokeWidth = 3.0;
+    final paintC = Paint()
+      ..color = Colors.blueAccent
+      ..strokeWidth = 3.0;
+    final paintG = Paint()
+      ..color = Colors.orangeAccent
+      ..strokeWidth = 3.0;
 
     for (int i = 0; i < stepsCount; i++) {
       final double t = (i / (stepsCount - 1));
@@ -1376,7 +1546,9 @@ class Model3DPainter extends CustomPainter {
     }
 
     // Draw nodes on strands
-    final nodePaint = Paint()..color = primaryColor..style = PaintingStyle.fill;
+    final nodePaint = Paint()
+      ..color = primaryColor
+      ..style = PaintingStyle.fill;
     for (int i = 0; i < stepsCount; i++) {
       canvas.drawCircle(strand1[i], 4, nodePaint..color = primaryColor);
       canvas.drawCircle(strand2[i], 4, nodePaint..color = secondaryColor);
@@ -1389,10 +1561,10 @@ class Model3DPainter extends CustomPainter {
     // Hydrogens are bonded at 104.5 degrees
     const bondLen = 65.0;
     const bondAngle = 104.5 * math.pi / 180.0;
-    
+
     final h1x = bondLen * math.cos(bondAngle / 2);
     final h1y = bondLen * math.sin(bondAngle / 2);
-    
+
     final h2x = -bondLen * math.cos(bondAngle / 2);
     final h2y = bondLen * math.sin(bondAngle / 2);
 
@@ -1412,7 +1584,13 @@ class Model3DPainter extends CustomPainter {
       ..color = Colors.redAccent
       ..style = PaintingStyle.fill;
     canvas.drawCircle(oxygenPos, 22, oPaint);
-    canvas.drawCircle(oxygenPos, 22, Paint()..color = Colors.black26..style = PaintingStyle.stroke..strokeWidth = 2);
+    canvas.drawCircle(
+        oxygenPos,
+        22,
+        Paint()
+          ..color = Colors.black26
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2);
 
     // Draw Hydrogen Atoms (Small White)
     final hPaint = Paint()
@@ -1435,9 +1613,13 @@ class Model3DPainter extends CustomPainter {
     _drawText(canvas, h2Pos, 'H', Colors.black, 10);
 
     // Label delta charges
-    _drawText(canvas, oxygenPos - const Offset(0, 32), 'δ-', Colors.redAccent, 12, bold: true);
-    _drawText(canvas, h1Pos + const Offset(0, 22), 'δ+', Colors.white70, 11, bold: true);
-    _drawText(canvas, h2Pos + const Offset(0, 22), 'δ+', Colors.white70, 11, bold: true);
+    _drawText(
+        canvas, oxygenPos - const Offset(0, 32), 'δ-', Colors.redAccent, 12,
+        bold: true);
+    _drawText(canvas, h1Pos + const Offset(0, 22), 'δ+', Colors.white70, 11,
+        bold: true);
+    _drawText(canvas, h2Pos + const Offset(0, 22), 'δ+', Colors.white70, 11,
+        bold: true);
   }
 
   // 4. Draw 3D Bohr Atom Model
@@ -1457,7 +1639,13 @@ class Model3DPainter extends CustomPainter {
       final isProton = random.nextBool();
       nucleusPaint.color = isProton ? Colors.redAccent : Colors.blueAccent;
       canvas.drawCircle(pPos, 6, nucleusPaint);
-      canvas.drawCircle(pPos, 6, Paint()..color = Colors.black26..style = PaintingStyle.stroke..strokeWidth = 1);
+      canvas.drawCircle(
+          pPos,
+          6,
+          Paint()
+            ..color = Colors.black26
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1);
     }
 
     // 2. Draw 3 Elliptical Electron Orbits
@@ -1483,7 +1671,7 @@ class Model3DPainter extends CustomPainter {
       final z = radiusZ * math.sin(angle);
 
       orbit1.add(_project(x, 0, z, size));
-      
+
       // Rotate around Z axis by 60deg
       final double xRot2 = x * math.cos(math.pi / 3);
       final double yRot2 = x * math.sin(math.pi / 3);
@@ -1504,7 +1692,7 @@ class Model3DPainter extends CustomPainter {
 
     // 3. Draw moving Electrons as glowing dots
     final electronAngle = baseAngle * 2.0; // Rotate electrons twice as fast
-    
+
     // Electron 1
     final e1x = radiusX * math.cos(electronAngle);
     final e1z = radiusZ * math.sin(electronAngle);
@@ -1514,21 +1702,19 @@ class Model3DPainter extends CustomPainter {
     // Electron 2
     final e2x = radiusX * math.cos(electronAngle + 2 * math.pi / 3);
     final e2Pos = _project(
-      e2x * math.cos(math.pi / 3),
-      e2x * math.sin(math.pi / 3),
-      radiusZ * math.sin(electronAngle + 2 * math.pi / 3),
-      size
-    );
+        e2x * math.cos(math.pi / 3),
+        e2x * math.sin(math.pi / 3),
+        radiusZ * math.sin(electronAngle + 2 * math.pi / 3),
+        size);
     _drawGlowingDot(canvas, e2Pos, 5, Colors.yellowAccent);
 
     // Electron 3
     final e3x = radiusX * math.cos(electronAngle + 4 * math.pi / 3);
     final e3Pos = _project(
-      e3x * math.cos(-math.pi / 3),
-      e3x * math.sin(-math.pi / 3),
-      radiusZ * math.sin(electronAngle + 4 * math.pi / 3),
-      size
-    );
+        e3x * math.cos(-math.pi / 3),
+        e3x * math.sin(-math.pi / 3),
+        radiusZ * math.sin(electronAngle + 4 * math.pi / 3),
+        size);
     _drawGlowingDot(canvas, e3Pos, 5, Colors.yellowAccent);
   }
 
@@ -1536,12 +1722,19 @@ class Model3DPainter extends CustomPainter {
     final glowPaint = Paint()
       ..color = color.withOpacity(0.3)
       ..style = PaintingStyle.fill;
-    
+
     canvas.drawCircle(pos, radius * 2.2, glowPaint);
-    canvas.drawCircle(pos, radius, Paint()..color = color..style = PaintingStyle.fill);
+    canvas.drawCircle(
+        pos,
+        radius,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill);
   }
 
-  void _drawText(Canvas canvas, Offset pos, String text, Color color, double size, {bool bold = false}) {
+  void _drawText(
+      Canvas canvas, Offset pos, String text, Color color, double size,
+      {bool bold = false}) {
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -1554,7 +1747,8 @@ class Model3DPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     textPainter.layout();
-    textPainter.paint(canvas, pos - Offset(textPainter.width / 2, textPainter.height / 2));
+    textPainter.paint(
+        canvas, pos - Offset(textPainter.width / 2, textPainter.height / 2));
   }
 
   @override

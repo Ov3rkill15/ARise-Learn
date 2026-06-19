@@ -52,15 +52,18 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
 
       await _controller!.initialize();
       if (!mounted) return;
-      
+
       setState(() {
         _isInitializing = false;
       });
     } catch (e) {
       if (!mounted) return;
       String friendlyMsg = e.toString().replaceAll("Exception: ", "");
-      if (friendlyMsg.contains("Null") || friendlyMsg.contains("JSArray") || friendlyMsg.contains("mediaDevices")) {
-        friendlyMsg = "Kamera tidak terdeteksi atau izin kamera diblokir oleh browser. Silakan aktifkan izin kamera di bilah alamat browser Anda atau gunakan tombol unggah berkas di bawah ini.";
+      if (friendlyMsg.contains("Null") ||
+          friendlyMsg.contains("JSArray") ||
+          friendlyMsg.contains("mediaDevices")) {
+        friendlyMsg =
+            "Kamera tidak terdeteksi atau izin kamera diblokir oleh browser. Silakan aktifkan izin kamera di bilah alamat browser Anda atau gunakan tombol unggah berkas di bawah ini.";
       }
       setState(() {
         _error = friendlyMsg;
@@ -102,10 +105,10 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Dialog(
       backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.black,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 450, maxHeight: 600),
         padding: const EdgeInsets.all(20),
@@ -119,7 +122,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.videocam, color: Colors.blueAccent, size: 24),
+                    const Icon(Icons.videocam,
+                        color: Color(0xFF0056D2), size: 24),
                     const SizedBox(width: 8),
                     Text(
                       'Live Camera Scanner',
@@ -155,11 +159,12 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                       const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(color: Colors.blueAccent),
+                          CircularProgressIndicator(color: Color(0xFF0056D2)),
                           SizedBox(height: 12),
                           Text(
                             'Menghubungkan kamera...',
-                            style: TextStyle(color: Colors.white70, fontSize: 12),
+                            style:
+                                TextStyle(color: Colors.white70, fontSize: 12),
                           ),
                         ],
                       )
@@ -169,7 +174,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
+                            const Icon(Icons.error_outline,
+                                color: Colors.redAccent, size: 48),
                             const SizedBox(height: 12),
                             Text(
                               'Akses Kamera Gagal',
@@ -181,7 +187,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                             const SizedBox(height: 8),
                             Text(
                               _error!,
-                              style: const TextStyle(color: Colors.white54, fontSize: 11),
+                              style: const TextStyle(
+                                  color: Colors.white54, fontSize: 11),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -200,7 +207,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                           }
                         },
                       )
-                    else if (_controller != null && _controller!.value.isInitialized)
+                    else if (_controller != null &&
+                        _controller!.value.isInitialized)
                       // Camera Stream
                       Center(
                         child: CameraPreview(_controller!),
@@ -221,7 +229,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                                 width: 250,
                                 height: 250,
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.blueAccent, width: 2),
+                                  border: Border.all(
+                                      color: const Color(0xFF0056D2), width: 2),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
@@ -232,18 +241,21 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                               duration: const Duration(seconds: 2),
                               curve: Curves.easeInOut,
                               builder: (context, value, child) {
-                                final topOffset = 150 + value * 230; // boundaries of 250 height box
+                                final topOffset = 150 +
+                                    value * 230; // boundaries of 250 height box
                                 return Positioned(
                                   top: topOffset,
-                                  left: MediaQuery.of(context).size.width / 2 - 125,
+                                  left: MediaQuery.of(context).size.width / 2 -
+                                      125,
                                   width: 250,
                                   height: 2,
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.blueAccent,
+                                      color: const Color(0xFF0056D2),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.blueAccent.withValues(alpha: 0.8),
+                                          color: const Color(0xFF0056D2)
+                                              .withValues(alpha: 0.8),
                                           blurRadius: 8,
                                           spreadRadius: 2,
                                         ),
@@ -269,7 +281,7 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                 children: [
                   // Spacer
                   const SizedBox(width: 48),
-                  
+
                   // Main Capture Button
                   GestureDetector(
                     onTap: _capturePhoto,
@@ -293,7 +305,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                   // Switch Camera (Front/Rear)
                   if (_cameras != null && _cameras!.length >= 2)
                     IconButton(
-                      icon: const Icon(Icons.flip_camera_ios, color: Colors.white70, size: 28),
+                      icon: const Icon(Icons.flip_camera_ios,
+                          color: Colors.white70, size: 28),
                       onPressed: _switchCamera,
                     )
                   else
@@ -308,12 +321,14 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                     style: FilledButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
                     onPressed: () async {
                       try {
                         final picker = ImagePicker();
-                        final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
+                        final XFile? photo =
+                            await picker.pickImage(source: ImageSource.gallery);
                         if (photo != null && mounted) {
                           Navigator.pop(context, photo);
                         }
@@ -324,7 +339,8 @@ class _LiveCameraDialogState extends State<LiveCameraDialog> {
                       }
                     },
                     icon: const Icon(Icons.photo_library),
-                    label: const Text('Pilih Berkas dari Galeri/OS', style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: const Text('Pilih Berkas dari Galeri/OS',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   const SizedBox(height: 8),
                   TextButton.icon(
