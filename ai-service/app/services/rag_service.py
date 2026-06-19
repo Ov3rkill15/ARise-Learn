@@ -122,7 +122,7 @@ class RAGService:
         "water_molecule": "Geometri Molekul Air (H₂O)",
     }
 
-    async def analyze_image(self, image_url: str, context: str | None = None, language: str = "id") -> dict:
+    async def analyze_image(self, image_url: str, context: str | None = None, language: str = "id", image_base64: str | None = None, mime_type: str | None = None) -> dict:
         """Analyze a textbook image: extract topic, generate explanation, suggest 3D asset."""
 
         # Step 1: Use LLM to describe the image content
@@ -139,7 +139,7 @@ class RAGService:
         if context:
             vision_prompt += f"\n\nAdditional context: This is from a {context} course."
 
-        raw_analysis = await self.llm.generate(vision_prompt, image_url=image_url)
+        raw_analysis = await self.llm.generate(vision_prompt, image_url=image_url, image_base64=image_base64, mime_type=mime_type)
         print(f"[Vision Step] Raw analysis: {raw_analysis}")
 
         # Parse the LLM output

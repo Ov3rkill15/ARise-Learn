@@ -6,14 +6,14 @@ from app.core.config import get_settings
 
 class BaseLLMClient(ABC):
     @abstractmethod
-    async def generate(self, prompt: str, image_url: str | None = None) -> str:
+    async def generate(self, prompt: str, image_url: str | None = None, image_base64: str | None = None, mime_type: str | None = None) -> str:
         ...
 
 
 class MockLLMClient(BaseLLMClient):
     """Returns a structured academic response when in mock mode based on keywords."""
 
-    async def generate(self, prompt: str, image_url: str | None = None) -> str:
+    async def generate(self, prompt: str, image_url: str | None = None, image_base64: str | None = None, mime_type: str | None = None) -> str:
         text = (image_url or "").lower()
         prompt_lower = prompt.lower()
         
@@ -150,9 +150,21 @@ class GeminiClient(BaseLLMClient):
         genai.configure(api_key=settings.gemini_api_key)
         self.model = genai.GenerativeModel(settings.gemini_model)
 
-    async def generate(self, prompt: str, image_url: str | None = None) -> str:
+    async def generate(self, prompt: str, image_url: str | None = None, image_base64: str | None = None, mime_type: str | None = None) -> str:
         content = [prompt]
-        if image_url:
+        if image_base64:
+            # Use base64 directly — avoids URL reachability issues
+            try:
+                import base64 as b64
+                from PIL import Image
+                import io
+                img_data = b64.b64decode(image_base64)
+                img = Image.open(io.BytesIO(img_data))
+                content.append(img)
+            except Exception as e:
+                print(f"Error decoding base64 image for Gemini: {e}")
+                content.append(f"[Image reference: {image_url}]")
+        elif image_url:
             try:
                 import httpx
                 from PIL import Image
@@ -182,10 +194,15 @@ class OpenAIClient(BaseLLMClient):
         self.client = AsyncOpenAI(api_key=settings.openai_api_key)
         self.model = settings.openai_model
 
-    async def generate(self, prompt: str, image_url: str | None = None) -> str:
+    async def generate(self, prompt: str, image_url: str | None = None, image_base64: str | None = None, mime_type: str | None = None) -> str:
         messages = []
         content = [{"type": "text", "text": prompt}]
-        if image_url:
+        if image_base64:
+            # Use base64 directly
+            mt = mime_type or "image/jpeg"
+            image_data_url = f"data:{mt};base64,{image_base64}"
+            content.append({"type": "image_url", "image_url": {"url": image_data_url}})
+        elif image_url:
             try:
                 import httpx
                 import base64
@@ -223,11 +240,17 @@ class GroqClient(BaseLLMClient):
         )
         self.model = settings.groq_model or "meta-llama/llama-4-scout-17b-16e-instruct"
 
-    async def generate(self, prompt: str, image_url: str | None = None) -> str:
+    async def generate(self, prompt: str, image_url: str | None = None, image_base64: str | None = None, mime_type: str | None = None) -> str:
         messages = []
         content = [{"type": "text", "text": prompt}]
         has_image = False
-        if image_url:
+        if image_base64:
+            # Use base64 directly — no need to fetch URL
+            mt = mime_type or "image/jpeg"
+            image_data_url = f"data:{mt};base64,{image_base64}"
+            content.append({"type": "image_url", "image_url": {"url": image_data_url}})
+            has_image = True
+        elif image_url:
             try:
                 import httpx
                 import base64

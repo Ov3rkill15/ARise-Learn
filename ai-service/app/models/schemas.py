@@ -4,6 +4,8 @@ from typing import Optional
 
 class AnalyzeRequest(BaseModel):
     image_url: str = Field(..., description="URL or base64 of the scanned textbook image")
+    image_base64: Optional[str] = Field(None, description="Base64-encoded image data (avoids URL reachability issues)")
+    mime_type: Optional[str] = Field(None, description="MIME type of the base64 image, e.g. image/jpeg")
     context: Optional[str] = Field(None, description="Optional subject/course context")
     language: Optional[str] = Field("id", description="Language of explanation: 'id' or 'en'")
 

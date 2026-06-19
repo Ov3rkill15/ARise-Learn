@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"os"
@@ -51,7 +52,7 @@ func (h *ScanHandler) CreateScan(c *gin.Context) {
 		return
 	}
 
-	result, err := h.scanService.ProcessScan(c.Request.Context(), &req)
+	result, err := h.scanService.ProcessScan(c.Request.Context(), &req, "", "")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.APIResponse{
 			Success: false,
@@ -126,7 +127,7 @@ func (h *ScanHandler) UploadAndScan(c *gin.Context) {
 	// Generate unique filename with timestamp
 	filename := fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
 	filepathDst := filepath.Join(uploadsDir, filename)
-	
+
 	if err := c.SaveUploadedFile(file, filepathDst); err != nil {
 		c.JSON(http.StatusInternalServerError, model.APIResponse{
 			Success: false,
@@ -143,6 +144,29 @@ func (h *ScanHandler) UploadAndScan(c *gin.Context) {
 	host := c.Request.Host
 	imageURL := fmt.Sprintf("%s://%s/uploads/%s", scheme, host, filename)
 
+	// Read the saved image file and encode as base64 for direct transfer to AI service
+	imageData, err := os.ReadFile(filepathDst)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.APIResponse{
+			Success: false,
+			Message: "Gagal membaca berkas gambar: " + err.Error(),
+		})
+		return
+	}
+	imageBase64 := base64.StdEncoding.EncodeToString(imageData)
+
+	// Detect MIME type from extension
+	mimeType := "image/jpeg"
+	ext := filepath.Ext(filename)
+	switch ext {
+	case ".png":
+		mimeType = "image/png"
+	case ".webp":
+		mimeType = "image/webp"
+	case ".gif":
+		mimeType = "image/gif"
+	}
+
 	req := model.ScanRequest{
 		UserID:   userID,
 		ImageURL: imageURL,
@@ -150,7 +174,7 @@ func (h *ScanHandler) UploadAndScan(c *gin.Context) {
 		Language: language,
 	}
 
-	result, err := h.scanService.ProcessScan(c.Request.Context(), &req)
+	result, err := h.scanService.ProcessScan(c.Request.Context(), &req, imageBase64, mimeType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.APIResponse{
 			Success: false,

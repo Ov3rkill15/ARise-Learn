@@ -3,10 +3,12 @@ package service
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/edutech-lidm/backend/internal/model"
@@ -28,12 +30,44 @@ func NewScanService(repo *repository.ScanRepository, aiServiceURL string) *ScanS
 }
 
 // ProcessScan sends the image to the AI service, stores the result, and returns it
-func (s *ScanService) ProcessScan(ctx context.Context, req *model.ScanRequest) (*model.ScanResult, error) {
+func (s *ScanService) ProcessScan(ctx context.Context, req *model.ScanRequest, imageBase64 string, mimeType string) (*model.ScanResult, error) {
+	// If base64 is not provided, download the image from URL and encode it
+	if imageBase64 == "" && req.ImageURL != "" {
+		fmt.Printf("[ProcessScan] Downloading image from URL: %s\n", req.ImageURL)
+		dlCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+		defer cancel()
+		dlReq, _ := http.NewRequestWithContext(dlCtx, http.MethodGet, req.ImageURL, nil)
+		imgResp, err := s.httpClient.Do(dlReq)
+		if err != nil {
+			fmt.Printf("[ProcessScan] Warning: failed to download image: %v (proceeding without base64)\n", err)
+		} else {
+			defer imgResp.Body.Close()
+			if imgResp.StatusCode == http.StatusOK {
+				imgData, err := io.ReadAll(imgResp.Body)
+				if err == nil {
+					imageBase64 = base64.StdEncoding.EncodeToString(imgData)
+					// Detect MIME type from Content-Type header
+					ct := imgResp.Header.Get("Content-Type")
+					if strings.HasPrefix(ct, "image/") {
+						mimeType = ct
+					} else {
+						mimeType = "image/jpeg"
+					}
+					fmt.Printf("[ProcessScan] Image downloaded: %d bytes, type: %s\n", len(imgData), mimeType)
+				}
+			} else {
+				fmt.Printf("[ProcessScan] Warning: image URL returned status %d\n", imgResp.StatusCode)
+			}
+		}
+	}
+
 	// Forward to AI service
 	analyzeReq := model.AnalyzeRequest{
-		ImageURL: req.ImageURL,
-		Context:  req.Context,
-		Language: req.Language,
+		ImageURL:    req.ImageURL,
+		ImageBase64: imageBase64,
+		MimeType:    mimeType,
+		Context:     req.Context,
+		Language:    req.Language,
 	}
 
 	body, err := json.Marshal(analyzeReq)

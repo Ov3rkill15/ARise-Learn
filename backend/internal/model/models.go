@@ -42,18 +42,20 @@ type Recommendation struct {
 
 // Asset3D represents a 3D model metadata for AR rendering
 type Asset3D struct {
-	ID          string    `json:"id"`
-	Name        string    `json:"name"`
-	ModelURL    string    `json:"model_url"` // URL to .glb/.usdz file
-	SubjectTopic string   `json:"subject_topic"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID           string    `json:"id"`
+	Name         string    `json:"name"`
+	ModelURL     string    `json:"model_url"` // URL to .glb/.usdz file
+	SubjectTopic string    `json:"subject_topic"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 // AnalyzeRequest is the payload sent to the AI service
 type AnalyzeRequest struct {
-	ImageURL string `json:"image_url"`
-	Context  string `json:"context,omitempty"`
-	Language string `json:"language,omitempty"`
+	ImageURL    string `json:"image_url"`
+	ImageBase64 string `json:"image_base64,omitempty"`
+	MimeType    string `json:"mime_type,omitempty"`
+	Context     string `json:"context,omitempty"`
+	Language    string `json:"language,omitempty"`
 }
 
 // AnalyzeResponse is the response from the AI service

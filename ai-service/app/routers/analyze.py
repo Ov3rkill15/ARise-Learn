@@ -24,6 +24,8 @@ async def analyze_image(request: AnalyzeRequest):
             image_url=request.image_url,
             context=request.context,
             language=request.language,
+            image_base64=request.image_base64,
+            mime_type=request.mime_type,
         )
         return AnalyzeResponse(**result)
     except Exception as e:
