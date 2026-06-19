@@ -25,8 +25,10 @@ services:
       - LLM_PROVIDER=${LLM_PROVIDER:-mock}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-pro}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o}
+      - GROQ_MODEL=${GROQ_MODEL:-meta-llama/llama-4-scout-17b-16e-instruct}
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
       - QDRANT_COLLECTION=edutech_textbooks
